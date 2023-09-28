@@ -7,6 +7,7 @@ import 'package:click_it_app/presentation/screens/home/sync_server_screen.dart';
 import 'package:click_it_app/presentation/screens/home/upload_images_screen.dart';
 
 import 'package:click_it_app/presentation/screens/login/login_screen.dart';
+import 'package:click_it_app/presentation/screens/notification/notification_screen.dart';
 import 'package:click_it_app/presentation/screens/sidepanel/about_us_screen.dart';
 import 'package:click_it_app/presentation/screens/sidepanel/contact_screen.dart';
 import 'package:click_it_app/presentation/screens/sidepanel/disclaimer_screen.dart';
@@ -84,14 +85,43 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
           key: _scaffoldKey,
-          endDrawer: AppDrawer(),
+          /*endDrawer: AppDrawer(),*/
+          appBar: AppBar(
+            title: Text(
+              companyId != ''
+                  ? '$companyName ($companyId)'
+                  : '$companyName',
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.white,
+              ),
+            ),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.notifications,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.leftToRight,
+                      child: NotificationScreen(),
+                    ),
+                  );
+                },
+              )
+            ],
+
+          ),
           body: Container(
             child:  Column(
               children: [
                 const SizedBox(
                   height: 10,
                 ),
-                Container(
+                /*Container(
                   margin: const EdgeInsets.only(
                     right: 10,
                   ),
@@ -117,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                     ],
                   ),
-                ),
+                ),*/
                 SizedBox(
                   height: 20.h,
                 ),
@@ -289,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(
+                /*const SizedBox(
                   height: 10,
                 ),
                 const Text(
@@ -300,8 +330,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(
                   height: 10,
-                ),
-                GestureDetector(
+                ),*/
+                /*GestureDetector(
                   onTap: () => Navigator.push(
                     context,
                     PageTransition(
@@ -333,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 Spacer(),
-                BottomLogoWidget(),
+                BottomLogoWidget(),*/
               ],
             ),
           )),

@@ -3,6 +3,7 @@ import 'package:click_it_app/preferences/app_preferences.dart';
 import 'package:click_it_app/presentation/screens/home/home_screen.dart';
 import 'package:click_it_app/presentation/screens/home/upload_images_screen.dart';
 import 'package:click_it_app/presentation/screens/login/login_screen.dart';
+import 'package:click_it_app/presentation/screens/uploadImages/new_home_screen.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/new_upload_images_screen.dart';
 import 'package:click_it_app/presentation/widgets/bottom_logo_widget.dart';
 import 'package:click_it_app/presentation/widgets/logo_widget.dart';
@@ -46,9 +47,9 @@ class _SplashScreenState extends State<SplashScreen> {
                 : !isUserExist
                 ? LoginScreen()
                 : isbarcodeScanned == false
-                    ? HomeScreen(isShowRatingDialog: false,)
+                    ? NewHomeScreen(isShowRatingDialog: false,)
                     : currentGTIN == null
-                        ? HomeScreen(isShowRatingDialog: false,)
+                        ? NewHomeScreen(isShowRatingDialog: false,)
                         : NewUploadImagesScreen(gtin: currentGTIN!);
           },
         ),
