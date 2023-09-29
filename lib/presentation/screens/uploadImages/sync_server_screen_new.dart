@@ -11,6 +11,7 @@ import 'package:click_it_app/data/models/local_sync_images_model.dart';
 import 'package:click_it_app/data/models/photo.dart';
 import 'package:click_it_app/data/models/upload_images_model.dart';
 import 'package:click_it_app/presentation/screens/home/home_screen.dart';
+import 'package:click_it_app/presentation/screens/uploadImages/new_home_screen.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -216,7 +217,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                                     ? Image.file(
                                                                   File(allRowsList[mainIndex]['frontImage'],
                                                                   ),
-                                                                  fit: BoxFit.fill,
+                                                                  fit: BoxFit.scaleDown,
                                                                 )
 
                                                                     : DottedBorder(child: SizedBox(height: 230,)),
@@ -266,7 +267,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                                   File(
                                                                       allRowsList[mainIndex]
                                                                       ['backImage']),
-                                                                fit: BoxFit.fill,
+                                                                fit: BoxFit.scaleDown,
                                                               )
 
                                                                   : DottedBorder(child: SizedBox(height: 230,)),
@@ -309,7 +310,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                                     ''
                                                                     ? Image.file(File(allRowsList[mainIndex]
                                                                 ['leftImage']),
-                                                                  fit: BoxFit.fill,
+                                                                  fit: BoxFit.scaleDown,
                                                                 )
 
                                                                     : DottedBorder(child: SizedBox(height: 230,)),
@@ -353,7 +354,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                                     ''
                                                                     ? Image.file(File(allRowsList[mainIndex]
                                                                 ['rightImage']),
-                                                                  fit: BoxFit.fill,
+                                                                  fit: BoxFit.scaleDown,
                                                                 )
 
                                                                     : DottedBorder(child: SizedBox(height: 230,)),
@@ -397,7 +398,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                                     ''
                                                                     ? Image.file(File(allRowsList[mainIndex]
                                                                 ['topImage']),
-                                                                  fit: BoxFit.fill,
+                                                                  fit: BoxFit.scaleDown,
                                                                 )
 
                                                                     : DottedBorder(child: SizedBox(height: 230,)),
@@ -441,7 +442,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                                     ''
                                                                     ? Image.file(File(allRowsList[mainIndex]
                                                                 ['bottomImage']),
-                                                                  fit: BoxFit.fill,
+                                                                  fit: BoxFit.scaleDown,
                                                                 )
 
                                                                     : DottedBorder(child: SizedBox(height: 230,)),
@@ -485,7 +486,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                                     ''
                                                                     ? Image.file(File(allRowsList[mainIndex]
                                                                 ['nutrientsImage']),
-                                                                  fit: BoxFit.fill,
+                                                                  fit: BoxFit.scaleDown,
                                                                 )
 
                                                                     : DottedBorder(child: SizedBox(height: 230,)),
@@ -530,7 +531,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                                     ''
                                                                     ? Image.file(File(allRowsList[mainIndex]
                                                                 ['ingredientsImage']),
-                                                                  fit: BoxFit.fill,
+                                                                  fit: BoxFit.scaleDown,
                                                                 )
 
                                                                     : DottedBorder(child: SizedBox(height: 230,)),
@@ -1036,7 +1037,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
       context,
       PageTransition(
         type: PageTransitionType.leftToRight,
-        child: HomeScreen(isShowRatingDialog: isShowRating,),
+        child: NewHomeScreen(isShowRatingDialog: isShowRating,),
       ),(Route<dynamic> route) => false,
     );
   }
@@ -1114,7 +1115,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
               context,
               PageTransition(
                 type: PageTransitionType.leftToRight,
-                child: HomeScreen(isShowRatingDialog: isShowRating,),
+                child: NewHomeScreen(isShowRatingDialog: isShowRating,),
               ),(Route<dynamic> route) => false,
             );
           }else{

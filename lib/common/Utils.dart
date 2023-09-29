@@ -43,7 +43,7 @@ class Utils {
       'tags': build.tags,
       'type': build.type,
       'isPhysicalDevice': build.isPhysicalDevice,
-      //  'androidId': build.androidId,
+      'androidId': build.androidId,
       'systemFeatures': build.systemFeatures,
     };
   }

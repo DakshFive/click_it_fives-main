@@ -11,6 +11,7 @@ import 'package:click_it_app/presentation/screens/uploadImages/back_image_screen
 import 'package:click_it_app/presentation/screens/uploadImages/front_image_screen.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/ingredients.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/left_image_screen.dart';
+import 'package:click_it_app/presentation/screens/uploadImages/new_home_screen.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/nutritional_value.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/right_image_screen.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/top_image_screen.dart';
@@ -214,7 +215,7 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HomeScreen(isShowRatingDialog: false,),
+                                builder: (context) => NewHomeScreen(isShowRatingDialog: false,),
 
                               ),
                                   (Route<dynamic> route) => false
@@ -231,7 +232,7 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomeScreen(isShowRatingDialog: false,),
+                    builder: (context) => NewHomeScreen(isShowRatingDialog: false,),
                   ),(Route<dynamic> route) => false
               );
             }
@@ -735,7 +736,7 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomeScreen(isShowRatingDialog: false,),
+                        builder: (context) => NewHomeScreen(isShowRatingDialog: false,),
                       ),(Route<dynamic> route) => false
                   );
 
@@ -1007,7 +1008,7 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
     Navigator.pushAndRemoveUntil(
     context,
     MaterialPageRoute(
-    builder: (context) => HomeScreen(isShowRatingDialog: isShowRating,),
+    builder: (context) => NewHomeScreen(isShowRatingDialog: isShowRating,),
     ),(Route<dynamic> route) => false);
 
     //send the user to home screen
@@ -1206,7 +1207,7 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    HomeScreen(isShowRatingDialog: isShowRating,),
+                    NewHomeScreen(isShowRatingDialog: isShowRating,),
               ), (Route<dynamic> route) => false);
         },
       );

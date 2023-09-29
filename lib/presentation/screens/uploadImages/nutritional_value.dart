@@ -17,10 +17,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/data_sources/Local Datasource/new_database.dart';
+import '../../../utils/apis.dart';
 import '../../../utils/constants.dart';
 
 class NutritionalValueScreen extends StatefulWidget {
-  String? gtin;
+  final String? gtin;
   NutritionalValueScreen({Key? key, required this.gtin}) : super(key: key);
 
   @override
@@ -36,6 +37,8 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
   String? bckgroundRemovedImagePath;
   File? frontImageBackup;
   Uint8List? backgroundRemovedImageBackup;
+  Uint8List? compressedBottomImage;
+  String? compressedBottomImagePath;
 
   Future<Null> pickImage(
     String source,
@@ -63,8 +66,26 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
       ProgressLoader.show(context);
 
       isImageProcessing = true;
+
+      if(productImage==null){
+        ProgressLoader.hide();
+        EasyLoading.showError('Please upload again..');
+        return;
+      }
+
+      compressedBottomImage = await ClickItApis.getCompressedImage(productImage!.path);
+      if(compressedBottomImage!=null){
+        compressedBottomImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBottomImage);
+      }else{
+        ProgressLoader.hide();
+        EasyLoading.showError('Please upload again..');
+        return;
+      }
+
+      final compressImageFile = File(compressedBottomImagePath!);
+
       try {
-        imageResolution = await getImageResolution(productImage);
+        imageResolution = await getImageResolution(compressImageFile);
         //imageResolution = "Medium";
         if (imageResolution!.toLowerCase() == 'low') {
           isImageProcessing = false;
@@ -240,7 +261,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
                                   ))
                                 : Image.file(
                                     productImage!,
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.scaleDown,
                                   ),
                           ),
                         ),

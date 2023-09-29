@@ -5,6 +5,7 @@ import 'package:click_it_app/common/loader/progressLoader.dart';
 import 'package:click_it_app/controllers/upload_images_provider.dart';
 import 'package:click_it_app/preferences/app_preferences.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/image_viewer.dart';
+import 'package:click_it_app/utils/apis.dart';
 import 'package:click_it_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +20,7 @@ import 'package:provider/provider.dart';
 import '../../../data/data_sources/Local Datasource/new_database.dart';
 
 class BackImageScreen extends StatefulWidget {
-  String? gtin;
+  final String? gtin;
   BackImageScreen({Key? key, required this.gtin}) : super(key: key);
 
   @override
@@ -38,6 +39,9 @@ class _BackImageScreenState extends State<BackImageScreen>
 
   File? frontImageBackup;
   Uint8List? backgroundRemovedImageBackup;
+
+  Uint8List? compressedBackImage;
+  String? compressedBackImagePath;
 
   Future<Null> pickImage(
     String source,
@@ -66,8 +70,26 @@ class _BackImageScreenState extends State<BackImageScreen>
       ProgressLoader.show(context);
 
       isImageProcessing = true;
+
+      if(productImage==null){
+        ProgressLoader.hide();
+        EasyLoading.showError('Please upload again..');
+        return;
+      }
+
+      compressedBackImage = await ClickItApis.getCompressedImage(productImage!.path);
+
+      if(compressedBackImage!=null) {
+        compressedBackImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBackImage);
+      }else{
+        ProgressLoader.hide();
+        EasyLoading.showError('Please upload again..');
+        return;
+      }
+      final compressImageFile = File(compressedBackImagePath!);
+
       try {
-        imageResolution = await getImageResolution(productImage);
+        imageResolution = await getImageResolution(compressImageFile);
         //imageResolution = "Medium";
         print('imageresolution is $imageResolution');
         if (imageResolution!.toLowerCase() == 'low') {
@@ -133,7 +155,7 @@ class _BackImageScreenState extends State<BackImageScreen>
       setState(() {});
 
       try {
-        backgroundRemovedImage = await removeImagebackground(productImage);
+        backgroundRemovedImage = await removeImagebackground(compressImageFile);
         //backgroundRemovedImage = productImage?.readAsBytesSync();
         //backgroundRemovedImageBackup = productImage?.readAsBytesSync();
         if (backgroundRemovedImage == null) {
@@ -370,7 +392,7 @@ class _BackImageScreenState extends State<BackImageScreen>
                                   ))
                                 : Image.file(
                                     productImage!,
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.scaleDown,
                                   ),
                           ),
                         ),
@@ -459,7 +481,7 @@ class _BackImageScreenState extends State<BackImageScreen>
                                   width: double.infinity,
                                   child: Image.file(
                                     editedSavedImage!,
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.scaleDown,
                                   ),
                                 ),
                               ),
@@ -495,7 +517,7 @@ class _BackImageScreenState extends State<BackImageScreen>
                                       width: double.infinity,
                                       child:
                                           Image.memory(backgroundRemovedImage!,
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.scaleDown,
                                           ),
                                     ),
                                   ),

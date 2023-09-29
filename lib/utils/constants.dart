@@ -1,5 +1,10 @@
 
+import 'dart:io';
+import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:click_it_app/preferences/app_preferences.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ClickItConstants{
 
@@ -11,6 +16,9 @@ class ClickItConstants{
   static String bottomImageUploadedKey = 'isBottomImageUploaded';
   static String ingredientImageUploadedKey = 'isIngredientImageUploaded';
   static String nutrientsUploadedImageKey = 'isNutritionImageUploaded';
+
+  static String APIID = "df4a3e288e73d4e3d6e4a975a0c3212d";
+  static String APIKEY = "440f00981a1cc3b1ce6a4c784a4b84ea";
 
   static reloadSharedPreference() async{
     String userName =
@@ -54,6 +62,23 @@ class ClickItConstants{
         retrievedData, 'login_data');
     AppPreferences.addSharedPreferences(false, "isShowTutorial");
     AppPreferences.addSharedPreferences(isShowRating,"isShowRating");
+  }
+
+  static Future<String?> saveCompressedImageToDevice(Uint8List? compressedImage) async{
+    if (compressedImage != null) {
+      Random random = Random();
+      int randomNumber = random.nextInt(10000);
+      final directory = await getTemporaryDirectory();
+
+      final imagePath = '${directory.path}/${randomNumber}.png';
+
+      final File imageFile = File(imagePath);
+      // Save the provided Uint8List image to the device
+      await imageFile.writeAsBytes(compressedImage);
+
+      return imageFile.path;
+    }
+    return null;
   }
 
 }

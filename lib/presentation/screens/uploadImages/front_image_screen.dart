@@ -6,6 +6,7 @@ import 'package:click_it_app/common/loader/progressLoader.dart';
 import 'package:click_it_app/controllers/upload_images_provider.dart';
 import 'package:click_it_app/preferences/app_preferences.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/image_viewer.dart';
+import 'package:click_it_app/utils/apis.dart';
 import 'package:click_it_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,6 +41,8 @@ class _FrontImageScreenState extends State<FrontImageScreen>
   bool? isbarcodeScanned;
   File? frontImageBackup;
   Uint8List? backgroundRemovedImageBackup;
+  Uint8List? compressedFrontImage;
+  String? compressedFrontImagePath;
 
   Future<void> pickImage(
     String source,
@@ -64,35 +67,117 @@ class _FrontImageScreenState extends State<FrontImageScreen>
       Navigator.pop(context);
 
       productImage = await _cropImage(imageTemporary);
+
       setState(() {});
-      ProgressLoader.show(context);
+      ProgressLoader.getCircularProgressIndicator();
+
       isImageProcessing = true;
-      try {
-        imageResolution = await getImageResolution(productImage);
-        //imageResolution = "High";
-        print('imageresolution is $imageResolution');
-        if (imageResolution!.toLowerCase() == 'low') {
-          isImageProcessing = false;
-          ProgressLoader.hide();
-          EasyLoading.showError(
-              'Uploaded Image has Low Resolution.Please upload again');
-          //    backgroundRemovedImage = null;
-          imageResolution = null;
 
-          if (AppPreferences.getValueShared('fetched_front_image') == '' ||
-              AppPreferences.getValueShared('fetched_front_image') == null) {
-            productImage = null;
-          } else {
-            productImage =
-                File(AppPreferences.getValueShared('fetched_front_image'));
-            /*editedSavedImage =
+      bool isChecked = false;
+      showDialog(
+          context: context,
+          builder: (context) {
+            return StatefulBuilder(builder: (context, stfSetState){
+
+
+              return AlertDialog(
+                title: Text('Info'),
+                content:  Text(
+                    'Background removal is in progress.Please feel free to proceed with additional images.',
+                    textAlign: TextAlign.start,
+                    style:  TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400
+                    )
+                ),
+                actions: [
+                  Row(
+                    children: [
+                      Checkbox(
+                        checkColor: Colors.white,
+                        value: isChecked,
+                        onChanged: (bool? value) {
+                          stfSetState(() {
+                            isChecked = value!;
+                          });
+                        },
+                      ),
+                      SizedBox(width: 10,),
+                      Text('Don\'t show again?')
+                    ],
+                  ),
+                  TextButton(onPressed: (){
+                    Navigator.pop(context);
+                  }, child: Text('Ok'))
+                ],
+              );
+            });
+
+          });
+
+      if(productImage==null){
+        ProgressLoader.hide();
+        EasyLoading.showError('Please upload again..');
+        return;
+      }
+
+      compressedFrontImage = await ClickItApis.getCompressedImage(productImage!.path);
+      if(compressedFrontImage!=null){
+        compressedFrontImagePath = await _saveCompressedImageToDevice(compressedFrontImage);
+      }else{
+        ProgressLoader.hide();
+        EasyLoading.showError('Please upload again..');
+        return;
+      }
+
+        final compressImageFile = File(compressedFrontImagePath!);
+
+        try {
+          imageResolution = await getImageResolution(compressImageFile);
+          //imageResolution = "High";
+          print('imageresolution is $imageResolution');
+          if (imageResolution!.toLowerCase() == 'low') {
+            isImageProcessing = false;
+            ProgressLoader.hide();
+            EasyLoading.showError(
+                'Uploaded Image has Low Resolution.Please upload again');
+            //    backgroundRemovedImage = null;
+            imageResolution = null;
+
+            if (AppPreferences.getValueShared('fetched_front_image') == '' ||
+                AppPreferences.getValueShared('fetched_front_image') == null) {
+              productImage = null;
+            } else {
+              productImage =
+                  File(AppPreferences.getValueShared('fetched_front_image'));
+              /*editedSavedImage =
                 File(AppPreferences.getValueShared('fetched_front_image'));*/
+            }
+            setState(() {});
+            return;
           }
-          setState(() {});
-          return;
-        }
 
-        if (imageResolution == null) {
+          if (imageResolution == null) {
+            ProgressLoader.hide();
+            isImageProcessing = false;
+            EasyLoading.showError('Please upload again..');
+            backgroundRemovedImage = null;
+            imageResolution = null;
+            if (AppPreferences.getValueShared('fetched_front_image') == '' ||
+                AppPreferences.getValueShared('fetched_front_image') == null) {
+              productImage = null;
+            } else {
+              productImage =
+                  File(AppPreferences.getValueShared('fetched_front_image'));
+              /*editedSavedImage =
+                File(AppPreferences.getValueShared('fetched_front_image'));*/
+            }
+            setState(() {});
+
+            return;
+          }
+        } catch (e) {
           ProgressLoader.hide();
           isImageProcessing = false;
           EasyLoading.showError('Please upload again..');
@@ -105,36 +190,19 @@ class _FrontImageScreenState extends State<FrontImageScreen>
             productImage =
                 File(AppPreferences.getValueShared('fetched_front_image'));
             /*editedSavedImage =
-                File(AppPreferences.getValueShared('fetched_front_image'));*/
+              File(AppPreferences.getValueShared('fetched_front_image'));*/
           }
-          setState(() {});
 
+          setState(() {});
           return;
         }
-      } catch (e) {
-        ProgressLoader.hide();
-        isImageProcessing = false;
-        EasyLoading.showError('Please upload again..');
-        backgroundRemovedImage = null;
-        imageResolution = null;
-        if (AppPreferences.getValueShared('fetched_front_image') == '' ||
-            AppPreferences.getValueShared('fetched_front_image') == null) {
-          productImage = null;
-        } else {
-          productImage =
-              File(AppPreferences.getValueShared('fetched_front_image'));
-          /*editedSavedImage =
-              File(AppPreferences.getValueShared('fetched_front_image'));*/
-        }
 
-        setState(() {});
-        return;
-      }
+
 
       setState(() {});
 
       try {
-        backgroundRemovedImage = await removeImagebackground(productImage);
+        backgroundRemovedImage = await removeImagebackground(compressImageFile);
         //backgroundRemovedImage = productImage!.readAsBytesSync();
         if (backgroundRemovedImage == null) {
           isImageProcessing = false;
@@ -260,6 +328,23 @@ class _FrontImageScreenState extends State<FrontImageScreen>
     return null;
   }
 
+  Future<String?> _saveCompressedImageToDevice(Uint8List? compressedImage) async{
+    if (compressedImage != null) {
+      Random random = Random();
+      int randomNumber = random.nextInt(10000);
+      final directory = await getTemporaryDirectory();
+
+      final imagePath = '${directory.path}/${randomNumber}.png';
+
+      final File imageFile = File(imagePath);
+        // Save the provided Uint8List image to the device
+        await imageFile.writeAsBytes(compressedImage);
+
+      return imageFile.path;
+    }
+    return null;
+  }
+
   Future<dynamic> bottomsheetUploads(BuildContext context,)
   {
     return showCupertinoModalBottomSheet(
@@ -378,7 +463,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
                                   ))
                                 : Image.file(
                                     productImage!,
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.scaleDown,
                                   ),
                           ),
                         ),
@@ -409,6 +494,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
                                   visible: true,
                                   child: TextButton(
                                     onPressed: () {
+
                                       bottomsheetUploads(
                                         context,
                                       );
@@ -467,7 +553,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
                                   width: double.infinity,
                                   child: Image.file(
                                     editedSavedImage!,
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.scaleDown,
                                   ),
                                 ),
                               ),
@@ -503,7 +589,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
                                       width: double.infinity,
                                       child:
                                           Image.memory(backgroundRemovedImage!,
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.scaleDown,
                                           ),
 
                                     ),
@@ -919,6 +1005,28 @@ Future<String?> getImageResolution(File? productImage) async {
       String jsonData = await response.stream.bytesToString();
       jsonData = jsonDecode(jsonData)['quality'];
       return jsonData;
+    } else {
+      print(response.reasonPhrase);
+      EasyLoading.showError(response.reasonPhrase.toString());
+      return null;
+    }
+  } on Exception catch (e) {
+    EasyLoading.showError(e.toString());
+    return null;
+  }
+}
+
+Future<Uint8List?> getCompressedImage(File? productImage) async {
+  try {
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('http://4.240.61.161:4002/compress'));
+    request.files
+        .add(await http.MultipartFile.fromPath('image', productImage!.path));
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      return await response.stream.toBytes();
     } else {
       print(response.reasonPhrase);
       EasyLoading.showError(response.reasonPhrase.toString());

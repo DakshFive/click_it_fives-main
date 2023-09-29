@@ -17,9 +17,10 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../data/data_sources/Local Datasource/new_database.dart';
+import '../../../utils/apis.dart';
 
 class LeftImageScreen extends StatefulWidget {
-  String? gtin;
+  final String? gtin;
   LeftImageScreen({Key? key, required this.gtin}) : super(key: key);
 
   @override
@@ -38,6 +39,8 @@ class _LeftImageScreenState extends State<LeftImageScreen>
 
   File? frontImageBackup;
   Uint8List? backgroundRemovedImageBackup;
+  Uint8List? compressedBottomImage;
+  String? compressedBottomImagePath;
 
   Future<Null> pickImage(
     String source,
@@ -66,8 +69,26 @@ class _LeftImageScreenState extends State<LeftImageScreen>
       ProgressLoader.show(context);
 
       isImageProcessing = true;
+
+      if(productImage==null){
+        ProgressLoader.hide();
+        EasyLoading.showError('Please upload again..');
+        return;
+      }
+
+      compressedBottomImage = await ClickItApis.getCompressedImage(productImage!.path);
+      if(compressedBottomImage!=null){
+        compressedBottomImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBottomImage);
+      }else{
+        ProgressLoader.hide();
+        EasyLoading.showError('Please upload again..');
+        return;
+      }
+
+      final compressImageFile = File(compressedBottomImagePath!);
+
       try {
-        imageResolution = await getImageResolution(productImage);
+        imageResolution = await getImageResolution(compressImageFile);
         //imageResolution = "Medium";
         print('imageresolution is $imageResolution');
         if (imageResolution!.toLowerCase() == 'low') {
@@ -133,7 +154,7 @@ class _LeftImageScreenState extends State<LeftImageScreen>
       setState(() {});
 
       try {
-        backgroundRemovedImage = await removeImagebackground(productImage);
+        backgroundRemovedImage = await removeImagebackground(compressImageFile);
         //backgroundRemovedImage = productImage?.readAsBytesSync();
         //backgroundRemovedImageBackup = productImage?.readAsBytesSync();
         if (backgroundRemovedImage == null) {
@@ -370,7 +391,7 @@ class _LeftImageScreenState extends State<LeftImageScreen>
                                   ))
                                 : Image.file(
                                     productImage!,
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.scaleDown,
                                   ),
                           ),
                         ),
@@ -459,7 +480,7 @@ class _LeftImageScreenState extends State<LeftImageScreen>
                                   width: double.infinity,
                                   child: Image.file(
                                     editedSavedImage!,
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.scaleDown,
                                   ),
                                 ),
                               ),
@@ -495,7 +516,7 @@ class _LeftImageScreenState extends State<LeftImageScreen>
                                       width: double.infinity,
                                       child:
                                           Image.memory(backgroundRemovedImage!,
-                                          fit: BoxFit.fill,),
+                                          fit: BoxFit.scaleDown,),
                                     ),
                                   ),
                                   Positioned(

@@ -18,9 +18,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/data_sources/Local Datasource/new_database.dart';
+import '../../../utils/apis.dart';
 
 class IngredientsValueScreen extends StatefulWidget {
-  String? gtin;
+  final String? gtin;
   IngredientsValueScreen({Key? key, required this.gtin}) : super(key: key);
 
   @override
@@ -37,6 +38,8 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
 
   File? frontImageBackup;
   Uint8List? backgroundRemovedImageBackup;
+  Uint8List? compressedBottomImage;
+  String? compressedBottomImagePath;
 
   Future<Null> pickImage(
     String source,
@@ -64,8 +67,26 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
       ProgressLoader.show(context);
 
       isImageProcessing = true;
+
+      if(productImage==null){
+        ProgressLoader.hide();
+        EasyLoading.showError('Please upload again..');
+        return;
+      }
+
+      compressedBottomImage = await ClickItApis.getCompressedImage(productImage!.path);
+      if(compressedBottomImage!=null){
+        compressedBottomImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBottomImage);
+      }else{
+        ProgressLoader.hide();
+        EasyLoading.showError('Please upload again..');
+        return;
+      }
+
+      final compressImageFile = File(compressedBottomImagePath!);
+
       try {
-        imageResolution = await getImageResolution(productImage);
+        imageResolution = await getImageResolution(compressImageFile);
         //imageResolution = "Medium";
         if (imageResolution!.toLowerCase() == 'low') {
           isImageProcessing = false;

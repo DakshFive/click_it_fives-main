@@ -8,6 +8,7 @@ import 'package:click_it_app/data/data_sources/remote_data_source.dart';
 import 'package:click_it_app/data/models/login_model.dart';
 import 'package:click_it_app/preferences/app_preferences.dart';
 import 'package:click_it_app/presentation/screens/home/home_screen.dart';
+import 'package:click_it_app/presentation/screens/uploadImages/new_home_screen.dart';
 import 'package:click_it_app/presentation/widgets/bottom_logo_widget.dart';
 import 'package:click_it_app/presentation/widgets/logo_widget.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -214,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
             context,
             PageTransition(
               type: PageTransitionType.rightToLeft,
-              child: const HomeScreen(isShowRatingDialog: false,),
+              child: const NewHomeScreen(isShowRatingDialog: false,),
             ));
       } else {
         VisibleProgressLoader.hide();
