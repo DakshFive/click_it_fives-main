@@ -60,11 +60,11 @@ class _TutorialScreenState extends State<TutorialScreen> {
       ),*/
 
       rawPages: [
-        pageView("login", "login with your id password",
+        pageView("Login", "Your login credentials for accessing the platform are same those used for datakart.",
             AppImages.tutorial_one),
-        pageView("scan barcode", "Scan your product barcode which you want to upload",
+        pageView("Scan Barcode", "Simply scan product barcode.",
             AppImages.tutorial_two),
-        pageView("click photos", "Click your product different side images.",
+        pageView("Click Photos", "Click your product different side images.",
             AppImages.tutorial_three),
         pageView("Save locally sync later", "If you do not have internet save images locally and sync when you have internet.",
             AppImages.tutorial_four)

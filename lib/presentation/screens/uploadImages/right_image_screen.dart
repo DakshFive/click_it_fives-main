@@ -66,15 +66,23 @@ class _RightImageScreenState extends State<RightImageScreen>
 
       productImage = await _cropImage(imageTemporary);
       setState(() {});
-      ProgressLoader.show(context);
 
-      isImageProcessing = true;
 
       if(productImage==null){
-        ProgressLoader.hide();
+        //ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
         return;
       }
+      ProgressLoader.show(context);
+
+      isImageProcessing = true;
+      ClickItConstants.rightImageProcessing = true;
+      /*if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
+        if(!ClickItConstants.showDialogProceed) {
+          ClickItConstants.showProceedDialog(context);
+          ClickItConstants.showDialogProceed = true;
+        }
+      }*/
 
       compressedBottomImage = await ClickItApis.getCompressedImage(productImage!.path);
       if(compressedBottomImage!=null){
@@ -93,6 +101,7 @@ class _RightImageScreenState extends State<RightImageScreen>
         print('imageresolution is $imageResolution');
         if (imageResolution!.toLowerCase() == 'low') {
           isImageProcessing = false;
+          ClickItConstants.rightImageProcessing = false;
           ProgressLoader.hide();
           EasyLoading.showError(
               'Uploaded Image has Low Resolution.Please upload again');
@@ -115,6 +124,7 @@ class _RightImageScreenState extends State<RightImageScreen>
         if (imageResolution == null) {
           ProgressLoader.hide();
           isImageProcessing = false;
+          ClickItConstants.rightImageProcessing = false;
           EasyLoading.showError('Please upload again..');
           backgroundRemovedImage = null;
           imageResolution = null;
@@ -134,6 +144,7 @@ class _RightImageScreenState extends State<RightImageScreen>
       } catch (e) {
         ProgressLoader.hide();
         isImageProcessing = false;
+        ClickItConstants.rightImageProcessing = false;
         EasyLoading.showError('Please upload again..');
         backgroundRemovedImage = null;
         imageResolution = null;
@@ -159,6 +170,7 @@ class _RightImageScreenState extends State<RightImageScreen>
        // backgroundRemovedImageBackup = productImage?.readAsBytesSync();
         if (backgroundRemovedImage == null) {
           isImageProcessing = false;
+          ClickItConstants.rightImageProcessing = false;
           EasyLoading.showError('Please upload again...');
           EasyLoading.dismiss();
           ProgressLoader.hide();
@@ -181,12 +193,15 @@ class _RightImageScreenState extends State<RightImageScreen>
             bckgroundRemovedImagePath!, 'right_edited_image');
         AppPreferences.addSharedPreferences(
             imageResolution, 'right_image_resolution');
+
         EasyLoading.dismiss();
         ProgressLoader.hide();
         isImageProcessing = false;
+        ClickItConstants.rightImageProcessing = false;
         setState(() {});
       } on Exception catch (e) {
         isImageProcessing = false;
+        ClickItConstants.rightImageProcessing = false;
         EasyLoading.showError('Please upload again...');
         EasyLoading.dismiss();
         ProgressLoader.hide();
@@ -582,7 +597,7 @@ class _RightImageScreenState extends State<RightImageScreen>
                                     '', 'right_edited_image');
                                 AppPreferences.addSharedPreferences(
                                     '', 'right_image_resolution');
-
+                                AppPreferences.addSharedPreferences(false, ClickItConstants.rightImageUploadedKey);
                                 print(AppPreferences.getValueShared(
                                     'right_image'));
                                 print(AppPreferences.getValueShared(

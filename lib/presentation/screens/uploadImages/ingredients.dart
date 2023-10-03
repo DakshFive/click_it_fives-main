@@ -64,15 +64,25 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
 
       productImage = await _cropImage(imageTemporary);
       setState(() {});
-      ProgressLoader.show(context);
 
-      isImageProcessing = true;
+
 
       if(productImage==null){
-        ProgressLoader.hide();
+        //ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
         return;
       }
+
+      ProgressLoader.show(context);
+
+      isImageProcessing = true;
+      ClickItConstants.ingredientImageProcessing = true;
+     /* if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
+        if(!ClickItConstants.showDialogProceed) {
+          ClickItConstants.showProceedDialog(context);
+          ClickItConstants.showDialogProceed = true;
+        }
+      }*/
 
       compressedBottomImage = await ClickItApis.getCompressedImage(productImage!.path);
       if(compressedBottomImage!=null){
@@ -90,6 +100,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
         //imageResolution = "Medium";
         if (imageResolution!.toLowerCase() == 'low') {
           isImageProcessing = false;
+          ClickItConstants.ingredientImageProcessing = false;
           ProgressLoader.hide();
           EasyLoading.showError(
               'Uploaded Image has Low Resolution.Please upload again');
@@ -103,6 +114,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
         if (imageResolution == null) {
           ProgressLoader.hide();
           isImageProcessing = false;
+          ClickItConstants.ingredientImageProcessing = false;
           EasyLoading.showError('Please upload again..!');
 
           imageResolution = null;
@@ -119,14 +131,15 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
             productImage!.path, 'ingredients_value_image');
         AppPreferences.addSharedPreferences(
             imageResolution, 'ingredients_value_image_resolution');
-
         EasyLoading.dismiss();
         ProgressLoader.hide();
         isImageProcessing = false;
+        ClickItConstants.ingredientImageProcessing = false;
         setState(() {});
       } catch (e) {
         ProgressLoader.hide();
         isImageProcessing = false;
+        ClickItConstants.ingredientImageProcessing = false;
         EasyLoading.showError('Please   again..');
         imageResolution = null;
         productImage = null;
@@ -353,7 +366,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
                                     '', 'ingredients_value_edited_image');
                                 AppPreferences.addSharedPreferences(
                                     '', 'ingredients_value_image_resolution');
-
+                                AppPreferences.addSharedPreferences(false, ClickItConstants.ingredientImageUploadedKey);
                                 print(AppPreferences.getValueShared(
                                     'ingredients_value_image'));
                                 print(AppPreferences.getValueShared(

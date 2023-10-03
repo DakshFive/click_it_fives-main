@@ -43,6 +43,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
   Uint8List? backgroundRemovedImageBackup;
   Uint8List? compressedFrontImage;
   String? compressedFrontImagePath;
+  String resolutionText = "";
 
   Future<void> pickImage(
     String source,
@@ -69,58 +70,25 @@ class _FrontImageScreenState extends State<FrontImageScreen>
       productImage = await _cropImage(imageTemporary);
 
       setState(() {});
-      ProgressLoader.getCircularProgressIndicator();
 
-      isImageProcessing = true;
-
-      bool isChecked = false;
-      showDialog(
-          context: context,
-          builder: (context) {
-            return StatefulBuilder(builder: (context, stfSetState){
-
-
-              return AlertDialog(
-                title: Text('Info'),
-                content:  Text(
-                    'Background removal is in progress.Please feel free to proceed with additional images.',
-                    textAlign: TextAlign.start,
-                    style:  TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400
-                    )
-                ),
-                actions: [
-                  Row(
-                    children: [
-                      Checkbox(
-                        checkColor: Colors.white,
-                        value: isChecked,
-                        onChanged: (bool? value) {
-                          stfSetState(() {
-                            isChecked = value!;
-                          });
-                        },
-                      ),
-                      SizedBox(width: 10,),
-                      Text('Don\'t show again?')
-                    ],
-                  ),
-                  TextButton(onPressed: (){
-                    Navigator.pop(context);
-                  }, child: Text('Ok'))
-                ],
-              );
-            });
-
-          });
 
       if(productImage==null){
-        ProgressLoader.hide();
+        //ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
         return;
       }
+
+      ProgressLoader.show(context);
+     // ProgressLoader.getCircularProgressIndicator();
+      isImageProcessing = true;
+      ClickItConstants.frontImageProcessing = true;
+
+      /*if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
+        if(!ClickItConstants.showDialogProceed) {
+          ClickItConstants.showProceedDialog(context);
+          ClickItConstants.showDialogProceed = true;
+        }
+      }*/
 
       compressedFrontImage = await ClickItApis.getCompressedImage(productImage!.path);
       if(compressedFrontImage!=null){
@@ -135,10 +103,12 @@ class _FrontImageScreenState extends State<FrontImageScreen>
 
         try {
           imageResolution = await getImageResolution(compressImageFile);
+          resolutionText = ClickItConstants.getImageSize(compressImageFile);
           //imageResolution = "High";
           print('imageresolution is $imageResolution');
           if (imageResolution!.toLowerCase() == 'low') {
             isImageProcessing = false;
+            ClickItConstants.frontImageProcessing = false;
             ProgressLoader.hide();
             EasyLoading.showError(
                 'Uploaded Image has Low Resolution.Please upload again');
@@ -161,6 +131,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
           if (imageResolution == null) {
             ProgressLoader.hide();
             isImageProcessing = false;
+            ClickItConstants.frontImageProcessing = false;
             EasyLoading.showError('Please upload again..');
             backgroundRemovedImage = null;
             imageResolution = null;
@@ -180,6 +151,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
         } catch (e) {
           ProgressLoader.hide();
           isImageProcessing = false;
+          ClickItConstants.frontImageProcessing = false;
           EasyLoading.showError('Please upload again..');
           backgroundRemovedImage = null;
           imageResolution = null;
@@ -206,6 +178,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
         //backgroundRemovedImage = productImage!.readAsBytesSync();
         if (backgroundRemovedImage == null) {
           isImageProcessing = false;
+          ClickItConstants.frontImageProcessing = false;
           EasyLoading.showError('Please upload again...');
           EasyLoading.dismiss();
           ProgressLoader.hide();
@@ -231,9 +204,11 @@ class _FrontImageScreenState extends State<FrontImageScreen>
         EasyLoading.dismiss();
         ProgressLoader.hide();
         isImageProcessing = false;
+        ClickItConstants.frontImageProcessing = false;
         setState(() {});
       } on Exception catch (e) {
         isImageProcessing = false;
+        ClickItConstants.frontImageProcessing = false;
         EasyLoading.showError('Please upload again...');
         EasyLoading.dismiss();
         ProgressLoader.hide();
@@ -248,7 +223,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
       setState(() {});
       //exception could occur if the user has not permitted for the picker
       EasyLoading.showError('Please pick image again...');
-
+      ProgressLoader.hide();
       print('Failed to pick image: $e');
     }
   }
@@ -629,7 +604,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
                               width: MediaQuery.of(context).size.width * 0.70,
                               padding: EdgeInsets.all(5),
                               child:
-                                  Text('Resolution : ${imageResolution ?? ''}'),
+                                  Text('Resolution : ${resolutionText ?? ''}'),
                               decoration: BoxDecoration(
                                 color: Colors.grey,
                                 borderRadius: BorderRadius.circular(5),
@@ -657,10 +632,13 @@ class _FrontImageScreenState extends State<FrontImageScreen>
                                 AppPreferences.addSharedPreferences(
                                     '', 'front_image_resolution');
 
+                                AppPreferences.addSharedPreferences(false, ClickItConstants.frontImageUploadedKey);
+
                                 print(AppPreferences.getValueShared(
                                     'front_image'));
                                 print(AppPreferences.getValueShared(
                                     'front_edited_image'));
+
                                 productImage = frontImageBackup;
                                 //backgroundRemovedImage = frontImageBackup?.readAsBytesSync();
                                 setState(() {});

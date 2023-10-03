@@ -52,7 +52,7 @@ class _ItemViewLibraryState extends State<ItemViewLibrary>{
                           ),
                           content: Container(
                               width: double.minPositive,
-                              height: 350,
+                              height: 360,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 shrinkWrap: true,

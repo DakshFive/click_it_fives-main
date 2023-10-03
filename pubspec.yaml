@@ -68,7 +68,7 @@ dependencies:
   in_app_review: 2.0.3
   store_redirect: ^2.0.1
   flutter_rating_bar: ^4.0.1
-
+  image_size_getter: ^2.1.2
 
 dev_dependencies:
   flutter_test:

@@ -63,15 +63,23 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
 
       productImage = await _cropImage(imageTemporary);
       setState(() {});
-      ProgressLoader.show(context);
 
-      isImageProcessing = true;
 
       if(productImage==null){
-        ProgressLoader.hide();
+        //ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
         return;
       }
+      ProgressLoader.show(context);
+
+      isImageProcessing = true;
+      ClickItConstants.nutrientsImageProcessing = true;
+      /*if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
+        if(!ClickItConstants.showDialogProceed) {
+          ClickItConstants.showProceedDialog(context);
+          ClickItConstants.showDialogProceed = true;
+        }
+      }*/
 
       compressedBottomImage = await ClickItApis.getCompressedImage(productImage!.path);
       if(compressedBottomImage!=null){
@@ -89,6 +97,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
         //imageResolution = "Medium";
         if (imageResolution!.toLowerCase() == 'low') {
           isImageProcessing = false;
+          ClickItConstants.nutrientsImageProcessing = false;
           ProgressLoader.hide();
           EasyLoading.showError(
               'Uploaded Image has Low Resolution.Please upload again');
@@ -102,6 +111,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
         if (imageResolution == null) {
           ProgressLoader.hide();
           isImageProcessing = false;
+          ClickItConstants.nutrientsImageProcessing = false;
           EasyLoading.showError('Please upload again..!');
 
           imageResolution = null;
@@ -118,14 +128,15 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
             productImage!.path, 'nutritional_value_image');
         AppPreferences.addSharedPreferences(
             imageResolution, 'nutritional_value_image_resolution');
-
         EasyLoading.dismiss();
         ProgressLoader.hide();
         isImageProcessing = false;
+        ClickItConstants.nutrientsImageProcessing = false;
         setState(() {});
       } catch (e) {
         ProgressLoader.hide();
         isImageProcessing = false;
+        ClickItConstants.nutrientsImageProcessing = false;
         EasyLoading.showError('Please   again..');
         imageResolution = null;
         productImage = null;
@@ -352,7 +363,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
                                     '', 'nutritional_value_edited_image');
                                 AppPreferences.addSharedPreferences(
                                     '', 'nutritional_value_image_resolution');
-
+                                AppPreferences.addSharedPreferences(false, ClickItConstants.nutrientsUploadedImageKey);
                                 print(AppPreferences.getValueShared(
                                     'nutritional_value_image'));
                                 print(AppPreferences.getValueShared(

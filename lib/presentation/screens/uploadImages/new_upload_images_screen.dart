@@ -281,7 +281,28 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
           ),
           GestureDetector(
             onTap: (){
-              if(!AppPreferences.getValueShared(ClickItConstants.frontImageUploadedKey) &&
+
+              if(ClickItConstants.frontImageProcessing ||
+                  ClickItConstants.backImageProcessing ||
+                  ClickItConstants.topImageProcessing ||
+                  ClickItConstants.bottomImageProcessing||
+                  ClickItConstants.rightImageProcessing||
+                  ClickItConstants.leftImageProcessing||
+                  ClickItConstants.nutrientsImageProcessing||
+                  ClickItConstants.ingredientImageProcessing){
+
+                Fluttertoast.showToast(
+                  msg: 'Please wait for finish processing',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0,
+                );
+
+              }
+              else if(!AppPreferences.getValueShared(ClickItConstants.frontImageUploadedKey) &&
                   !AppPreferences.getValueShared(ClickItConstants.backImageUploadedKey) &&
                   !AppPreferences.getValueShared(ClickItConstants.topImageUploadedKey) &&
                   !AppPreferences.getValueShared(ClickItConstants.bottomImageUploadedKey)&&
@@ -298,7 +319,23 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
                   textColor: Colors.white,
                   fontSize: 16.0,
                 );
-              }else{
+              }else if(latitudeData==""&&longitudeData==""){
+                Fluttertoast.showToast(
+                  msg: 'Location is mandatory to upload',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0,
+                );
+                Utils.determinePosition().then((currentPosition) {
+                  longitudeData = "${currentPosition.longitude}";
+                  latitudeData = "${currentPosition.latitude}";
+                });
+
+             }
+              else{
                 showDialog(
                     context: context,
                     builder: (context) {
@@ -327,7 +364,7 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
                     }
 
                 );
-             }
+              }
 
             },
             child: Container(

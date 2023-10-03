@@ -28,9 +28,11 @@ class _ViewLibraryScreenState extends State<ViewLibraryScreen>{
     ClickItApis.getViewLibraryData(page).then(
             (value) {
               viewLibraryData = value!;
-              setState(() {
-                _isLoadMoreRunning = false;
-              });
+              if (mounted) {
+                setState(() {
+                  _isLoadMoreRunning = false;
+                });
+              }
             }
     );
 
@@ -38,18 +40,21 @@ class _ViewLibraryScreenState extends State<ViewLibraryScreen>{
       if (_scController.position.pixels ==
           _scController.position.maxScrollExtent) {
         page++;
-        setState(() {
-          _isLoadMoreRunning = true;
-        });
+        if(mounted) {
+          setState(() {
+            _isLoadMoreRunning = true;
+          });
+        }
 
         ClickItApis.getViewLibraryData(page).then(
                 (value) {
-
-              viewLibraryData.addAll(value!);
-              setState(() {
-                _isLoadMoreRunning = false;
-              });
-            }
+                  viewLibraryData.addAll(value!);
+                  if (mounted) {
+                    setState(() {
+                      _isLoadMoreRunning = false;
+                    });
+                  }
+                }
         );
       }
     });
@@ -64,16 +69,17 @@ class _ViewLibraryScreenState extends State<ViewLibraryScreen>{
         title: Text("View Library"),
       ),
       body: Container(
-        height: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if(viewLibraryData.isEmpty)
-              Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  backgroundColor: Colors.deepOrange,
+              Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    backgroundColor: Colors.deepOrange,
+                  ),
                 ),
               ),
             Expanded(
@@ -87,7 +93,7 @@ class _ViewLibraryScreenState extends State<ViewLibraryScreen>{
 
             if (_isLoadMoreRunning == true&&viewLibraryData.isNotEmpty)
               Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 40),
+                padding: const EdgeInsets.only(top: 10, bottom: 20),
                 child: Center(
                   child: CircularProgressIndicator(
                     color: Colors.white,

@@ -39,35 +39,45 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sync),
-            label: 'Saved Images',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.image_outlined),
-            label: 'Library',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        unselectedItemColor: Colors.black,
-        showUnselectedLabels: true,
-        onTap: _onItemTapped,
-        selectedFontSize: 12,
+    return WillPopScope(
+      onWillPop: (){
+        if(_selectedIndex!=0){
+          _onItemTapped(0);
+          return Future.value(false);
+
+        }
+        return Future.value(true);
+      },
+      child: Scaffold(
+        body: Center(
+          child: _widgetOptions.elementAt(_selectedIndex),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.sync),
+              label: 'Saved Images',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.image_outlined),
+              label: 'Library',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.deepOrange,
+          unselectedItemColor: Colors.black,
+          showUnselectedLabels: true,
+          onTap: _onItemTapped,
+          selectedFontSize: 12,
+        ),
       ),
     );
   }

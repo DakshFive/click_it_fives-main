@@ -27,6 +27,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../common/loader/visible_progress_loaded.dart';
+import '../../../utils/app_images.dart';
 import '../../../utils/constants.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -68,6 +69,15 @@ class _HomeScreenState extends State<HomeScreen> {
     AppPreferences.addSharedPreferences(false, ClickItConstants.nutrientsUploadedImageKey);
     AppPreferences.addSharedPreferences(false, ClickItConstants.ingredientImageUploadedKey);
 
+    /*AppPreferences.addSharedPreferences(false,ClickItConstants.frontImageProcessing);
+        AppPreferences.addSharedPreferences(false,ClickItConstants.backImageProcessing);
+        AppPreferences.addSharedPreferences(false,ClickItConstants.topImageProcessing);
+        AppPreferences.addSharedPreferences(false,ClickItConstants.bottomImageProcessing);
+        AppPreferences.addSharedPreferences(false,ClickItConstants.rightImageProcessing);
+        AppPreferences.addSharedPreferences(false,ClickItConstants.leftImageProcessing);
+        AppPreferences.addSharedPreferences(false,ClickItConstants.nutrientsImageProcessing);
+        AppPreferences.addSharedPreferences(false,ClickItConstants.ingredientImageProcessing);*/
+
   }
 
   bool isNumeric(String str) {
@@ -79,8 +89,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
 
     return SafeArea(
       child: Scaffold(
@@ -98,9 +106,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             actions: <Widget>[
               IconButton(
-                icon: Icon(
-                  Icons.notifications,
-                  color: Colors.white,
+                icon: Badge(
+                  child: Icon(
+                    Icons.notifications,
+                    color: Colors.white,
+                  ),
+                  label: Text('4',style: TextStyle(color: Colors.deepOrange),),
+                  alignment: Alignment.topRight,
+                  backgroundColor: Colors.white,
+                  offset: Offset.fromDirection(6,8)
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -116,6 +130,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
           ),
           body: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(AppImages.backgroundImage),
+                  fit: BoxFit.cover,
+                )
+            ),
             child:  Column(
               children: [
                 const SizedBox(

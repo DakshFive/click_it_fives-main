@@ -25,9 +25,6 @@ class _ItemViewImageState extends State<ItemViewImage>{
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: 10.0,
-            ),
             height: 300,
             width: 230,
             child: ClipRRect(
@@ -52,7 +49,9 @@ class _ItemViewImageState extends State<ItemViewImage>{
             margin: EdgeInsets.symmetric(
               horizontal: 10.0,
             ),
-            child: Text(
+            child: Row(
+              children: [
+                Text(
                 widget.imageTitle,
                 style: TextStyle(
                     fontSize: 14,
@@ -60,8 +59,15 @@ class _ItemViewImageState extends State<ItemViewImage>{
                     fontWeight: FontWeight.bold
                 )
             ),
-          ),
+          SizedBox(width: 10,),
+          IconButton(
+            onPressed: (){
 
+            },
+            icon: Icon(Icons.share),color: Colors.black,)
+        ]
+            ),
+          ),
         ]
     );
   }

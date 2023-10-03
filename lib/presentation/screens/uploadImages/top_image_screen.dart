@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:click_it_app/common/loader/progressLoader.dart';
 import 'package:click_it_app/controllers/upload_images_provider.dart';
 import 'package:click_it_app/preferences/app_preferences.dart';
+import 'package:click_it_app/presentation/screens/uploadImages/front_image_screen.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,15 +67,24 @@ class _TopImageScreenState extends State<TopImageScreen>
 
       productImage = await _cropImage(imageTemporary);
       setState(() {});
-      ProgressLoader.show(context);
 
-      isImageProcessing = true;
 
       if(productImage==null){
-        ProgressLoader.hide();
+        //ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
         return;
       }
+      ProgressLoader.show(context);
+
+      isImageProcessing = true;
+      ClickItConstants.topImageProcessing = true;
+
+      /*if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
+        if(!ClickItConstants.showDialogProceed) {
+          ClickItConstants.showProceedDialog(context);
+          ClickItConstants.showDialogProceed = true;
+        }
+      }*/
 
       compressedBottomImage = await ClickItApis.getCompressedImage(productImage!.path);
       if(compressedBottomImage!=null){
@@ -92,6 +102,7 @@ class _TopImageScreenState extends State<TopImageScreen>
         print('imageresolution is $imageResolution');
         if (imageResolution!.toLowerCase() == 'low') {
           isImageProcessing = false;
+          ClickItConstants.topImageProcessing = false;
           ProgressLoader.hide();
           EasyLoading.showError(
               'Uploaded Image has Low Resolution.Please upload again');
@@ -114,6 +125,7 @@ class _TopImageScreenState extends State<TopImageScreen>
         if (imageResolution == null) {
           ProgressLoader.hide();
           isImageProcessing = false;
+          ClickItConstants.topImageProcessing = false;
           EasyLoading.showError('Please upload again..');
           backgroundRemovedImage = null;
           imageResolution = null;
@@ -133,6 +145,7 @@ class _TopImageScreenState extends State<TopImageScreen>
       } catch (e) {
         ProgressLoader.hide();
         isImageProcessing = false;
+        ClickItConstants.topImageProcessing = false;
         EasyLoading.showError('Please upload again..');
         backgroundRemovedImage = null;
         imageResolution = null;
@@ -158,6 +171,7 @@ class _TopImageScreenState extends State<TopImageScreen>
         //backgroundRemovedImageBackup = productImage?.readAsBytesSync();
         if (backgroundRemovedImage == null) {
           isImageProcessing = false;
+          ClickItConstants.topImageProcessing = false;
           EasyLoading.showError('Please upload again...');
           EasyLoading.dismiss();
           ProgressLoader.hide();
@@ -167,6 +181,7 @@ class _TopImageScreenState extends State<TopImageScreen>
           setState(() {});
           return;
         }
+
 
         bckgroundRemovedImagePath =
             await _saveImageToDevice(backgroundRemovedImage);
@@ -183,9 +198,11 @@ class _TopImageScreenState extends State<TopImageScreen>
         EasyLoading.dismiss();
         ProgressLoader.hide();
         isImageProcessing = false;
+        ClickItConstants.topImageProcessing = false;
         setState(() {});
       } on Exception catch (e) {
         isImageProcessing = false;
+        ClickItConstants.topImageProcessing = false;
         EasyLoading.showError('Please upload again...');
         EasyLoading.dismiss();
         ProgressLoader.hide();
@@ -581,7 +598,7 @@ class _TopImageScreenState extends State<TopImageScreen>
                                     '', 'top_edited_image');
                                 AppPreferences.addSharedPreferences(
                                     '', 'top_image_resolution');
-
+                                AppPreferences.addSharedPreferences(false, ClickItConstants.topImageUploadedKey);
                                 print(
                                     AppPreferences.getValueShared('top_image'));
                                 print(AppPreferences.getValueShared(

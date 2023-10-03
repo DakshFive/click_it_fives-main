@@ -4,6 +4,9 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:click_it_app/preferences/app_preferences.dart';
+import 'package:flutter/material.dart';
+import 'package:image_size_getter/file_input.dart';
+import 'package:image_size_getter/image_size_getter.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ClickItConstants{
@@ -16,11 +19,25 @@ class ClickItConstants{
   static String bottomImageUploadedKey = 'isBottomImageUploaded';
   static String ingredientImageUploadedKey = 'isIngredientImageUploaded';
   static String nutrientsUploadedImageKey = 'isNutritionImageUploaded';
+  static String isShowProceedDialogKey = 'isShowProceedDialog';
+
+  static bool frontImageProcessing = false;
+  static bool backImageProcessing = false;
+  static bool leftImageProcessing = false;
+  static bool rightImageProcessing = false;
+  static bool topImageProcessing = false;
+  static bool bottomImageProcessing = false;
+  static bool ingredientImageProcessing = false;
+  static bool nutrientsImageProcessing = false;
 
   static String APIID = "df4a3e288e73d4e3d6e4a975a0c3212d";
   static String APIKEY = "440f00981a1cc3b1ce6a4c784a4b84ea";
 
+  static bool showDialogProceed = false;
+
   static reloadSharedPreference() async{
+    bool isShowProceedDialog = false;
+
     String userName =
         await AppPreferences.getValueShared('company_id');
     String company_name =
@@ -40,6 +57,11 @@ class ClickItConstants{
 
     String source = AppPreferences.getValueShared('source');
     var roleId = AppPreferences.getValueShared('role_id');
+
+    if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)!=null){
+       isShowProceedDialog =  AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey);
+    }
+
 
     AppPreferences.clearSharedPreferences();
 
@@ -62,6 +84,8 @@ class ClickItConstants{
         retrievedData, 'login_data');
     AppPreferences.addSharedPreferences(false, "isShowTutorial");
     AppPreferences.addSharedPreferences(isShowRating,"isShowRating");
+    AppPreferences.addSharedPreferences(
+        isShowProceedDialog, isShowProceedDialogKey);
   }
 
   static Future<String?> saveCompressedImageToDevice(Uint8List? compressedImage) async{
@@ -80,5 +104,66 @@ class ClickItConstants{
     }
     return null;
   }
+
+  static showProceedDialog(BuildContext context){
+    bool isChecked = false;
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (ctx, stfSetState){
+            return AlertDialog(
+              title: Text('Info'),
+              content:  Text(
+                  'Background removal is in progress.Please feel free to proceed with additional images.',
+                  textAlign: TextAlign.start,
+                  style:  TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400
+                  )
+              ),
+              actions: [
+                Row(
+                  children: [
+                    Checkbox(
+                      checkColor: Colors.white,
+                      value: isChecked,
+                      onChanged: (bool? value) {
+                        stfSetState(() {
+                          isChecked = value!;
+                        });
+                      },
+                    ),
+                    SizedBox(width: 10,),
+                    Text('Don\'t show again?')
+                  ],
+                ),
+                TextButton(onPressed: (){
+                  if(isChecked) {
+                    AppPreferences.addSharedPreferences(
+                        true, isShowProceedDialogKey);
+                  }
+                  Navigator.pop(context);
+                }, child: Text('Ok'))
+              ],
+            );
+          });
+
+        });
+  }
+
+  static String getImageSize(File file) {
+    final size = ImageSizeGetter.getSize(FileInput(file));
+    if (size.needRotate) {
+      final width = size.height;
+      final height = size.width;
+      print('width = $width, height = $height');
+    } else {
+      print('width = ${size.width}, height = ${size.height}');
+    }
+
+    return ""+size.width.toString()+"x"+size.height.toString()+"";
+  }
+
 
 }

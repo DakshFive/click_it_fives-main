@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../utils/app_images.dart';
+
 class ContactDetails extends StatefulWidget {
   const ContactDetails({Key? key}) : super(key: key);
 
@@ -18,70 +20,84 @@ class _ContactDetailsState extends State<ContactDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarSidePanel(
-          title: const Text('Contact Details'), appBar: AppBar()),
+      appBar: AppBar(
+          title: const Text('Contact Details',
+          style: TextStyle(fontSize: 18),
+          ),
+      ),
       body: Container(
-        margin: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('GS1 India'),
-            SizedBox(
-              height: 10.h,
-            ),
-            GestureDetector(
-              onTap: () => _launchURL(_emailLink),
-              child: RichText(
-                text: const TextSpan(
-                  text: 'E-mail: ',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14,
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: 'info@gs1india.org',
-                      style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          color: Colors.blue,
-                          fontSize: 14,
-                          decoration: TextDecoration.underline,
-                          decorationColor: Colors.blue),
+        width: double.infinity,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(AppImages.backgroundImage),
+              fit: BoxFit.cover,
+            )
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Text('GS1 India',
+              style: TextStyle(fontWeight: FontWeight.bold),),
+              SizedBox(
+                height: 10.h,
+              ),
+              GestureDetector(
+                onTap: () => _launchURL(_emailLink),
+                child: RichText(
+                  text: const TextSpan(
+                    text: 'E-mail: ',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 14,
                     ),
-                  ],
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'info@gs1india.org',
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: Colors.blue,
+                            fontSize: 14,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.blue),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
-            GestureDetector(
-              onTap: () => _launchURL(_webUrl),
-              child: RichText(
-                text: const TextSpan(
-                  text: 'Website: ',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14,
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: 'https://www.gs1india.org/',
-                      style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          color: Colors.blue,
-                          fontSize: 14,
-                          decoration: TextDecoration.underline,
-                          decorationColor: Colors.blue),
+              SizedBox(
+                height: 10.h,
+              ),
+              GestureDetector(
+                onTap: () => _launchURL(_webUrl),
+                child: RichText(
+                  text: const TextSpan(
+                    text: 'Website: ',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 14,
                     ),
-                    TextSpan(text: '\n'),
-                  ],
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'https://www.gs1india.org/',
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: Colors.blue,
+                            fontSize: 14,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.blue),
+                      ),
+                      TextSpan(text: '\n'),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
