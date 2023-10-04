@@ -9,14 +9,14 @@ class ProgressLoader {
     if (!isShowing) {
       currentLoader = OverlayEntry(
         builder: (context) => Container(
-          color: Colors.transparent,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
+          color: Colors.black,
+          width: 24,
+          height: 24,
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                //  getCircularProgressIndicator(),
+                  getCircularProgressIndicator(),
               ],
             ),
           ),

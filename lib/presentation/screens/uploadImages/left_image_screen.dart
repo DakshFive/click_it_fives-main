@@ -41,6 +41,7 @@ class _LeftImageScreenState extends State<LeftImageScreen>
   Uint8List? backgroundRemovedImageBackup;
   Uint8List? compressedBottomImage;
   String? compressedBottomImagePath;
+  String? resolutionText;
 
   Future<Null> pickImage(
     String source,
@@ -62,6 +63,7 @@ class _LeftImageScreenState extends State<LeftImageScreen>
       editedSavedImage = null;
       backgroundRemovedImage = null;
       imageResolution = null;
+      resolutionText = null;
       Navigator.pop(context);
 
       productImage = await _cropImage(imageTemporary);
@@ -74,24 +76,24 @@ class _LeftImageScreenState extends State<LeftImageScreen>
         EasyLoading.showError('Please upload again..');
         return;
       }
-      ProgressLoader.show(context);
+      //ProgressLoader.show(context);
 
       isImageProcessing = true;
       ClickItConstants.leftImageProcessing = true;
 
-      /*if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
+      if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
         if(!ClickItConstants.showDialogProceed) {
           ClickItConstants.showProceedDialog(context);
           ClickItConstants.showDialogProceed = true;
         }
-      }*/
+      }
 
 
       compressedBottomImage = await ClickItApis.getCompressedImage(productImage!.path);
       if(compressedBottomImage!=null){
         compressedBottomImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBottomImage);
       }else{
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
         return;
       }
@@ -100,17 +102,18 @@ class _LeftImageScreenState extends State<LeftImageScreen>
 
       try {
         imageResolution = await getImageResolution(compressImageFile);
+        resolutionText = ClickItConstants.getImageSize(compressImageFile);
         //imageResolution = "Medium";
         print('imageresolution is $imageResolution');
         if (imageResolution!.toLowerCase() == 'low') {
           isImageProcessing = false;
           ClickItConstants.leftImageProcessing = false;
-          ProgressLoader.hide();
+        //  ProgressLoader.hide();
           EasyLoading.showError(
               'Uploaded Image has Low Resolution.Please upload again');
           // backgroundRemovedImage = null;
           imageResolution = null;
-
+          resolutionText = null;
           if (AppPreferences.getValueShared('fetched_left_image') == '' ||
               AppPreferences.getValueShared('fetched_left_image') == null) {
             productImage = null;
@@ -125,12 +128,13 @@ class _LeftImageScreenState extends State<LeftImageScreen>
         }
 
         if (imageResolution == null) {
-          ProgressLoader.hide();
+         // ProgressLoader.hide();
           isImageProcessing = false;
           ClickItConstants.leftImageProcessing = false;
           EasyLoading.showError('Please upload again..');
           backgroundRemovedImage = null;
           imageResolution = null;
+          resolutionText = null;
           if (AppPreferences.getValueShared('fetched_left_image') == '' ||
               AppPreferences.getValueShared('fetched_left_image') == null) {
             productImage = null;
@@ -145,12 +149,13 @@ class _LeftImageScreenState extends State<LeftImageScreen>
           return;
         }
       } catch (e) {
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.leftImageProcessing = false;
         EasyLoading.showError('Please upload again..');
         backgroundRemovedImage = null;
         imageResolution = null;
+        resolutionText = null;
         if (AppPreferences.getValueShared('fetched_left_image') == '' ||
             AppPreferences.getValueShared('fetched_left_image') == null) {
           productImage = null;
@@ -176,9 +181,10 @@ class _LeftImageScreenState extends State<LeftImageScreen>
           ClickItConstants.leftImageProcessing = false;
           EasyLoading.showError('Please upload again...');
           EasyLoading.dismiss();
-          ProgressLoader.hide();
+         // ProgressLoader.hide();
           backgroundRemovedImage = null;
           imageResolution = null;
+          resolutionText = null;
           productImage = null;
           setState(() {});
           return;
@@ -196,9 +202,10 @@ class _LeftImageScreenState extends State<LeftImageScreen>
             bckgroundRemovedImagePath!, 'left_edited_image');
         AppPreferences.addSharedPreferences(
             imageResolution, 'left_image_resolution');
+        AppPreferences.addSharedPreferences(resolutionText, 'left_image_pixel');
 
         EasyLoading.dismiss();
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.leftImageProcessing = false;
         setState(() {});
@@ -207,9 +214,10 @@ class _LeftImageScreenState extends State<LeftImageScreen>
         ClickItConstants.leftImageProcessing = false;
         EasyLoading.showError('Please upload again...');
         EasyLoading.dismiss();
-        ProgressLoader.hide();
+      //  ProgressLoader.hide();
         backgroundRemovedImage = null;
         imageResolution = null;
+        resolutionText = null;
         productImage = null;
         setState(() {});
         return;
@@ -268,7 +276,7 @@ class _LeftImageScreenState extends State<LeftImageScreen>
   @override
   void dispose() {
     EasyLoading.dismiss();
-    ProgressLoader.hide();
+   // ProgressLoader.hide();
     super.dispose();
   }
 
@@ -475,14 +483,16 @@ class _LeftImageScreenState extends State<LeftImageScreen>
                                         image: editedSavedImage,
                                       )),
                             )
-                          : Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ViewProductImage(
-                                  image: backgroundRemovedImage,
-                                ),
-                              ),
-                            );
+                          : backgroundRemovedImage!=null
+                          ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ViewProductImage(
+                            image: backgroundRemovedImage,
+                          ),
+                        ),
+                      )
+                          :(){};
                     },
                     child: editedSavedImage != null
                         ? Stack(
@@ -561,7 +571,7 @@ class _LeftImageScreenState extends State<LeftImageScreen>
                 SizedBox(
                   height: 5,
                 ),
-                imageResolution != null
+                resolutionText != null
                     ? Container(
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         width: double.infinity,
@@ -572,7 +582,7 @@ class _LeftImageScreenState extends State<LeftImageScreen>
                               width: MediaQuery.of(context).size.width * 0.70,
                               padding: EdgeInsets.all(5),
                               child:
-                                  Text('Resolution : ${imageResolution ?? ''}'),
+                                  Text('Resolution : ${resolutionText ?? ''}'),
                               decoration: BoxDecoration(
                                 color: Colors.grey,
                                 borderRadius: BorderRadius.circular(5),
@@ -587,6 +597,7 @@ class _LeftImageScreenState extends State<LeftImageScreen>
                                 productImage = null;
                                 backgroundRemovedImage = null;
                                 imageResolution = null;
+                                resolutionText = null;
                                 editedSavedImage = null;
                                 AppPreferences.addSharedPreferences(
                                     false, 'isImageUploaded');
@@ -599,6 +610,8 @@ class _LeftImageScreenState extends State<LeftImageScreen>
                                     '', 'left_edited_image');
                                 AppPreferences.addSharedPreferences(
                                     '', 'left_image_resolution');
+                                AppPreferences.addSharedPreferences('','left_image_pixel');
+
                                 AppPreferences.addSharedPreferences(false, ClickItConstants.leftImageUploadedKey);
                                 print(AppPreferences.getValueShared(
                                     'left_image'));
@@ -733,6 +746,11 @@ class _LeftImageScreenState extends State<LeftImageScreen>
         AppPreferences.getValueShared('left_image_resolution') == ''
             ? null
             : AppPreferences.getValueShared('left_image_resolution');
+
+    resolutionText =
+    AppPreferences.getValueShared('left_image_pixel') == ''
+        ? null
+        : AppPreferences.getValueShared('left_image_pixel');
 
     if(imageResolution!=null)
       editedSavedImage = editedImagePath == null ? null : File(editedImagePath);

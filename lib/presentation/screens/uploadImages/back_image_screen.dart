@@ -42,6 +42,7 @@ class _BackImageScreenState extends State<BackImageScreen>
 
   Uint8List? compressedBackImage;
   String? compressedBackImagePath;
+  String? resolutionText;
 
   Future<Null> pickImage(
     String source,
@@ -63,6 +64,7 @@ class _BackImageScreenState extends State<BackImageScreen>
       editedSavedImage = null;
       backgroundRemovedImage = null;
       imageResolution = null;
+      resolutionText = null;
       Navigator.pop(context);
 
       productImage = await _cropImage(imageTemporary);
@@ -76,23 +78,23 @@ class _BackImageScreenState extends State<BackImageScreen>
         return;
       }
 
-      ProgressLoader.show(context);
+    //  ProgressLoader.show(context);
 
       isImageProcessing = true;
       ClickItConstants.backImageProcessing = true;
-      /*if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
+      if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
         if(!ClickItConstants.showDialogProceed) {
           ClickItConstants.showProceedDialog(context);
           ClickItConstants.showDialogProceed = true;
         }
-      }*/
+      }
 
       compressedBackImage = await ClickItApis.getCompressedImage(productImage!.path);
 
       if(compressedBackImage!=null) {
         compressedBackImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBackImage);
       }else{
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
         return;
       }
@@ -100,16 +102,18 @@ class _BackImageScreenState extends State<BackImageScreen>
 
       try {
         imageResolution = await getImageResolution(compressImageFile);
+        resolutionText = ClickItConstants.getImageSize(compressImageFile);
         //imageResolution = "Medium";
         print('imageresolution is $imageResolution');
         if (imageResolution!.toLowerCase() == 'low') {
           isImageProcessing = false;
           ClickItConstants.backImageProcessing = false;
-          ProgressLoader.hide();
+          //ProgressLoader.hide();
           EasyLoading.showError(
               'Uploaded Image has Low Resolution.Please upload again');
           //   backgroundRemovedImage = null;
           imageResolution = null;
+          resolutionText = null;
 
           if (AppPreferences.getValueShared('fetched_back_image') == '' ||
               AppPreferences.getValueShared('fetched_back_image') == null) {
@@ -125,12 +129,13 @@ class _BackImageScreenState extends State<BackImageScreen>
         }
 
         if (imageResolution == null) {
-          ProgressLoader.hide();
+          //ProgressLoader.hide();
           isImageProcessing = false;
           ClickItConstants.backImageProcessing = false;
           EasyLoading.showError('Please upload again..');
           backgroundRemovedImage = null;
           imageResolution = null;
+          resolutionText = null;
           if (AppPreferences.getValueShared('fetched_back_image') == '' ||
               AppPreferences.getValueShared('fetched_back_image') == null) {
             productImage = null;
@@ -145,12 +150,13 @@ class _BackImageScreenState extends State<BackImageScreen>
           return;
         }
       } catch (e) {
-        ProgressLoader.hide();
+        //ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.backImageProcessing = false;
         EasyLoading.showError('Please upload again..');
         backgroundRemovedImage = null;
         imageResolution = null;
+        resolutionText = null;
         if (AppPreferences.getValueShared('fetched_back_image') == '' ||
             AppPreferences.getValueShared('fetched_back_image') == null) {
           productImage = null;
@@ -176,9 +182,10 @@ class _BackImageScreenState extends State<BackImageScreen>
           ClickItConstants.backImageProcessing = false;
           EasyLoading.showError('Please upload again...');
           EasyLoading.dismiss();
-          ProgressLoader.hide();
+         // ProgressLoader.hide();
           backgroundRemovedImage = null;
           imageResolution = null;
+          resolutionText = null;
           productImage = null;
           setState(() {});
           return;
@@ -196,9 +203,10 @@ class _BackImageScreenState extends State<BackImageScreen>
             bckgroundRemovedImagePath!, 'back_edited_image');
         AppPreferences.addSharedPreferences(
             imageResolution, 'back_image_resolution');
+        AppPreferences.addSharedPreferences(resolutionText, 'back_image_pixel');
 
         EasyLoading.dismiss();
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.backImageProcessing = false;
         setState(() {});
@@ -207,9 +215,10 @@ class _BackImageScreenState extends State<BackImageScreen>
         ClickItConstants.backImageProcessing = false;
         EasyLoading.showError('Please upload again...');
         EasyLoading.dismiss();
-        ProgressLoader.hide();
+        //ProgressLoader.hide();
         backgroundRemovedImage = null;
         imageResolution = null;
+        resolutionText = null;
         productImage = null;
         setState(() {});
         return;
@@ -268,7 +277,7 @@ class _BackImageScreenState extends State<BackImageScreen>
   @override
   void dispose() {
     EasyLoading.dismiss();
-    ProgressLoader.hide();
+    //ProgressLoader.hide();
     super.dispose();
   }
 
@@ -475,14 +484,16 @@ class _BackImageScreenState extends State<BackImageScreen>
                                         image: editedSavedImage,
                                       )),
                             )
-                          : Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ViewProductImage(
-                                  image: backgroundRemovedImage,
-                                ),
-                              ),
-                            );
+                          : backgroundRemovedImage!=null
+                          ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ViewProductImage(
+                            image: backgroundRemovedImage,
+                          ),
+                        ),
+                      )
+                          :(){};
                     },
                     child: editedSavedImage != null
                         ? Stack(
@@ -562,7 +573,7 @@ class _BackImageScreenState extends State<BackImageScreen>
                 SizedBox(
                   height: 5,
                 ),
-                imageResolution != null
+                resolutionText != null
                     ? Container(
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         width: double.infinity,
@@ -573,7 +584,7 @@ class _BackImageScreenState extends State<BackImageScreen>
                               width: MediaQuery.of(context).size.width * 0.70,
                               padding: EdgeInsets.all(5),
                               child:
-                                  Text('Resolution : ${imageResolution ?? ''}'),
+                                  Text('Resolution : ${resolutionText ?? ''}'),
                               decoration: BoxDecoration(
                                 color: Colors.grey,
                                 borderRadius: BorderRadius.circular(5),
@@ -588,6 +599,7 @@ class _BackImageScreenState extends State<BackImageScreen>
                                 productImage = null;
                                 backgroundRemovedImage = null;
                                 imageResolution = null;
+                                resolutionText = null;
                                 editedSavedImage = null;
                                 AppPreferences.addSharedPreferences(
                                     false, 'isImageUploaded');
@@ -600,6 +612,7 @@ class _BackImageScreenState extends State<BackImageScreen>
                                     '', 'back_edited_image');
                                 AppPreferences.addSharedPreferences(
                                     '', 'back_image_resolution');
+                                AppPreferences.addSharedPreferences('', 'back_image_pixel');
                                 AppPreferences.addSharedPreferences(false, ClickItConstants.backImageUploadedKey);
                                 print(AppPreferences.getValueShared(
                                     'back_image'));
@@ -734,6 +747,10 @@ class _BackImageScreenState extends State<BackImageScreen>
         AppPreferences.getValueShared('back_image_resolution') == ''
             ? null
             : AppPreferences.getValueShared('back_image_resolution');
+
+    resolutionText = AppPreferences.getValueShared('back_image_pixel') == ''
+        ? null
+        : AppPreferences.getValueShared('back_image_pixel');
 
     if(imageResolution!=null)
     editedSavedImage = editedImagePath == null ? null : File(editedImagePath);

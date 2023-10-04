@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'dart:ui';
 import 'package:click_it_app/common/Utils.dart';
 import 'package:click_it_app/common/utility.dart';
@@ -12,19 +11,19 @@ import 'package:click_it_app/data/models/photo.dart';
 import 'package:click_it_app/data/models/upload_images_model.dart';
 import 'package:click_it_app/presentation/screens/home/home_screen.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/new_home_screen.dart';
+import 'package:click_it_app/utils/constants.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../common/loader/visible_progress_loaded.dart';
 import '../../../data/core/api_constants.dart';
 import '../../../preferences/app_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -50,7 +49,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
 
   List<Map<String, dynamic>> allRowsList = [];
 
-  bool showProgressBar = false;
+  bool showProgressBar = true;
 
   @override
   void initState() {
@@ -65,6 +64,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
         //print(value[0]);
 
         allRowsList = value;
+        showProgressBar = false;
       });
     }).catchError((error) {
       // if (Platform.isIOS) {
@@ -112,6 +112,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
 
               ),
               const Spacer(),
+              allRowsList.isNotEmpty ?
               GestureDetector(
                 child: const Text('Sync All',
                   style: TextStyle(fontSize: 18),
@@ -132,7 +133,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                   });
 
                 },
-              ),
+              ):SizedBox(),
             ],
           ),
           titleTextStyle: const TextStyle(
@@ -143,11 +144,26 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
           ),
           elevation: 0,
         ),
-        body: allRowsList.isEmpty ?
+        body:
+         showProgressBar?
         Center(
-          child: Text('Please save product images...',style: TextStyle(
-            fontSize: 18,
-          ),textAlign: TextAlign.center,),
+            child: CircularProgressIndicator(),
+        ):
+        allRowsList.isEmpty ?
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children:[
+              SvgPicture.asset(
+                  'assets/images/sync_screen_image.svg',
+                  semanticsLabel: 'A red up arrow'
+              ),
+              Text('You have no product images(s)\n to be synced!',style: TextStyle(
+                fontSize: 18,
+              ),textAlign: TextAlign.center,),
+            ]
+          ),
         )
             :
         SingleChildScrollView(
@@ -1350,46 +1366,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
 
         print('+++${AppPreferences.getValueShared('source')}');
 
-        String userName =
-        await AppPreferences.getValueShared('company_id');
-        String company_name =
-        await AppPreferences.getValueShared('company_name');
-        bool isImageUploaded =
-        await AppPreferences.getValueShared('isImageUploaded') ?? false;
-        bool isShowRating =
-        await AppPreferences.getValueShared('isShowRating') == null
-            ? true : AppPreferences.getValueShared('isShowRating');
-        String userRole =
-        await AppPreferences.getValueShared('login_data');
-
-        dynamic retrievedData =
-        await AppPreferences.getValueShared('login_data');
-        String uid = await AppPreferences.getValueShared('uid').toString();
-
-        String source = await AppPreferences.getValueShared('source');
-        String roleId = await AppPreferences.getValueShared('role_id').toString();
-
-        AppPreferences.clearSharedPreferences();
-
-        AppPreferences.addSharedPreferences(
-            uid, 'uid');
-
-        AppPreferences.addSharedPreferences(
-            source, 'source');
-
-        AppPreferences.addSharedPreferences(
-            roleId, 'role_id');
-
-        AppPreferences.addSharedPreferences(userName, 'company_id');
-        AppPreferences.addSharedPreferences(
-            company_name, 'company_name');
-        AppPreferences.addSharedPreferences(false, 'isImageUploaded');
-        AppPreferences.addSharedPreferences(userName, 'company_id');
-        AppPreferences.addSharedPreferences(userRole, 'source');
-        AppPreferences.addSharedPreferences(
-            retrievedData, 'login_data');
-        AppPreferences.addSharedPreferences(false, "isShowTutorial");
-        AppPreferences.addSharedPreferences(isShowRating, 'isShowRating');
+        await ClickItConstants.reloadSharedPreference();
        /* Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(

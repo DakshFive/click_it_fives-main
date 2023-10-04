@@ -13,13 +13,26 @@ class TutorialScreen extends StatefulWidget {
 class _TutorialScreenState extends State<TutorialScreen> {
   int initialIndex = 0;
 
-  Widget _buildImage(String assetName) {
+  /*Widget _buildImage(String assetName) {
     return Image.asset(
       assetName,
       height: 300,
       fit: BoxFit.scaleDown,
       alignment: Alignment.center,
     );
+  }*/
+  Widget _buildFullscreenImage(String assetName) {
+    return Image.asset(
+      assetName,
+      fit: BoxFit.cover,
+      height: double.infinity,
+      width: double.infinity,
+      alignment: Alignment.center,
+    );
+  }
+
+  Widget _buildImage(String assetName, [double width = 350]) {
+    return Image.asset('$assetName',width:width,height:MediaQuery.of(context).size.height-200,fit: BoxFit.scaleDown,);
   }
 
   @override
@@ -69,6 +82,17 @@ class _TutorialScreenState extends State<TutorialScreen> {
         pageView("Save locally sync later", "If you do not have internet save images locally and sync when you have internet.",
             AppImages.tutorial_four)
       ],
+     /* pages: [
+        PageViewModel(title: "Login", body: "Your login credentials for accessing the platform are same those used for datakart.",
+            image:_buildFullscreenImage(AppImages.tutorial_one)),
+        PageViewModel(title: "Scan Barcode", body: "Simply scan product barcode.",
+            image:_buildImage(AppImages.tutorial_two)),
+        PageViewModel(title: "Click Photos", body: "Click your product different side images.",
+            image:_buildImage(AppImages.tutorial_three)),
+        PageViewModel(title: "Save locally sync later", body: "If you do not have internet save images locally and sync when you have internet.",
+            image:_buildImage(AppImages.tutorial_four)),
+
+      ],*/
       curve: Curves.fastLinearToSlowEaseIn,
       controlsPadding: EdgeInsets.fromLTRB(
           8.0,
@@ -114,47 +138,46 @@ class _TutorialScreenState extends State<TutorialScreen> {
 
   /// ------------- Tutorial Page View Widget -------------
   Widget pageView(String title, String subTitle, String image) {
-    return Stack(
-      children: [
-        gradient(),
-        Container(
-          margin: EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              sizedBox(height: MediaQuery.of(context).size.height * 0.11),
-              _buildImage(image),
-              sizedBox(
-                  height: MediaQuery.of(context).devicePixelRatio <= 2.5
-                      ? MediaQuery.of(context).size.height * 0.055
-                      : MediaQuery.of(context).size.height * 0.074),
-              Center(
-                child: Container(
-                    child: Text(
-                      title,
-                      style: TextStyle(
+    return Container(
+      margin: EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+                //sizedBox(height: MediaQuery.of(context).size.height * 0.11),
+                if(title=='Login')
+                _buildImage(image,300)
+                else _buildImage(image),
+                /*sizedBox(
+                    height: MediaQuery.of(context).devicePixelRatio <= 2.5
+                        ? MediaQuery.of(context).size.height * 0.055
+                        : MediaQuery.of(context).size.height * 0.074),*/
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 30),
+                    child: ListView(
+                      children:[
+                        Text(
+                        title,
+                        style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold
-                      ),
-                      textAlign: TextAlign.center,
-                    )),
-              ),
-              sizedBox(height: 8),
-              Center(
-                child: Container(
-                    child: Text(
-                      subTitle,
-                      style: TextStyle(
-                        fontSize: 18
-                      ),
-                      textAlign: TextAlign.center,
-                    )),
-              ),
-            ],
-          ),
-        ),
-      ],
+                        ),
+                        textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          subTitle,
+                          style: TextStyle(
+                              fontSize: 18
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ]
+                    ),
+                  ),
+                ),
+              ],
+      ),
     );
   }
 

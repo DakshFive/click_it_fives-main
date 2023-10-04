@@ -5,6 +5,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../preferences/app_preferences.dart';
 import '../../../utils/app_images.dart';
 import '../login/login_screen.dart';
 import '../sidepanel/about_us_screen.dart';
@@ -26,6 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen>{
   
   @override
   void initState() {
+    AppPreferences.init();
     getCompanyDetails();
     super.initState();
   }
@@ -112,7 +114,7 @@ class _SettingsScreenState extends State<SettingsScreen>{
                       ),
                       title: Row(
                           children: [
-                            ImageIcon(AssetImage(AppImages.disclaimer_icon)),
+                            ImageIcon(AssetImage(AppImages.disclaimer_icon,),color: Colors.black,),
                             SizedBox(width: 10,),
                             const Text('Disclaimer',
                               style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
@@ -245,14 +247,20 @@ class _SettingsScreenState extends State<SettingsScreen>{
                   final SharedPreferences _sharedPreferences =
                       await SharedPreferences.getInstance();
 
+
                   _sharedPreferences.clear().whenComplete(
-                        () => Navigator.pushReplacement(
-                      context,
-                      PageTransition(
-                        child: const LoginScreen(),
-                        type: PageTransitionType.leftToRight,
-                      ),
-                    ),
+                        () {
+                          AppPreferences.addSharedPreferences(false, "isShowTutorial");
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              PageTransition(
+                                child: const LoginScreen(),
+                                type: PageTransitionType.leftToRight,
+
+                              ),(Route<dynamic> route) => false
+                          );
+                        }
+
                   );
 
                 }, child: Text('Ok')),

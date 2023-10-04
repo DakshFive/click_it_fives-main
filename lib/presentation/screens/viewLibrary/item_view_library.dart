@@ -32,9 +32,11 @@ class _ItemViewLibraryState extends State<ItemViewLibrary>{
                 ),
               ),
               SizedBox(width: 10,),
-              Text(widget.viewLibraryResponse.companyName ??'',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold
+              Expanded(
+                child: Text(widget.viewLibraryResponse.product_name ??'',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold
+                  ),
                 ),
               ),
               Expanded(

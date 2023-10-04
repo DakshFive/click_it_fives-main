@@ -39,6 +39,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
   Uint8List? backgroundRemovedImageBackup;
   Uint8List? compressedBottomImage;
   String? compressedBottomImagePath;
+  String? resolutionText;
 
   Future<Null> pickImage(
     String source,
@@ -59,6 +60,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
       productImage = null;
 
       imageResolution = null;
+      resolutionText = null;
       Navigator.pop(context);
 
       productImage = await _cropImage(imageTemporary);
@@ -70,7 +72,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
         EasyLoading.showError('Please upload again..');
         return;
       }
-      ProgressLoader.show(context);
+     // ProgressLoader.show(context);
 
       isImageProcessing = true;
       ClickItConstants.nutrientsImageProcessing = true;
@@ -85,7 +87,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
       if(compressedBottomImage!=null){
         compressedBottomImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBottomImage);
       }else{
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
         return;
       }
@@ -94,14 +96,16 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
 
       try {
         imageResolution = await getImageResolution(compressImageFile);
+        resolutionText = ClickItConstants.getImageSize(compressImageFile);
         //imageResolution = "Medium";
         if (imageResolution!.toLowerCase() == 'low') {
           isImageProcessing = false;
           ClickItConstants.nutrientsImageProcessing = false;
-          ProgressLoader.hide();
+         // ProgressLoader.hide();
           EasyLoading.showError(
               'Uploaded Image has Low Resolution.Please upload again');
           imageResolution = null;
+          resolutionText = null;
           productImage = null;
           setState(() {});
 
@@ -109,12 +113,13 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
         }
 
         if (imageResolution == null) {
-          ProgressLoader.hide();
+         // ProgressLoader.hide();
           isImageProcessing = false;
           ClickItConstants.nutrientsImageProcessing = false;
           EasyLoading.showError('Please upload again..!');
 
           imageResolution = null;
+          resolutionText = null;
           productImage = null;
           setState(() {});
           return;
@@ -128,17 +133,20 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
             productImage!.path, 'nutritional_value_image');
         AppPreferences.addSharedPreferences(
             imageResolution, 'nutritional_value_image_resolution');
+        AppPreferences.addSharedPreferences(
+            resolutionText, 'nutritional_image_pixel');
         EasyLoading.dismiss();
-        ProgressLoader.hide();
+      //  ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.nutrientsImageProcessing = false;
         setState(() {});
       } catch (e) {
-        ProgressLoader.hide();
+      //  ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.nutrientsImageProcessing = false;
         EasyLoading.showError('Please   again..');
         imageResolution = null;
+        resolutionText = null;
         productImage = null;
         setState(() {});
         return;
@@ -158,7 +166,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
   @override
   void dispose() {
     EasyLoading.dismiss();
-    ProgressLoader.hide();
+   // ProgressLoader.hide();
     super.dispose();
   }
 
@@ -327,7 +335,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
                 SizedBox(
                   height: 5,
                 ),
-                imageResolution != null
+                resolutionText != null
                     ? Container(
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         width: double.infinity,
@@ -338,7 +346,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
                               width: MediaQuery.of(context).size.width * 0.70,
                               padding: EdgeInsets.all(5),
                               child:
-                                  Text('Resolution : ${imageResolution ?? ''}'),
+                                  Text('Resolution : ${resolutionText ?? ''}'),
                               decoration: BoxDecoration(
                                 color: Colors.grey,
                                 borderRadius: BorderRadius.circular(5),
@@ -352,6 +360,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
                               onTap: () {
                                 productImage = null;
                                 imageResolution = null;
+                                resolutionText = null;
                                 AppPreferences.addSharedPreferences(
                                     false, 'isImageUploaded');
 
@@ -363,6 +372,7 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
                                     '', 'nutritional_value_edited_image');
                                 AppPreferences.addSharedPreferences(
                                     '', 'nutritional_value_image_resolution');
+                                AppPreferences.addSharedPreferences('', "nutritional_image_pixel");
                                 AppPreferences.addSharedPreferences(false, ClickItConstants.nutrientsUploadedImageKey);
                                 print(AppPreferences.getValueShared(
                                     'nutritional_value_image'));
@@ -484,7 +494,11 @@ class _NutritionalValueScreenState extends State<NutritionalValueScreen>
             ''
         ? null
         : AppPreferences.getValueShared('nutritional_value_image_resolution');
-
+    resolutionText = AppPreferences.getValueShared(
+        'nutritional_image_pixel') ==
+        ''
+        ? null
+        : AppPreferences.getValueShared('nutritional_image_pixel');
     setState(() {});
   }
 }

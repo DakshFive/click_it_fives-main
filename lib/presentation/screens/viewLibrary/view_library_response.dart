@@ -28,6 +28,7 @@ class Data {
   String? gcp;
   String? gtin;
   String? companyName;
+  String? product_name;
   String? imageBack;
   String? imageFront;
   String? imageLeft;
@@ -43,6 +44,7 @@ class Data {
       {this.gcp,
         this.gtin,
         this.companyName,
+        this.product_name,
         this.imageBack,
         this.imageFront,
         this.imageLeft,
@@ -58,6 +60,7 @@ class Data {
     gcp = json['gcp'];
     gtin = json['gtin'];
     companyName = json['company_name'];
+    product_name = json['product_name'];
     imageBack = json['image_back'];
     imageFront = json['image_front'];
     imageLeft = json['image_left'];
@@ -75,6 +78,7 @@ class Data {
     data['gcp'] = this.gcp;
     data['gtin'] = this.gtin;
     data['company_name'] = this.companyName;
+    data['product_name'] = this.product_name;
     data['image_back'] = this.imageBack;
     data['image_front'] = this.imageFront;
     data['image_left'] = this.imageLeft;

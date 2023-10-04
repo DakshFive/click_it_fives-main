@@ -42,6 +42,7 @@ class _TopImageScreenState extends State<TopImageScreen>
   Uint8List? backgroundRemovedImageBackup;
   Uint8List? compressedBottomImage;
   String? compressedBottomImagePath;
+  String? resolutionText;
 
   Future<Null> pickImage(
     String source,
@@ -63,6 +64,7 @@ class _TopImageScreenState extends State<TopImageScreen>
       editedSavedImage = null;
       backgroundRemovedImage = null;
       imageResolution = null;
+      resolutionText = null;
       Navigator.pop(context);
 
       productImage = await _cropImage(imageTemporary);
@@ -74,7 +76,7 @@ class _TopImageScreenState extends State<TopImageScreen>
         EasyLoading.showError('Please upload again..');
         return;
       }
-      ProgressLoader.show(context);
+      //ProgressLoader.show(context);
 
       isImageProcessing = true;
       ClickItConstants.topImageProcessing = true;
@@ -90,7 +92,7 @@ class _TopImageScreenState extends State<TopImageScreen>
       if(compressedBottomImage!=null){
         compressedBottomImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBottomImage);
       }else{
-        ProgressLoader.hide();
+      //  ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
         return;
       }
@@ -99,16 +101,17 @@ class _TopImageScreenState extends State<TopImageScreen>
 
       try {
         imageResolution = await getImageResolution(compressImageFile);
+        resolutionText = ClickItConstants.getImageSize(compressImageFile);
         print('imageresolution is $imageResolution');
         if (imageResolution!.toLowerCase() == 'low') {
           isImageProcessing = false;
           ClickItConstants.topImageProcessing = false;
-          ProgressLoader.hide();
+         // ProgressLoader.hide();
           EasyLoading.showError(
               'Uploaded Image has Low Resolution.Please upload again');
           //  backgroundRemovedImage = null;
           imageResolution = null;
-
+          resolutionText = null;
           if (AppPreferences.getValueShared('fetched_top_image') == '' ||
               AppPreferences.getValueShared('fetched_top_image') == null) {
             productImage = null;
@@ -123,12 +126,13 @@ class _TopImageScreenState extends State<TopImageScreen>
         }
 
         if (imageResolution == null) {
-          ProgressLoader.hide();
+         // ProgressLoader.hide();
           isImageProcessing = false;
           ClickItConstants.topImageProcessing = false;
           EasyLoading.showError('Please upload again..');
           backgroundRemovedImage = null;
           imageResolution = null;
+          resolutionText = null;
           if (AppPreferences.getValueShared('fetched_top_image') == '' ||
               AppPreferences.getValueShared('fetched_top_image') == null) {
             productImage = null;
@@ -143,12 +147,13 @@ class _TopImageScreenState extends State<TopImageScreen>
           return;
         }
       } catch (e) {
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.topImageProcessing = false;
         EasyLoading.showError('Please upload again..');
         backgroundRemovedImage = null;
         imageResolution = null;
+        resolutionText = null;
         if (AppPreferences.getValueShared('fetched_top_image') == '' ||
             AppPreferences.getValueShared('fetched_top_image') == null) {
           productImage = null;
@@ -174,9 +179,10 @@ class _TopImageScreenState extends State<TopImageScreen>
           ClickItConstants.topImageProcessing = false;
           EasyLoading.showError('Please upload again...');
           EasyLoading.dismiss();
-          ProgressLoader.hide();
+         // ProgressLoader.hide();
           backgroundRemovedImage = null;
           imageResolution = null;
+          resolutionText = null;
           productImage = null;
           setState(() {});
           return;
@@ -195,8 +201,10 @@ class _TopImageScreenState extends State<TopImageScreen>
             bckgroundRemovedImagePath!, 'top_edited_image');
         AppPreferences.addSharedPreferences(
             imageResolution, 'top_image_resolution');
+        AppPreferences.addSharedPreferences(
+            resolutionText, 'top_image_pixel');
         EasyLoading.dismiss();
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.topImageProcessing = false;
         setState(() {});
@@ -205,9 +213,10 @@ class _TopImageScreenState extends State<TopImageScreen>
         ClickItConstants.topImageProcessing = false;
         EasyLoading.showError('Please upload again...');
         EasyLoading.dismiss();
-        ProgressLoader.hide();
+      //  ProgressLoader.hide();
         backgroundRemovedImage = null;
         imageResolution = null;
+        resolutionText = null;
         productImage = null;
         setState(() {});
         return;
@@ -266,7 +275,7 @@ class _TopImageScreenState extends State<TopImageScreen>
   @override
   void dispose() {
     EasyLoading.dismiss();
-    ProgressLoader.hide();
+   // ProgressLoader.hide();
     super.dispose();
   }
 
@@ -473,14 +482,16 @@ class _TopImageScreenState extends State<TopImageScreen>
                                         image: editedSavedImage,
                                       )),
                             )
-                          : Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ViewProductImage(
-                                  image: backgroundRemovedImage,
-                                ),
-                              ),
-                            );
+                          : backgroundRemovedImage!=null
+                          ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ViewProductImage(
+                            image: backgroundRemovedImage,
+                          ),
+                        ),
+                      )
+                          :(){};
                     },
                     child: editedSavedImage != null
                         ? Stack(
@@ -560,7 +571,7 @@ class _TopImageScreenState extends State<TopImageScreen>
                 SizedBox(
                   height: 5,
                 ),
-                imageResolution != null
+                resolutionText != null
                     ? Container(
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         width: double.infinity,
@@ -571,7 +582,7 @@ class _TopImageScreenState extends State<TopImageScreen>
                               width: MediaQuery.of(context).size.width * 0.70,
                               padding: EdgeInsets.all(5),
                               child:
-                                  Text('Resolution : ${imageResolution ?? ''}'),
+                                  Text('Resolution : ${resolutionText ?? ''}'),
                               decoration: BoxDecoration(
                                 color: Colors.grey,
                                 borderRadius: BorderRadius.circular(5),
@@ -586,6 +597,7 @@ class _TopImageScreenState extends State<TopImageScreen>
                                 productImage = null;
                                 backgroundRemovedImage = null;
                                 imageResolution = null;
+                                resolutionText = null;
                                 editedSavedImage = null;
                                 AppPreferences.addSharedPreferences(
                                     false, 'isImageUploaded');
@@ -598,6 +610,8 @@ class _TopImageScreenState extends State<TopImageScreen>
                                     '', 'top_edited_image');
                                 AppPreferences.addSharedPreferences(
                                     '', 'top_image_resolution');
+                                AppPreferences.addSharedPreferences(
+                                    '', 'top_image_pixel');
                                 AppPreferences.addSharedPreferences(false, ClickItConstants.topImageUploadedKey);
                                 print(
                                     AppPreferences.getValueShared('top_image'));
@@ -731,6 +745,10 @@ class _TopImageScreenState extends State<TopImageScreen>
         AppPreferences.getValueShared('top_image_resolution') == ''
             ? null
             : AppPreferences.getValueShared('top_image_resolution');
+
+    resolutionText =  AppPreferences.getValueShared('top_image_pixel') == ''
+        ? null
+        : AppPreferences.getValueShared('top_image_pixel');
 
     if(imageResolution!=null)
       editedSavedImage = editedImagePath == null ? null : File(editedImagePath);

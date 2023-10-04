@@ -4,6 +4,8 @@ import 'package:click_it_app/utils/apis.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../preferences/app_preferences.dart';
+
 class ViewLibraryScreen extends StatefulWidget{
 
   const ViewLibraryScreen({Key? key}) : super(key: key);
@@ -22,14 +24,22 @@ class _ViewLibraryScreenState extends State<ViewLibraryScreen>{
   ScrollController _scController = new ScrollController();
   bool _isLoadMoreRunning = true;
 
+  bool showProgressBar = true;
+
+
   @override
   void initState() {
     //_isLoadMoreRunning = true;
-    ClickItApis.getViewLibraryData(page).then(
+    dynamic uid = AppPreferences.getValueShared('uid');
+    dynamic roleid = AppPreferences.getValueShared('role_id');
+    dynamic companyId =  AppPreferences.getValueShared('company_id');
+
+    ClickItApis.getViewLibraryData(page,uid,companyId,roleid).then(
             (value) {
               viewLibraryData = value!;
               if (mounted) {
                 setState(() {
+                  showProgressBar = false;
                   _isLoadMoreRunning = false;
                 });
               }
@@ -46,7 +56,7 @@ class _ViewLibraryScreenState extends State<ViewLibraryScreen>{
           });
         }
 
-        ClickItApis.getViewLibraryData(page).then(
+        ClickItApis.getViewLibraryData(page,uid,companyId,roleid).then(
                 (value) {
                   viewLibraryData.addAll(value!);
                   if (mounted) {
@@ -68,20 +78,17 @@ class _ViewLibraryScreenState extends State<ViewLibraryScreen>{
       appBar: AppBar(
         title: Text("View Library"),
       ),
-      body: Container(
+      body:
+          showProgressBar?
+          Center(
+            child: CircularProgressIndicator(),
+          )
+              :
+      Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if(viewLibraryData.isEmpty)
-              Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    backgroundColor: Colors.deepOrange,
-                  ),
-                ),
-              ),
             Expanded(
               child: ListView.builder(
                   controller: _scController,

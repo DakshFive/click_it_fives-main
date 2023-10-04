@@ -40,6 +40,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
   Uint8List? backgroundRemovedImageBackup;
   Uint8List? compressedBottomImage;
   String? compressedBottomImagePath;
+  String? resolutionText;
 
   Future<Null> pickImage(
     String source,
@@ -60,6 +61,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
       productImage = null;
 
       imageResolution = null;
+      resolutionText = null;
       Navigator.pop(context);
 
       productImage = await _cropImage(imageTemporary);
@@ -73,22 +75,22 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
         return;
       }
 
-      ProgressLoader.show(context);
+      //ProgressLoader.show(context);
 
       isImageProcessing = true;
       ClickItConstants.ingredientImageProcessing = true;
-     /* if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
+      if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
         if(!ClickItConstants.showDialogProceed) {
           ClickItConstants.showProceedDialog(context);
           ClickItConstants.showDialogProceed = true;
         }
-      }*/
+      }
 
       compressedBottomImage = await ClickItApis.getCompressedImage(productImage!.path);
       if(compressedBottomImage!=null){
         compressedBottomImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBottomImage);
       }else{
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
         return;
       }
@@ -97,14 +99,16 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
 
       try {
         imageResolution = await getImageResolution(compressImageFile);
+        resolutionText = ClickItConstants.getImageSize(compressImageFile);
         //imageResolution = "Medium";
         if (imageResolution!.toLowerCase() == 'low') {
           isImageProcessing = false;
           ClickItConstants.ingredientImageProcessing = false;
-          ProgressLoader.hide();
+         // ProgressLoader.hide();
           EasyLoading.showError(
               'Uploaded Image has Low Resolution.Please upload again');
           imageResolution = null;
+          resolutionText = null;
           productImage = null;
           setState(() {});
 
@@ -112,12 +116,13 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
         }
 
         if (imageResolution == null) {
-          ProgressLoader.hide();
+        //  ProgressLoader.hide();
           isImageProcessing = false;
           ClickItConstants.ingredientImageProcessing = false;
           EasyLoading.showError('Please upload again..!');
 
           imageResolution = null;
+          resolutionText = null;
           productImage = null;
           setState(() {});
           return;
@@ -131,17 +136,19 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
             productImage!.path, 'ingredients_value_image');
         AppPreferences.addSharedPreferences(
             imageResolution, 'ingredients_value_image_resolution');
+        AppPreferences.addSharedPreferences(resolutionText, 'ingredient_image_pixel');
         EasyLoading.dismiss();
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.ingredientImageProcessing = false;
         setState(() {});
       } catch (e) {
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.ingredientImageProcessing = false;
         EasyLoading.showError('Please   again..');
         imageResolution = null;
+        resolutionText = null;
         productImage = null;
         setState(() {});
         return;
@@ -161,7 +168,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
   @override
   void dispose() {
     EasyLoading.dismiss();
-    ProgressLoader.hide();
+    //ProgressLoader.hide();
     super.dispose();
   }
 
@@ -330,7 +337,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
                 SizedBox(
                   height: 5,
                 ),
-                imageResolution != null
+                resolutionText != null
                     ? Container(
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         width: double.infinity,
@@ -341,7 +348,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
                               width: MediaQuery.of(context).size.width * 0.70,
                               padding: EdgeInsets.all(5),
                               child:
-                                  Text('Resolution : ${imageResolution ?? ''}'),
+                                  Text('Resolution : ${resolutionText ?? ''}'),
                               decoration: BoxDecoration(
                                 color: Colors.grey,
                                 borderRadius: BorderRadius.circular(5),
@@ -355,6 +362,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
                               onTap: () {
                                 productImage = null;
                                 imageResolution = null;
+                                resolutionText = null;
                                 AppPreferences.addSharedPreferences(
                                     false, 'isImageUploaded');
 
@@ -366,6 +374,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
                                     '', 'ingredients_value_edited_image');
                                 AppPreferences.addSharedPreferences(
                                     '', 'ingredients_value_image_resolution');
+                                AppPreferences.addSharedPreferences('', 'ingredient_image_pixel');
                                 AppPreferences.addSharedPreferences(false, ClickItConstants.ingredientImageUploadedKey);
                                 print(AppPreferences.getValueShared(
                                     'ingredients_value_image'));
@@ -488,6 +497,11 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
         ? null
         : AppPreferences.getValueShared('ingredients_value_image_resolution');
 
+    resolutionText = AppPreferences.getValueShared(
+        'ingredient_image_pixel') ==
+        ''
+        ? null
+        : AppPreferences.getValueShared('ingredient_image_pixel');
     setState(() {});
   }
 }

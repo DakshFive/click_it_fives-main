@@ -41,6 +41,7 @@ class _RightImageScreenState extends State<RightImageScreen>
   Uint8List? backgroundRemovedImageBackup;
   Uint8List? compressedBottomImage;
   String? compressedBottomImagePath;
+  String? resolutionText;
 
   Future<Null> pickImage(
     String source,
@@ -62,6 +63,7 @@ class _RightImageScreenState extends State<RightImageScreen>
       editedSavedImage = null;
       backgroundRemovedImage = null;
       imageResolution = null;
+      resolutionText = null;
       Navigator.pop(context);
 
       productImage = await _cropImage(imageTemporary);
@@ -73,7 +75,7 @@ class _RightImageScreenState extends State<RightImageScreen>
         EasyLoading.showError('Please upload again..');
         return;
       }
-      ProgressLoader.show(context);
+      //ProgressLoader.show(context);
 
       isImageProcessing = true;
       ClickItConstants.rightImageProcessing = true;
@@ -88,7 +90,7 @@ class _RightImageScreenState extends State<RightImageScreen>
       if(compressedBottomImage!=null){
         compressedBottomImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBottomImage);
       }else{
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
         return;
       }
@@ -97,16 +99,18 @@ class _RightImageScreenState extends State<RightImageScreen>
 
       try {
         imageResolution = await getImageResolution(compressImageFile);
+        resolutionText = ClickItConstants.getImageSize(compressImageFile);
        // imageResolution = "Medium";
         print('imageresolution is $imageResolution');
         if (imageResolution!.toLowerCase() == 'low') {
           isImageProcessing = false;
           ClickItConstants.rightImageProcessing = false;
-          ProgressLoader.hide();
+         // ProgressLoader.hide();
           EasyLoading.showError(
               'Uploaded Image has Low Resolution.Please upload again');
           //  backgroundRemovedImage = null;
           imageResolution = null;
+          resolutionText = null;
 
           if (AppPreferences.getValueShared('fetched_right_image') == '' ||
               AppPreferences.getValueShared('fetched_right_image') == null) {
@@ -122,12 +126,13 @@ class _RightImageScreenState extends State<RightImageScreen>
         }
 
         if (imageResolution == null) {
-          ProgressLoader.hide();
+         // ProgressLoader.hide();
           isImageProcessing = false;
           ClickItConstants.rightImageProcessing = false;
           EasyLoading.showError('Please upload again..');
           backgroundRemovedImage = null;
           imageResolution = null;
+          resolutionText = null;
           if (AppPreferences.getValueShared('fetched_right_image') == '' ||
               AppPreferences.getValueShared('fetched_right_image') == null) {
             productImage = null;
@@ -142,12 +147,13 @@ class _RightImageScreenState extends State<RightImageScreen>
           return;
         }
       } catch (e) {
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.rightImageProcessing = false;
         EasyLoading.showError('Please upload again..');
         backgroundRemovedImage = null;
         imageResolution = null;
+        resolutionText = null;
         if (AppPreferences.getValueShared('fetched_right_image') == '' ||
             AppPreferences.getValueShared('fetched_right_image') == null) {
           productImage = null;
@@ -173,9 +179,10 @@ class _RightImageScreenState extends State<RightImageScreen>
           ClickItConstants.rightImageProcessing = false;
           EasyLoading.showError('Please upload again...');
           EasyLoading.dismiss();
-          ProgressLoader.hide();
+        //  ProgressLoader.hide();
           backgroundRemovedImage = null;
           imageResolution = null;
+          resolutionText = null;
           productImage = null;
           setState(() {});
           return;
@@ -193,9 +200,10 @@ class _RightImageScreenState extends State<RightImageScreen>
             bckgroundRemovedImagePath!, 'right_edited_image');
         AppPreferences.addSharedPreferences(
             imageResolution, 'right_image_resolution');
-
+        AppPreferences.addSharedPreferences(
+            imageResolution, 'right_image_pixel');
         EasyLoading.dismiss();
-        ProgressLoader.hide();
+       // ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.rightImageProcessing = false;
         setState(() {});
@@ -204,9 +212,10 @@ class _RightImageScreenState extends State<RightImageScreen>
         ClickItConstants.rightImageProcessing = false;
         EasyLoading.showError('Please upload again...');
         EasyLoading.dismiss();
-        ProgressLoader.hide();
+      //  ProgressLoader.hide();
         backgroundRemovedImage = null;
         imageResolution = null;
+        resolutionText = null;
         productImage = null;
         setState(() {});
         return;
@@ -265,7 +274,7 @@ class _RightImageScreenState extends State<RightImageScreen>
   @override
   void dispose() {
     EasyLoading.dismiss();
-    ProgressLoader.hide();
+   // ProgressLoader.hide();
     super.dispose();
   }
 
@@ -472,14 +481,16 @@ class _RightImageScreenState extends State<RightImageScreen>
                                         image: editedSavedImage,
                                       )),
                             )
-                          : Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ViewProductImage(
-                                  image: backgroundRemovedImage,
-                                ),
-                              ),
-                            );
+                          : backgroundRemovedImage!=null
+                          ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ViewProductImage(
+                            image: backgroundRemovedImage,
+                          ),
+                        ),
+                      )
+                          :(){};
                     },
                     child: editedSavedImage != null
                         ? Stack(
@@ -559,7 +570,7 @@ class _RightImageScreenState extends State<RightImageScreen>
                 SizedBox(
                   height: 5,
                 ),
-                imageResolution != null
+                resolutionText != null
                     ? Container(
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         width: double.infinity,
@@ -570,7 +581,7 @@ class _RightImageScreenState extends State<RightImageScreen>
                               width: MediaQuery.of(context).size.width * 0.70,
                               padding: EdgeInsets.all(5),
                               child:
-                                  Text('Resolution : ${imageResolution ?? ''}'),
+                                  Text('Resolution : ${resolutionText ?? ''}'),
                               decoration: BoxDecoration(
                                 color: Colors.grey,
                                 borderRadius: BorderRadius.circular(5),
@@ -585,6 +596,7 @@ class _RightImageScreenState extends State<RightImageScreen>
                                 productImage = null;
                                 backgroundRemovedImage = null;
                                 imageResolution = null;
+                                resolutionText = null;
                                 editedSavedImage = null;
                                 AppPreferences.addSharedPreferences(
                                     false, 'isImageUploaded');
@@ -597,6 +609,9 @@ class _RightImageScreenState extends State<RightImageScreen>
                                     '', 'right_edited_image');
                                 AppPreferences.addSharedPreferences(
                                     '', 'right_image_resolution');
+                                AppPreferences.addSharedPreferences(
+                                    '', 'right_image_pixel');
+
                                 AppPreferences.addSharedPreferences(false, ClickItConstants.rightImageUploadedKey);
                                 print(AppPreferences.getValueShared(
                                     'right_image'));
@@ -731,6 +746,12 @@ class _RightImageScreenState extends State<RightImageScreen>
         AppPreferences.getValueShared('right_image_resolution') == ''
             ? null
             : AppPreferences.getValueShared('right_image_resolution');
+
+    resolutionText =
+    AppPreferences.getValueShared('right_image_pixel') == ''
+        ? null
+        : AppPreferences.getValueShared('right_image_pixel');
+
 
     if(imageResolution!=null)
       editedSavedImage = editedImagePath == null ? null : File(editedImagePath);

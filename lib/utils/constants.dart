@@ -35,6 +35,8 @@ class ClickItConstants{
 
   static bool showDialogProceed = false;
 
+  static bool isDoneNewHomeCoach = false;
+
   static reloadSharedPreference() async{
     bool isShowProceedDialog = false;
 
@@ -42,13 +44,10 @@ class ClickItConstants{
         await AppPreferences.getValueShared('company_id');
     String company_name =
         await AppPreferences.getValueShared('company_name');
-    bool isImageUploaded =
-        await AppPreferences.getValueShared('isImageUploaded');
+
     bool isShowRating =
         await AppPreferences.getValueShared('isShowRating') == null
         ? true : AppPreferences.getValueShared('isShowRating');
-    String userRole =
-        await AppPreferences.getValueShared('login_data');
 
     dynamic retrievedData =
         await AppPreferences.getValueShared('login_data');
@@ -56,6 +55,7 @@ class ClickItConstants{
     var uid = AppPreferences.getValueShared('uid');
 
     String source = AppPreferences.getValueShared('source');
+
     var roleId = AppPreferences.getValueShared('role_id');
 
     if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)!=null){
@@ -79,7 +79,7 @@ class ClickItConstants{
         company_name, 'company_name');
     AppPreferences.addSharedPreferences(false, 'isImageUploaded');
     AppPreferences.addSharedPreferences(userName, 'company_id');
-    AppPreferences.addSharedPreferences(userRole, 'source');
+
     AppPreferences.addSharedPreferences(
         retrievedData, 'login_data');
     AppPreferences.addSharedPreferences(false, "isShowTutorial");

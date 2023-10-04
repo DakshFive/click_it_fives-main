@@ -160,58 +160,8 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
                         onPressed: () async {
                           // Perform your desired action
 
-                          String userName =
-                              await AppPreferences.getValueShared('company_id');
-                          String company_name =
-                              await AppPreferences.getValueShared(
-                                  'company_name');
-                          bool isImageUploaded =
-                              await AppPreferences.getValueShared(
-                                  'isImageUploaded');
-                          bool isShowRating = await AppPreferences.getValueShared('isShowRating') == null
-                              ? true : AppPreferences.getValueShared('isShowRating');
+                          ClickItConstants.reloadSharedPreference();
 
-                          dynamic retrievedData =
-                              await AppPreferences.getValueShared('login_data');
-
-                          var uid = AppPreferences.getValueShared('uid');
-
-                          String source = AppPreferences.getValueShared('source');
-                          var roleId = AppPreferences.getValueShared('role_id');
-
-                          AppPreferences.clearSharedPreferences();
-
-                          AppPreferences.addSharedPreferences(
-                              uid, 'uid');
-
-                          AppPreferences.addSharedPreferences(
-                              source, 'source');
-
-                          AppPreferences.addSharedPreferences(
-                              roleId, 'role_id');
-
-                          AppPreferences.addSharedPreferences(
-                              userName, 'company_id');
-                          AppPreferences.addSharedPreferences(
-                              company_name, 'company_name');
-                          AppPreferences.addSharedPreferences(
-                              false, 'isImageUploaded');
-                          AppPreferences.addSharedPreferences(
-                              userName, 'company_id');
-                          AppPreferences.addSharedPreferences(
-                              retrievedData, 'login_data');
-
-                          AppPreferences.addSharedPreferences(
-                              uid, 'uid');
-
-                          AppPreferences.addSharedPreferences(
-                              source, 'source');
-
-                          AppPreferences.addSharedPreferences(
-                              roleId, 'role_id');
-
-                          AppPreferences.addSharedPreferences(false, "isShowTutorial");
-                          AppPreferences.addSharedPreferences(isShowRating, 'isShowRating');
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
@@ -383,264 +333,7 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
               ),
             ),
           ),
-          /*GestureDetector(
-            onTap: () async {
-              //submit all the images
-              //check if the front back left right images are available
 
-              // final fetched_front_image =
-              //     await AppPreferences.getValueShared('fetched_front_image');
-              // final fetched_back_image =
-              //     await AppPreferences.getValueShared('fetched_back_image');
-              // final fetched_left_image =
-              //     await AppPreferences.getValueShared('fetched_left_image');
-              // final fetched_right_image =
-              //     await AppPreferences.getValueShared('fetched_right_image');
-
-              // bool isImageAvailable(String imagePath, String editedImagePath) {
-              //   // Check if the original image path is not null or empty
-              //   if (imagePath != null && imagePath.isNotEmpty) {
-              //     // Check if the original image exists in the local database
-              //     return true;
-              //   }
-
-              //   // Check if the edited image path is not null or empty
-              //   if (editedImagePath != null && editedImagePath.isNotEmpty) {
-              //     // Check if the edited image exists in the local database
-              //     return true;
-              //   }
-
-              //   return false;
-              // }
-
-              // void submitImages() {
-              //   // Check if all four original images are available
-              //   bool isLeftImageAvailable =
-              //       isImageAvailable(left_image, 'left_edited_image');
-              //   bool isRightImageAvailable =
-              //       isImageAvailable(right_image, 'right_edited_image');
-              //   bool isFrontImageAvailable =
-              //       isImageAvailable(front_image, 'front_edited_image');
-              //   bool isBackImageAvailable =
-              //       isImageAvailable(back_image, 'back_edited_image');
-
-              //   if (isLeftImageAvailable &&
-              //       isRightImageAvailable &&
-              //       isFrontImageAvailable &&
-              //       isBackImageAvailable) {
-              //     // All four original images are available, proceed with submission
-              //     print('Submitting images...');
-              //     // Your code to submit the images
-              //   } else {
-              //     // At least one of the required images is missing
-              //     if (!isLeftImageAvailable) {
-              //       if (left_image != null && left_image.isNotEmpty) {
-              //         print('Left image is not available');
-              //       } else {
-              //         print('Left edited image is not available');
-              //       }
-              //     }
-              //     if (!isRightImageAvailable) {
-              //       if (right_image != null && right_image.isNotEmpty) {
-              //         print('Right image is not available');
-              //       } else {
-              //         print('Right edited image is not available');
-              //       }
-              //     }
-              //     if (!isFrontImageAvailable) {
-              //       if (front_image != null && front_image.isNotEmpty) {
-              //         print('Front image is not available');
-              //       } else {
-              //         print('Front edited image is not available');
-              //       }
-              //     }
-              //     if (!isBackImageAvailable) {
-              //       if (back_image != null && back_image.isNotEmpty) {
-              //         print('Back image is not available');
-              //       } else {
-              //         print('Back edited image is not available');
-              //       }
-              //     }
-              //     print('Please ensure all required images are available');
-              //   }
-              // }
-
-              final front_image =
-                  await AppPreferences.getValueShared('front_image');
-              final back_image =
-                  await AppPreferences.getValueShared('back_image');
-              final left_image =
-                  await AppPreferences.getValueShared('left_image');
-              final right_image =
-                  await AppPreferences.getValueShared('right_image');
-
-              print(front_image);
-              print(back_image);
-              print(left_image);
-              print(right_image);
-              print(widget.gtin);
-              print(AppPreferences.getValueShared('company_id'));
-
-              if (front_image == null ||
-                  back_image == null ||
-                  left_image == null ||
-                  right_image == null) {
-                // check if the data is fetched from the
-                Fluttertoast.showToast(
-                  msg: 'Front,Back,Left,Right Images are mandatory',
-                );
-                return;
-              }
-
-              VisibleProgressLoader.show(context);
-
-              print('+++!${AppPreferences.getValueShared('login_data')}');
-
-              try {
-                var headers = {
-                  'Cookie':
-                      'ApplicationGatewayAffinity=af22a992dad4a5c7820977e6f9af2e69; ApplicationGatewayAffinityCORS=af22a992dad4a5c7820977e6f9af2e69; PHPSESSID=d1aeelaiinjlto4slsm2mh6ot5',
-                  "Content-type": "multipart/form-data"
-                };
-                var request = http.MultipartRequest(
-                    'POST',
-                    Uri.parse(
-                        '${ApiConstants.BASE_URl}image_capture_new?apiId=${ApiConstants.API_ID}&apiKey=${ApiConstants.API_KEY}'));
-                request.fields.addAll({
-                  'gtin': widget.gtin,
-                  'company_id':
-                      AppPreferences.getValueShared('source') == 'member'
-                          ? AppPreferences.getValueShared('company_id')
-                          : ''
-                });
-                request.files.add(await http.MultipartFile.fromPath('img_front',
-                    AppPreferences.getImagePath('front_image')));
-                request.files.add(await http.MultipartFile.fromPath('img_back',
-                    AppPreferences.getValueShared('back_image')));
-                request.files.add(await http.MultipartFile.fromPath('img_left',
-                    AppPreferences.getValueShared('left_image')));
-                request.files.add(await http.MultipartFile.fromPath('img_right',
-                    AppPreferences.getValueShared('right_image')));
-                AppPreferences.getValueShared('ingredients_value_image') == null
-                    ? request.fields.addAll({
-                        'ingredients_image': '',
-                      })
-                    : request.files.add(await http.MultipartFile.fromPath(
-                        'ingredients_image',
-                        AppPreferences.getValueShared(
-                                'ingredients_value_image') ??
-                            ''));
-                AppPreferences.getValueShared('nutritional_value_image') == null
-                    ? request.fields.addAll({
-                        'nutritional_image': '',
-                      })
-                    : request.files.add(await http.MultipartFile.fromPath(
-                        'nutritional_image',
-                        AppPreferences.getValueShared(
-                                'nutritional_value_image') ??
-                            ''));
-
-                AppPreferences.getValueShared('top_image') == null
-                    ? request.fields.addAll({
-                        'img_top': '',
-                      })
-                    : request.files.add(await http.MultipartFile.fromPath(
-                        'img_top',
-                        AppPreferences.getValueShared('top_image') ??
-                            ''));
-                AppPreferences.getValueShared('bottom_image') == null
-                    ? request.fields.addAll({
-                        'img_bottom': '',
-                      })
-                    : request.files.add(await http.MultipartFile.fromPath(
-                        'img_bottom',
-                        AppPreferences.getValueShared('bottom_image') ??
-                            ''));
-
-                request.headers.addAll(headers);
-
-                http.StreamedResponse response = await request.send();
-
-                if (response.statusCode == 200) {
-                  print(await response.stream.bytesToString());
-
-                  VisibleProgressLoader.hide();
-                  //image uploaded successfully
-
-                  Fluttertoast.showToast(
-                    msg: 'Image Saved Successfully',
-                    toastLength: Toast.LENGTH_LONG,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white,
-                    fontSize: 16.0,
-                  );
-
-                  print('+++${AppPreferences.getValueShared('source')}');
-
-                  String userName =
-                      await AppPreferences.getValueShared('company_id');
-                  String company_name =
-                      await AppPreferences.getValueShared('company_name');
-                  *//*bool isImageUploaded =
-                      await AppPreferences.getValueShared('isImageUploaded');*//*
-
-                  String userRole =
-                      await AppPreferences.getValueShared('login_data');
-
-                  dynamic retrievedData =
-                      await AppPreferences.getValueShared('login_data');
-
-                  AppPreferences.clearSharedPreferences();
-
-                  AppPreferences.addSharedPreferences(userName, 'company_id');
-                  AppPreferences.addSharedPreferences(
-                      company_name, 'company_name');
-                  AppPreferences.addSharedPreferences(false, 'isImageUploaded');
-                  AppPreferences.addSharedPreferences(userName, 'company_id');
-                  AppPreferences.addSharedPreferences(userRole, 'source');
-                  AppPreferences.addSharedPreferences(
-                      retrievedData, 'login_data');
-
-
-
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomeScreen(),
-                      ),(Route<dynamic> route) => false);
-
-                  //send the user to home screen
-                } else {
-                  print(response.reasonPhrase);
-                  VisibleProgressLoader.hide();
-                  Fluttertoast.showToast(
-                      msg: 'Please try again after some time');
-                }
-              } on Exception catch (e) {
-                print(e.toString());
-                VisibleProgressLoader.hide();
-                Fluttertoast.showToast(msg: e.toString());
-              }
-            },
-
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(15),
-              alignment: Alignment.center,
-              child: const Text(
-                'SUBMIT',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-              decoration: const BoxDecoration(
-                color: Colors.deepOrange,
-              ),
-            ),
-          ),*/
         ],
       ),
     ),);
@@ -727,49 +420,8 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
                 onPressed: () async {
                   // Perform your desired action
 
-                  String userName =
-                  await AppPreferences.getValueShared('company_id');
-                  String company_name =
-                  await AppPreferences.getValueShared(
-                      'company_name');
-                  bool isImageUploaded =
-                  await AppPreferences.getValueShared(
-                      'isImageUploaded');
-                  bool isShowRating =
-                  await AppPreferences.getValueShared('isShowRating') == null
-                      ? true : AppPreferences.getValueShared('isShowRating');
+                  await ClickItConstants.reloadSharedPreference();
 
-                  dynamic retrievedData =
-                  await AppPreferences.getValueShared('login_data');
-
-                  var uid = AppPreferences.getValueShared('uid');
-
-                  String source = AppPreferences.getValueShared('source');
-                  var roleId = AppPreferences.getValueShared('role_id');
-
-                  AppPreferences.clearSharedPreferences();
-
-                  AppPreferences.addSharedPreferences(
-                      uid, 'uid');
-
-                  AppPreferences.addSharedPreferences(
-                      source, 'source');
-
-                  AppPreferences.addSharedPreferences(
-                      roleId, 'role_id');
-
-                  AppPreferences.addSharedPreferences(
-                      userName, 'company_id');
-                  AppPreferences.addSharedPreferences(
-                      company_name, 'company_name');
-                  AppPreferences.addSharedPreferences(
-                      false, 'isImageUploaded');
-                  AppPreferences.addSharedPreferences(
-                      userName, 'company_id');
-                  AppPreferences.addSharedPreferences(
-                      retrievedData, 'login_data');
-                  AppPreferences.addSharedPreferences(isShowRating,'isShowRating');
-                  AppPreferences.addSharedPreferences(false, "isShowTutorial");
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -992,47 +644,12 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
 
     print('+++${AppPreferences.getValueShared('source')}');
 
-    String userName =
-    await AppPreferences.getValueShared('company_id');
-    String company_name =
-    await AppPreferences.getValueShared('company_name');
-    bool isImageUploaded =
-    await AppPreferences.getValueShared('isImageUploaded');
     bool isShowRating =
     await AppPreferences.getValueShared('isShowRating') == null
         ? true : AppPreferences.getValueShared('isShowRating');
-    String userRole =
-    await AppPreferences.getValueShared('login_data');
 
-    dynamic retrievedData =
-    await AppPreferences.getValueShared('login_data');
+    await ClickItConstants.reloadSharedPreference();
 
-    var uid = AppPreferences.getValueShared('uid');
-
-    String source = AppPreferences.getValueShared('source');
-    var roleId = AppPreferences.getValueShared('role_id');
-
-    AppPreferences.clearSharedPreferences();
-
-    AppPreferences.addSharedPreferences(
-        uid, 'uid');
-
-    AppPreferences.addSharedPreferences(
-        source, 'source');
-
-    AppPreferences.addSharedPreferences(
-        roleId, 'role_id');
-
-    AppPreferences.addSharedPreferences(userName, 'company_id');
-    AppPreferences.addSharedPreferences(
-    company_name, 'company_name');
-    AppPreferences.addSharedPreferences(false, 'isImageUploaded');
-    AppPreferences.addSharedPreferences(userName, 'company_id');
-    AppPreferences.addSharedPreferences(userRole, 'source');
-    AppPreferences.addSharedPreferences(
-    retrievedData, 'login_data');
-    AppPreferences.addSharedPreferences(false, "isShowTutorial");
-    AppPreferences.addSharedPreferences(isShowRating,"isShowRating");
     await NewDatabaseHelper().delete(widget.gtin);
     await NewDatabaseHelper().queryAllRows().then((value) async {
       print(value);
@@ -1077,27 +694,27 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
 
     if(AppPreferences.getValueShared(ClickItConstants.frontImageUploadedKey)) {
       front_image =
-      await AppPreferences.getValueShared('front_image');
+      await AppPreferences.getValueShared('front_edited_image');
     }
     if(AppPreferences.getValueShared(ClickItConstants.backImageUploadedKey)) {
       back_image =
-      await AppPreferences.getValueShared('back_image');
+      await AppPreferences.getValueShared('back_edited_image');
     }
     if(AppPreferences.getValueShared(ClickItConstants.leftImageUploadedKey)) {
       left_image =
-      await AppPreferences.getValueShared('left_image');
+      await AppPreferences.getValueShared('left_edited_image');
     }
     if(AppPreferences.getValueShared(ClickItConstants.rightImageUploadedKey)) {
       right_image =
-      await AppPreferences.getValueShared('right_image');
+      await AppPreferences.getValueShared('right_edited_image');
     }
     if(AppPreferences.getValueShared(ClickItConstants.topImageUploadedKey)) {
       top_image =
-      await AppPreferences.getValueShared('top_image');
+      await AppPreferences.getValueShared('top_edited_image');
     }
     if(AppPreferences.getValueShared(ClickItConstants.bottomImageUploadedKey)) {
       bottom_image =
-      await AppPreferences.getValueShared('bottom_image');
+      await AppPreferences.getValueShared('bottom_edited_image');
     }
     if(AppPreferences.getValueShared(ClickItConstants.nutrientsUploadedImageKey)) {
       nutritional_image =
@@ -1186,48 +803,12 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
 
       final id = await NewDatabaseHelper().insertOrUpdate(row).then(
             (value) async {
-          String userName =
-          await AppPreferences.getValueShared('company_id');
-          String company_name =
-          await AppPreferences.getValueShared('company_name');
-          bool isImageUploaded =
-          await AppPreferences.getValueShared('isImageUploaded');
 
-          String userRole =
-          await AppPreferences.getValueShared('login_data');
+              bool isShowRating =
+              await AppPreferences.getValueShared('isShowRating') == null
+                  ? true : AppPreferences.getValueShared('isShowRating');
 
-          dynamic retrievedData =
-          await AppPreferences.getValueShared('login_data');
-
-          bool isShowRating =
-          await AppPreferences.getValueShared('isShowRating') == null
-              ? true : AppPreferences.getValueShared('isShowRating');
-
-          var uid = AppPreferences.getValueShared('uid');
-
-          String source = AppPreferences.getValueShared('source');
-          var roleId = AppPreferences.getValueShared('role_id');
-
-          AppPreferences.clearSharedPreferences();
-
-          AppPreferences.addSharedPreferences(uid, 'uid');
-
-          AppPreferences.addSharedPreferences(
-              source, 'source');
-
-          AppPreferences.addSharedPreferences(
-              roleId, 'role_id');
-
-          AppPreferences.addSharedPreferences(userName, 'company_id');
-          AppPreferences.addSharedPreferences(
-              company_name, 'company_name');
-          AppPreferences.addSharedPreferences(false, 'isImageUploaded');
-          AppPreferences.addSharedPreferences(userName, 'company_id');
-          AppPreferences.addSharedPreferences(userRole, 'source');
-          AppPreferences.addSharedPreferences(
-              retrievedData, 'login_data');
-          AppPreferences.addSharedPreferences(false, "isShowTutorial");
-          AppPreferences.addSharedPreferences(isShowRating, 'isShowRating');
+          ClickItConstants.reloadSharedPreference();
 
           Fluttertoast.showToast(
             msg: 'Image Saved Successfully',

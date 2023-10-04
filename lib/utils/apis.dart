@@ -7,13 +7,13 @@ import 'package:http/http.dart' as http;
 
 class ClickItApis{
 
-  static Future<List<Data>?> getViewLibraryData(int page) async{
+  static Future<List<Data>?> getViewLibraryData(int page,String uid, String companyID,int roleId) async{
     var queryParams = {
       'apiId':ClickItConstants.APIID,
       'apiKey':ClickItConstants.APIKEY,
-      'uid': 3122,
-      'company_id': 890600099,
-      'role_id': 2,
+      'uid': uid,
+      'company_id': companyID,
+      'role_id': roleId,
       'page_no': page,
     }.map((key, value) => MapEntry(key, value.toString()));
 
