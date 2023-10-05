@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:click_it_app/presentation/screens/viewLibrary/view_library_response.dart';
+import 'package:click_it_app/utils/constants.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ItemViewImage extends StatefulWidget{
 
@@ -61,7 +64,10 @@ class _ItemViewImageState extends State<ItemViewImage>{
             ),
           SizedBox(width: 10,),
           IconButton(
-            onPressed: (){
+            onPressed: () async{
+              final file = await DefaultCacheManager().getSingleFile(widget.imagePath);
+
+              Share.shareFiles([file.path], text: widget.imageTitle);
 
             },
             icon: Icon(Icons.share),color: Colors.black,)

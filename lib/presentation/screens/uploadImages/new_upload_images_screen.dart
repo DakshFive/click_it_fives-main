@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:click_it_app/app_tutorial_coach/tutorial_save_data_coach.dart';
 import 'package:click_it_app/common/loader/progressLoader.dart';
 import 'package:click_it_app/common/loader/visible_progress_loaded.dart';
 import 'package:click_it_app/controllers/upload_images_provider.dart';
@@ -29,6 +30,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../app_tutorial_coach/tutorial_upload_coach.dart';
 import '../../../common/Utils.dart';
 import '../../../common/utility.dart';
 import '../../../data/core/api_constants.dart';
@@ -58,6 +60,13 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
   @override
   void initState() {
     super.initState();
+
+    if(AppPreferences.getValueShared("uploadScreenCoach")==null||!AppPreferences.getValueShared("uploadScreenCoach")){
+      UploadCoach.createTutorial();
+      Future.delayed(Duration.zero, (){UploadCoach.showTutorial(context);});
+      AppPreferences.addSharedPreferences(true,"uploadScreenCoach");
+    }
+
 
     AppPreferences.init();
     _tabController = TabController(length: 8, vsync: this);
@@ -289,11 +298,17 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
                 showDialog(
                     context: context,
                     builder: (context) {
+                      if(AppPreferences.getValueShared("saveScreenCoach")==null||!AppPreferences.getValueShared("saveScreenCoach")){
+                        SaveDataCoach.createTutorial();
+                        Future.delayed(Duration.zero, (){SaveDataCoach.showTutorial(context);});
+                        AppPreferences.addSharedPreferences(true,"saveScreenCoach");
+                      }
 
                       return AlertDialog(
                         content: const Text('Where you want to store these images.'),
                         actions: [
                           ElevatedButton(
+                            key:SaveDataCoach.localKey,
                             onPressed: () async {
                               Navigator.of(context).pop();
                               uploadImagesToLocalDatabase();
@@ -301,6 +316,7 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
                             child: const Text('Local'),
                           ),
                           ElevatedButton(
+                            key:SaveDataCoach.serverKey,
                             onPressed: () {
                               Navigator.of(context).pop();
                               uploadImagesToServer();
@@ -321,8 +337,9 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
               width: double.infinity,
               padding: const EdgeInsets.all(15),
               alignment: Alignment.center,
-              child: const Text(
+              child:  Text(
                 'Submit',
+                key: UploadCoach.submitKey,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,

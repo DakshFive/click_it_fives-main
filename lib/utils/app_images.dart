@@ -8,4 +8,5 @@ class AppImages {
   static const String backgroundImage = 'assets/images/background_image.jpg';
   static const String about_icon = 'assets/images/about_us_icon.png';
   static const String disclaimer_icon = 'assets/images/disclaimer_icon.png';
+  static const String intro_bg = 'assets/images/intro_bg.jpg';
 }

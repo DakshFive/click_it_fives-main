@@ -1,12 +1,16 @@
 import 'dart:ui';
 
+import 'package:click_it_app/app_tutorial_coach/tutorial_home_coach.dart';
+import 'package:click_it_app/preferences/app_preferences.dart';
 import 'package:click_it_app/presentation/screens/home/home_screen.dart';
 import 'package:click_it_app/presentation/screens/home/sync_server_screen.dart';
 import 'package:click_it_app/presentation/screens/settings/settings_sreen.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/sync_server_screen_new.dart';
 import 'package:click_it_app/presentation/screens/viewLibrary/view_library.dart';
+import 'package:click_it_app/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
@@ -14,6 +18,7 @@ class NewHomeScreen extends StatefulWidget{
 
   const NewHomeScreen({Key? key,required this.isShowRatingDialog}) : super(key: key);
   final isShowRatingDialog;
+
 
   @override
   State<StatefulWidget> createState() {
@@ -31,6 +36,7 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
   GlobalKey settingsKey = GlobalKey();
   GlobalKey scanBarcodeKey = GlobalKey();
 
+
   int _selectedIndex = 0;
   var color = Colors.black;
 
@@ -45,6 +51,15 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
   ];
 
   void _onItemTapped(int index) {
+    /*if(index!=1) {
+      if (ClickItConstants.isShowSavedSyncEasyLoading) {
+        EasyLoading.dismiss();
+      }
+    }else{
+      if (ClickItConstants.isShowSavedSyncEasyLoading) {
+        EasyLoading.show(status: "Uploading...");
+      }
+    }*/
     if(index==1){
       color = Colors.deepOrange;
     }else{
@@ -57,8 +72,15 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
 
   @override
   void initState() {
-   /* createTutorial();
-    Future.delayed(Duration.zero, showTutorial);*/
+    AppPreferences.init();
+
+
+    if(AppPreferences.getValueShared("homeScreenCoach")==null||!AppPreferences.getValueShared("homeScreenCoach")){
+      createTutorial();
+      Future.delayed(Duration.zero, showTutorial);
+      AppPreferences.addSharedPreferences(true,"homeScreenCoach");
+    }
+
     super.initState();
   }
   @override
@@ -125,7 +147,9 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
       opacityShadow: 0.5,
       imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
       onFinish: () {
-        print("finish");
+        HomeCoach.createTutorial();
+        Future.delayed(Duration.zero, (){HomeCoach.showTutorial(context);});
+
       },
       onClickTarget: (target) {
         print('onClickTarget: $target');
@@ -139,6 +163,8 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
         print('onClickOverlay: $target');
       },
       onSkip: () {
+        HomeCoach.createTutorial();
+        Future.delayed(Duration.zero, (){HomeCoach.showTutorial(context);});
         print("skip");
       },
     );

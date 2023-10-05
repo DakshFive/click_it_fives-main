@@ -18,6 +18,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import '../../../app_tutorial_coach/tutorial_upload_coach.dart';
 import '../../../common/loader/visible_progress_loaded.dart';
 import '../../../data/data_sources/Local Datasource/new_database.dart';
 
@@ -368,6 +369,8 @@ class _FrontImageScreenState extends State<FrontImageScreen>
 
   @override
   void initState() {
+
+
     databaseHelper = NewDatabaseHelper();
     isbarcodeScanned = AppPreferences.getValueShared('isImageUploaded');
     if(isbarcodeScanned==true){
@@ -420,6 +423,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
                           margin: const EdgeInsets.all(10),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
+                          key: UploadCoach.uploadKey,
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           elevation: 5,
                           child: Container(

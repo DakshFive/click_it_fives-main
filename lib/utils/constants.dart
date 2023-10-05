@@ -30,6 +30,8 @@ class ClickItConstants{
   static bool ingredientImageProcessing = false;
   static bool nutrientsImageProcessing = false;
 
+  static bool isShowSavedSyncEasyLoading = false;
+
   static String APIID = "df4a3e288e73d4e3d6e4a975a0c3212d";
   static String APIKEY = "440f00981a1cc3b1ce6a4c784a4b84ea";
 
@@ -58,12 +60,20 @@ class ClickItConstants{
 
     var roleId = AppPreferences.getValueShared('role_id');
 
+    bool homeScreenCoachDone = AppPreferences.getValueShared("homeScreenCoach") ?? false;
+    bool uploadScreenCoachDone = AppPreferences.getValueShared("uploadScreenCoach") ?? false;
+    bool saveScreenCoachDone = AppPreferences.getValueShared("saveScreenCoach") ?? false;
+
     if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)!=null){
        isShowProceedDialog =  AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey);
     }
 
 
     AppPreferences.clearSharedPreferences();
+
+    AppPreferences.addSharedPreferences(homeScreenCoachDone,"homeScreenCoach");
+    AppPreferences.addSharedPreferences(uploadScreenCoachDone,"uploadScreenCoach");
+    AppPreferences.addSharedPreferences(saveScreenCoachDone,"saveScreenCoach");
 
     AppPreferences.addSharedPreferences(
         uid, 'uid');
@@ -164,6 +174,16 @@ class ClickItConstants{
 
     return ""+size.width.toString()+"x"+size.height.toString()+"";
   }
+
+  static Future<String?> saveAndGetImagePath(String url) async{
+
+
+    final tempDir = await getTemporaryDirectory();
+    final file = await File('${tempDir.path}/image.jpg').create();
+    file.writeAsString(url);
+    return file.path;
+  }
+
 
 
 }

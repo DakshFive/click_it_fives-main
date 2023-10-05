@@ -251,6 +251,9 @@ class _SettingsScreenState extends State<SettingsScreen>{
                   _sharedPreferences.clear().whenComplete(
                         () {
                           AppPreferences.addSharedPreferences(false, "isShowTutorial");
+                          AppPreferences.addSharedPreferences(true,"homeScreenCoach");
+                          AppPreferences.addSharedPreferences(true,"uploadScreenCoach");
+                          AppPreferences.addSharedPreferences(true,"saveScreenCoach");
                           Navigator.pushAndRemoveUntil(
                               context,
                               PageTransition(

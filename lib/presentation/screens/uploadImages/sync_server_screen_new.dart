@@ -59,13 +59,16 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
     dbHelper = NewDatabaseHelper();
 
     dbHelper?.queryAllRows().then((value) {
-      setState(() {
-        print(value);
-        //print(value[0]);
+      if(mounted) {
+        setState(() {
+          print(value);
+          //print(value[0]);
 
-        allRowsList = value;
-        showProgressBar = false;
-      });
+          allRowsList = value;
+          showProgressBar = false;
+        });
+      }
+
     }).catchError((error) {
       // if (Platform.isIOS) {
       //   print(error);
@@ -952,6 +955,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
 
   void uploadImages(List<Map<String, dynamic>> syncList) async {
     EasyLoading.show(status: 'uploading...');
+    ClickItConstants.isShowSavedSyncEasyLoading = true;
     for (var i = 0; i < syncList.length; i++) {
       //upload images
       //get the saved values from the local storage in shared preferences
@@ -1048,6 +1052,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
 
     //EasyLoading.showSuccess('Image Uploaded Successfully');
     EasyLoading.dismiss();
+    ClickItConstants.isShowSavedSyncEasyLoading = false;
     var isShowRating = await AppPreferences.getValueShared('isShowRating');
     Navigator.pushAndRemoveUntil(
       context,
@@ -1060,6 +1065,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
 
   void uploadSingleImages(imageIndex) async {
     EasyLoading.show(status: 'uploading...');
+    ClickItConstants.isShowSavedSyncEasyLoading = true;
     //for (var i = 0; i < syncList.length; i++) {
       //upload images
       //get the saved values from the local storage in shared preferences
@@ -1124,6 +1130,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
             print(value);
             //print(value[0]);
             EasyLoading.dismiss();
+            ClickItConstants.isShowSavedSyncEasyLoading = false;
             //EasyLoading.showSuccess('Image Uploaded Successfully');
             deleteLocalFiles();
             var isShowRating = AppPreferences.getValueShared('isShowRating');
@@ -1136,6 +1143,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
             );
           }else{
             EasyLoading.dismiss();
+            ClickItConstants.isShowSavedSyncEasyLoading = false;
             //EasyLoading.showSuccess('Image Uploaded Successfully');
           }
           /*setState(() {
@@ -1143,6 +1151,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
           });*/
         }).catchError((error) {
           EasyLoading.dismiss();
+          ClickItConstants.isShowSavedSyncEasyLoading = false;
           //EasyLoading.showSuccess('Image Uploaded Successfully');
           // if (Platform.isIOS) {
           //   print(error);
@@ -1174,8 +1183,9 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
         // backgroundColor: Colors.red,
         // textColor: Colors.white,
         // fontSize: 16.0);
-
-        setState(() {});
+        if(mounted) {
+          setState(() {});
+        }
       }else{
         //EasyLoading.dismiss();
       }
@@ -1377,6 +1387,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
         return true;
       } else {
         EasyLoading.dismiss();
+        ClickItConstants.isShowSavedSyncEasyLoading = false;
         print(response.reasonPhrase);
         //VisibleProgressLoader.hide();
         Fluttertoast.showToast(
@@ -1385,6 +1396,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
     } on Exception catch (e) {
       print(e.toString());
       EasyLoading.dismiss();
+      ClickItConstants.isShowSavedSyncEasyLoading = false;
       //VisibleProgressLoader.hide();
       Fluttertoast.showToast(msg: e.toString());
     }

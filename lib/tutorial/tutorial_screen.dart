@@ -139,44 +139,52 @@ class _TutorialScreenState extends State<TutorialScreen> {
   /// ------------- Tutorial Page View Widget -------------
   Widget pageView(String title, String subTitle, String image) {
     return Container(
-      margin: EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-                //sizedBox(height: MediaQuery.of(context).size.height * 0.11),
-                if(title=='Login')
-                _buildImage(image,300)
-                else _buildImage(image),
-                /*sizedBox(
-                    height: MediaQuery.of(context).devicePixelRatio <= 2.5
-                        ? MediaQuery.of(context).size.height * 0.055
-                        : MediaQuery.of(context).size.height * 0.074),*/
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 30),
-                    child: ListView(
-                      children:[
-                        Text(
-                        title,
-                        style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold
-                        ),
-                        textAlign: TextAlign.center,
-                        ),
-                        Text(
-                          subTitle,
+      decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(AppImages.intro_bg),
+            fit: BoxFit.fill,
+          )
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+                  //sizedBox(height: MediaQuery.of(context).size.height * 0.11),
+                  if(title=='Login')
+                  _buildImage(image,350)
+                  else _buildImage(image),
+                  /*sizedBox(
+                      height: MediaQuery.of(context).devicePixelRatio <= 2.5
+                          ? MediaQuery.of(context).size.height * 0.055
+                          : MediaQuery.of(context).size.height * 0.074),*/
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 30),
+                      child: ListView(
+                        children:[
+                          Text(
+                          title,
                           style: TextStyle(
-                              fontSize: 18
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold
                           ),
                           textAlign: TextAlign.center,
-                        ),
-                      ]
+                          ),
+                          Text(
+                            subTitle,
+                            style: TextStyle(
+                                fontSize: 18
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ]
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:click_it_app/app_tutorial_coach/tutorial_home_coach.dart';
 import 'package:click_it_app/common/Utils.dart';
 import 'package:click_it_app/preferences/app_preferences.dart';
 import 'package:click_it_app/presentation/screens/home/new_uploadscreen.dart';
@@ -35,6 +36,7 @@ import '../../../utils/constants.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.isShowRatingDialog}) : super(key: key);
   final isShowRatingDialog;
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -42,19 +44,17 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  late TutorialCoachMark tutorialCoachMark;
+  //late TutorialCoachMark tutorialCoachMark;
 
-  GlobalKey scanBarcodeKey = GlobalKey();
+  //GlobalKey scanBarcodeKey = GlobalKey();
 
   String? companyName, companyId;
 
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
-
     /*createTutorial();
-    Future.delayed(Duration.zero, showTutorial);*/
+      Future.delayed(Duration.zero, showTutorial);*/
 
     getCompanyDetails();
 
@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
         AppPreferences.addSharedPreferences(false,ClickItConstants.leftImageProcessing);
         AppPreferences.addSharedPreferences(false,ClickItConstants.nutrientsImageProcessing);
         AppPreferences.addSharedPreferences(false,ClickItConstants.ingredientImageProcessing);*/
-
+    super.initState();
   }
 
   bool isNumeric(String str) {
@@ -285,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(10),
                     margin: const EdgeInsets.only(left: 10, right: 10),
                     child: Row(
-                      key:scanBarcodeKey,
+                      key:HomeCoach.getKey(),
                       children: const [
                         Icon(
                           Icons.camera_alt_outlined,
@@ -390,7 +390,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void showTutorial() {
+  /*void showTutorial() {
     tutorialCoachMark.show(context: context);
   }
 
@@ -424,7 +424,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<TargetFocus> _createTargets() {
     List<TargetFocus> targets = [];
-    /*targets.add(
+    *//*targets.add(
       TargetFocus(
         identify: "homeNavigation",
         keyTarget: homeKey,
@@ -530,9 +530,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-    );*/
+    );*//*
 
-    /*targets.add(
+    *//*targets.add(
       TargetFocus(
         identify: "scanBarcodeKey",
         keyTarget: scanBarcodeKey,
@@ -551,20 +551,20 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.white,
                         fontSize: 20.0),
                   ),
-                 *//* Padding(
+                 *//**//* Padding(
                     padding: EdgeInsets.only(top: 10.0),
                     child: Text(
                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
                       style: TextStyle(color: Colors.white),
                     ),
-                  ),*//*
+                  ),*//**//*
                 ],
               );
             },
           ),
         ],
       ),
-    );*/
+    );*//*
     targets.add(
       TargetFocus(
         identify: "scanBarcodeKey",
@@ -586,19 +586,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontSize: 20.0,
                     ),
                   ),
-                  /*const Padding(
+                  *//*const Padding(
                     padding: EdgeInsets.only(top: 10.0),
                     child: Text(
                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
                       style: TextStyle(color: Colors.white),
                     ),
-                  ),*/
-                  /*ElevatedButton(
+                  ),*//*
+                  *//*ElevatedButton(
                     onPressed: () {
                       controller.previous();
                     },
                     child: const Icon(Icons.chevron_left),
-                  ),*/
+                  ),*//*
                 ],
               );
             },
@@ -608,7 +608,7 @@ class _HomeScreenState extends State<HomeScreen> {
         radius: 5,
       ),
     );
-    /*targets.add(
+    *//*targets.add(
       TargetFocus(
         identify: "Target 1",
         keyTarget: keyButton,
@@ -825,10 +825,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ))
         ],
       ),
-    );*/
+    );*//*
 
     return targets;
-  }
+  }*/
 }
 Future decodeQrCode(String value) async {
   var request = await http.Request('POST',
