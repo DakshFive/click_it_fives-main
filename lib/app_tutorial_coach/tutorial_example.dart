@@ -1,147 +1,222 @@
+// ignore_for_file: avoid_print
+
 import 'dart:ui';
 
-import 'package:click_it_app/app_tutorial_coach/tutorial_home_coach.dart';
-import 'package:click_it_app/common/Utils.dart';
-import 'package:click_it_app/preferences/app_preferences.dart';
-import 'package:click_it_app/presentation/screens/home/home_screen.dart';
-import 'package:click_it_app/presentation/screens/home/sync_server_screen.dart';
-import 'package:click_it_app/presentation/screens/settings/settings_sreen.dart';
-import 'package:click_it_app/presentation/screens/uploadImages/sync_server_screen_new.dart';
-import 'package:click_it_app/presentation/screens/viewLibrary/view_library.dart';
-import 'package:click_it_app/utils/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
-class NewHomeScreen extends StatefulWidget{
+void main() => runApp(const MyApp());
 
-  const NewHomeScreen({Key? key,required this.isShowRatingDialog}) : super(key: key);
-  final isShowRatingDialog;
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-
+  // This widget is the root of your application.
   @override
-  State<StatefulWidget> createState() {
-    return _NewHomeScreenState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'TutorialCoachMark Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const MyHomePage(),
+    );
   }
 }
 
-class _NewHomeScreenState extends State<NewHomeScreen>{
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
 
+  @override
+  MyHomePageState createState() => MyHomePageState();
+}
+
+class MyHomePageState extends State<MyHomePage> {
   late TutorialCoachMark tutorialCoachMark;
 
-  GlobalKey homeKey = GlobalKey();
-  GlobalKey localImageKey = GlobalKey();
-  GlobalKey viewLibraryKey = GlobalKey();
-  GlobalKey settingsKey = GlobalKey();
-  GlobalKey scanBarcodeKey = GlobalKey();
+  GlobalKey keyButton = GlobalKey();
+  GlobalKey keyButton1 = GlobalKey();
+  GlobalKey keyButton2 = GlobalKey();
+  GlobalKey keyButton3 = GlobalKey();
+  GlobalKey keyButton4 = GlobalKey();
+  GlobalKey keyButton5 = GlobalKey();
 
-
-  int _selectedIndex = 0;
-  var color = Colors.black;
-
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(isShowRatingDialog: false),
-    SyncServerScreenNew(),
-    ViewLibraryScreen(),
-    SettingsScreen()
-  ];
-
-  void _onItemTapped(int index) {
-    /*if(index!=1) {
-      if (ClickItConstants.isShowSavedSyncEasyLoading) {
-        EasyLoading.dismiss();
-      }
-    }else{
-      if (ClickItConstants.isShowSavedSyncEasyLoading) {
-        EasyLoading.show(status: "Uploading...");
-      }
-    }*/
-    if(index==1){
-      color = Colors.deepOrange;
-    }else{
-      color = Colors.black;
-    }
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  GlobalKey keyBottomNavigation1 = GlobalKey();
+  GlobalKey keyBottomNavigation2 = GlobalKey();
+  GlobalKey keyBottomNavigation3 = GlobalKey();
 
   @override
   void initState() {
-    AppPreferences.init();
-
-   /* PackageInfo.fromPlatform().then((value){
-      //version = value.version;
-      ClickItConstants.appVersion = value.version;
-
-    });*/
-
-    Utils.askLocationPermission();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if(AppPreferences.getValueShared("homeScreenCoach")==null||!AppPreferences.getValueShared("homeScreenCoach")){
-        createTutorial();
-        Future.delayed(Duration(seconds: 1), showTutorial);
-        AppPreferences.addSharedPreferences(true,"homeScreenCoach");
-      }
-
-    });
-
-
+    createTutorial();
+    Future.delayed(Duration.zero, showTutorial);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: (){
-        if(_selectedIndex!=0){
-          _onItemTapped(0);
-          return Future.value(false);
-
-        }
-        return Future.value(true);
-      },
-      child: Scaffold(
-        body: Center(
-          child: _widgetOptions.elementAt(_selectedIndex),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items:  <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-              key: homeKey,),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(
-                  'assets/images/saved_images.svg',
-                  colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-                  key: localImageKey
+    return Scaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            // key: keyButton1,
+            icon: const Icon(Icons.add),
+            onPressed: () {},
+          ),
+          PopupMenuButton(
+            key: keyButton1,
+            icon: const Icon(Icons.view_list, color: Colors.white),
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                child: Text("Is this"),
               ),
-              label: 'Saved Images',
+              const PopupMenuItem(
+                child: Text("What"),
+              ),
+              const PopupMenuItem(
+                child: Text("You Want?"),
+              ),
+            ],
+          )
+        ],
+      ),
+      body: Container(
+        color: Colors.white,
+        child: Stack(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 100.0),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  key: keyButton,
+                  color: Colors.blue,
+                  height: 100,
+                  width: MediaQuery.of(context).size.width - 50,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: ElevatedButton(
+                      child: const Icon(Icons.remove_red_eye),
+                      onPressed: () {
+                        showTutorial();
+                      },
+                    ),
+                  ),
+                ),
+              ),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.image_outlined,key: viewLibraryKey,),
-              label: 'Library',
+            Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 50,
+                height: 50,
+                child: ElevatedButton(
+                  key: keyButton2,
+                  onPressed: () {},
+                  child: Container(),
+                ),
+              ),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings,key: settingsKey,),
-              label: 'Settings',
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(50.0),
+                child: SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: ElevatedButton(
+                    key: keyButton3,
+                    onPressed: () {},
+                    child: Container(),
+                  ),
+                ),
+              ),
             ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.all(50.0),
+                child: SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: ElevatedButton(
+                    key: keyButton4,
+                    onPressed: () {},
+                    child: Container(),
+                  ),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(50.0),
+                child: SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: ElevatedButton(
+                    key: keyButton5,
+                    onPressed: () {},
+                    child: Container(),
+                  ),
+                ),
+              ),
+            )
           ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.deepOrange,
-          unselectedItemColor: Colors.black,
-          showUnselectedLabels: true,
-          onTap: _onItemTapped,
-          selectedFontSize: 12,
         ),
+      ),
+      bottomNavigationBar: Stack(
+        children: [
+          SizedBox(
+            height: 50,
+            child: Row(
+              children: [
+                Expanded(
+                    child: Center(
+                      child: SizedBox(
+                        key: keyBottomNavigation1,
+                        height: 40,
+                        width: 40,
+                      ),
+                    )),
+                Expanded(
+                    child: Center(
+                      child: SizedBox(
+                        key: keyBottomNavigation2,
+                        height: 40,
+                        width: 40,
+                      ),
+                    )),
+                Expanded(
+                  child: Center(
+                    child: SizedBox(
+                      key: keyBottomNavigation3,
+                      height: 40,
+                      width: 40,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.business),
+                label: 'Business',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.school),
+                label: 'School',
+              ),
+            ],
+            // currentIndex: _selectedIndex,
+            selectedItemColor: Colors.amber[800],
+            onTap: (index) {},
+          ),
+        ],
       ),
     );
   }
@@ -153,15 +228,13 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
   void createTutorial() {
     tutorialCoachMark = TutorialCoachMark(
       targets: _createTargets(),
-      colorShadow: Colors.deepOrange,
+      colorShadow: Colors.red,
       textSkip: "SKIP",
-      paddingFocus: 20,
+      paddingFocus: 10,
       opacityShadow: 0.5,
       imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
       onFinish: () {
-        HomeCoach.createTutorial();
-        Future.delayed(Duration.zero, (){HomeCoach.showTutorial(context);});
-
+        print("finish");
       },
       onClickTarget: (target) {
         print('onClickTarget: $target');
@@ -175,8 +248,6 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
         print('onClickOverlay: $target');
       },
       onSkip: () {
-        HomeCoach.createTutorial();
-        Future.delayed(Duration.zero, (){HomeCoach.showTutorial(context);});
         print("skip");
       },
     );
@@ -186,8 +257,8 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
     List<TargetFocus> targets = [];
     targets.add(
       TargetFocus(
-        identify: "homeNavigation",
-        keyTarget: homeKey,
+        identify: "keyBottomNavigation1",
+        keyTarget: keyBottomNavigation1,
         alignSkip: Alignment.topRight,
         enableOverlayTab: true,
         contents: [
@@ -199,7 +270,7 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "Here you can simply scan barcode of product",
+                    "Titulo lorem ipsum",
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -214,8 +285,8 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
 
     targets.add(
       TargetFocus(
-        identify: "saveImageNavigation",
-        keyTarget: localImageKey,
+        identify: "keyBottomNavigation2",
+        keyTarget: keyBottomNavigation2,
         alignSkip: Alignment.topRight,
         contents: [
           TargetContent(
@@ -226,7 +297,7 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "Here you can see saved clicked images",
+                    "Titulo lorem ipsum",
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -241,8 +312,8 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
 
     targets.add(
       TargetFocus(
-        identify: "viewLibraryNavigation",
-        keyTarget: viewLibraryKey,
+        identify: "keyBottomNavigation3",
+        keyTarget: keyBottomNavigation3,
         alignSkip: Alignment.topRight,
         contents: [
           TargetContent(
@@ -253,7 +324,7 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "Here you can see all the uploaded images",
+                    "Titulo lorem ipsum",
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -267,21 +338,28 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
     );
     targets.add(
       TargetFocus(
-        identify: "settingsNavigation",
-        keyTarget: settingsKey,
-        alignSkip: Alignment.topRight,
+        identify: "Target 0",
+        keyTarget: keyButton1,
         contents: [
           TargetContent(
-            align: ContentAlign.top,
+            align: ContentAlign.bottom,
             builder: (context, controller) {
               return const Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "Here you can see information",
+                    "Titulo lorem ipsum",
                     style: TextStyle(
-                      color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 20.0),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: Text(
+                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
@@ -292,92 +370,6 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
       ),
     );
     targets.add(
-      TargetFocus(
-        identify: "scanBarcodeKey",
-        keyTarget: scanBarcodeKey,
-        color: Colors.deepOrange,
-        contents: [
-          TargetContent(
-            align: ContentAlign.bottom,
-            builder: (context, controller) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text(
-                    "Scan your product barcode",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                  /*const Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),*/
-                  /*ElevatedButton(
-                    onPressed: () {
-                      controller.previous();
-                    },
-                    child: const Icon(Icons.chevron_left),
-                  ),*/
-                ],
-              );
-            },
-          )
-        ],
-        shape: ShapeLightFocus.RRect,
-        radius: 5,
-      ),
-    );
-   /* targets.add(
-      TargetFocus(
-        identify: "scanBarcodeKey",
-        keyTarget: scanBarcodeKey,
-        color: Colors.deepOrange,
-        contents: [
-          TargetContent(
-            align: ContentAlign.bottom,
-            builder: (context, controller) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text(
-                    "Scan your product barcode",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                  *//*const Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),*//*
-                  *//*ElevatedButton(
-                    onPressed: () {
-                      controller.previous();
-                    },
-                    child: const Icon(Icons.chevron_left),
-                  ),*//*
-                ],
-              );
-            },
-          )
-        ],
-        shape: ShapeLightFocus.RRect,
-        radius: 5,
-      ),
-    );*/
-    /*targets.add(
       TargetFocus(
         identify: "Target 1",
         keyTarget: keyButton,
@@ -594,9 +586,8 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
               ))
         ],
       ),
-    );*/
+    );
 
     return targets;
   }
-
 }
