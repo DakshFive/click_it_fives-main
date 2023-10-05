@@ -31,6 +31,7 @@ class ClickItConstants{
   static bool nutrientsImageProcessing = false;
 
   static bool isShowSavedSyncEasyLoading = false;
+  static String appVersion = "1.0.0";
 
   static String APIID = "df4a3e288e73d4e3d6e4a975a0c3212d";
   static String APIKEY = "440f00981a1cc3b1ce6a4c784a4b84ea";

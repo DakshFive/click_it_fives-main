@@ -1,4 +1,5 @@
 import 'package:click_it_app/presentation/screens/sidepanel/contact_screen.dart';
+import 'package:click_it_app/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -24,9 +25,25 @@ class SettingsScreen extends StatefulWidget{
 
 class _SettingsScreenState extends State<SettingsScreen>{
   String? companyName, companyId;
-  
+  //String? version;
   @override
   void initState() {
+
+   /* WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if(ClickItConstants.appVersion==""){
+        PackageInfo.fromPlatform().then((value){
+          //version = value.version;
+          ClickItConstants.appVersion = value.version;
+          if(mounted){
+          setState(() {});
+        }
+
+        });
+      }
+    });*/
+
+
+
     AppPreferences.init();
     getCompanyDetails();
     super.initState();
@@ -159,7 +176,7 @@ class _SettingsScreenState extends State<SettingsScreen>{
                   ),
                    ListTile(
                     title: Center(
-                      child:  Text('Version 1.0.0',
+                      child:  Text('Version ${ClickItConstants.appVersion}',
                         style: TextStyle(color: Colors.black
                             ,fontWeight: FontWeight.bold,
                             backgroundColor: Colors.deepOrange.withAlpha(70)),),

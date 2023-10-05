@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:click_it_app/app_tutorial_coach/tutorial_home_coach.dart';
+import 'package:click_it_app/common/Utils.dart';
 import 'package:click_it_app/preferences/app_preferences.dart';
 import 'package:click_it_app/presentation/screens/home/home_screen.dart';
 import 'package:click_it_app/presentation/screens/home/sync_server_screen.dart';
@@ -74,12 +75,23 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
   void initState() {
     AppPreferences.init();
 
+   /* PackageInfo.fromPlatform().then((value){
+      //version = value.version;
+      ClickItConstants.appVersion = value.version;
 
-    if(AppPreferences.getValueShared("homeScreenCoach")==null||!AppPreferences.getValueShared("homeScreenCoach")){
-      createTutorial();
-      Future.delayed(Duration.zero, showTutorial);
-      AppPreferences.addSharedPreferences(true,"homeScreenCoach");
-    }
+    });*/
+
+    Utils.askLocationPermission();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if(AppPreferences.getValueShared("homeScreenCoach")==null||!AppPreferences.getValueShared("homeScreenCoach")){
+        createTutorial();
+        Future.delayed(Duration.zero, showTutorial);
+        AppPreferences.addSharedPreferences(true,"homeScreenCoach");
+      }
+
+    });
+
 
     super.initState();
   }

@@ -61,11 +61,14 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
   void initState() {
     super.initState();
 
-    if(AppPreferences.getValueShared("uploadScreenCoach")==null||!AppPreferences.getValueShared("uploadScreenCoach")){
-      UploadCoach.createTutorial();
-      Future.delayed(Duration.zero, (){UploadCoach.showTutorial(context);});
-      AppPreferences.addSharedPreferences(true,"uploadScreenCoach");
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if(AppPreferences.getValueShared("uploadScreenCoach")==null||!AppPreferences.getValueShared("uploadScreenCoach")){
+        UploadCoach.createTutorial();
+        Future.delayed(Duration.zero, (){UploadCoach.showTutorial(context);});
+        AppPreferences.addSharedPreferences(true,"uploadScreenCoach");
+      }
+    });
+
 
 
     AppPreferences.init();
