@@ -76,8 +76,11 @@ class _ViewLibraryScreenState extends State<ViewLibraryScreen>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("View Library"),
-      ),
+        title: Row(children: [
+            Text("View Library"),
+            Spacer()
+        ],
+      )),
       body:
           showProgressBar?
           Center(

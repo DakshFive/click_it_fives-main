@@ -104,7 +104,42 @@ class _HomeScreenState extends State<HomeScreen> {
           key: _scaffoldKey,
           /*endDrawer: AppDrawer(),*/
           appBar: AppBar(
-            title: Text(
+            title: Row(
+              children: [
+                 Text(companyId != ''
+            ? '$companyName ($companyId)'
+                : '$companyName',
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+              ),
+            ),
+                const Spacer(),
+                IconButton(
+                  icon: Badge(
+                      child: Icon(
+                        Icons.notifications,
+                        color: Colors.white,
+                      ),
+                      label: Text('4',style: TextStyle(color: Colors.deepOrange),),
+                      alignment: Alignment.topRight,
+                      backgroundColor: Colors.white,
+                      offset: Offset.fromDirection(6,8)
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.leftToRight,
+                        child: NotificationScreen(),
+                      ),
+                    );
+                  },
+                )
+              ],
+            ),
+
+            /*Text(
               companyId != ''
                   ? '$companyName ($companyId)'
                   : '$companyName',
@@ -135,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
               )
-            ],
+            ],*/
 
           ),
           body: Container(

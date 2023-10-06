@@ -41,7 +41,7 @@ class _ItemViewLibraryState extends State<ItemViewLibrary>{
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 8.0,left: 8.0),
+                  padding: const EdgeInsets.only(right: 8.0,left: 8.0,top: 4,bottom: 4),
                   child: ElevatedButton(onPressed: (){
 
                     showDialog(
@@ -121,7 +121,7 @@ class _ItemViewLibraryState extends State<ItemViewLibrary>{
 
                   },style: ElevatedButton.styleFrom(
                     minimumSize: Size.zero, // Set this
-                    padding: EdgeInsets.all(8), // and this
+                    padding: EdgeInsets.only(left: 8,right: 8,top: 4,bottom: 4), // and this
                   ),
                       child: Text('View Images')),
                 ),

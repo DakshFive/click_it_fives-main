@@ -90,8 +90,13 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
       if(compressedBottomImage!=null){
         compressedBottomImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBottomImage);
       }else{
+        //isImageProcessing = false;
        // ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
+        setState(() {
+          isImageProcessing = false;
+          productImage = frontImageBackup;
+        });
         return;
       }
 
@@ -282,7 +287,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
                                   ))
                                 : Image.file(
                                     productImage!,
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.scaleDown,
                                   ),
                           ),
                         ),

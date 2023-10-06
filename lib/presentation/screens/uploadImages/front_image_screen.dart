@@ -96,8 +96,13 @@ class _FrontImageScreenState extends State<FrontImageScreen>
       if(compressedFrontImage!=null){
         compressedFrontImagePath = await _saveCompressedImageToDevice(compressedFrontImage);
       }else{
+        //isImageProcessing = false;
         //ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
+        setState(() {
+          isImageProcessing = false;
+          productImage = frontImageBackup;
+        });
         return;
       }
 
@@ -836,7 +841,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
     editedImagePath == null ? null : File(editedImagePath);*/
     print('productImage  $productImage');
 
-    if (productImage == null) {
+    //if (productImage == null) {
       print('product image is null');
       String? imagePath = await _saveImageToDevice(backgroundRemovedImage,
           imageUrl: serverImagePath);
@@ -847,7 +852,8 @@ class _FrontImageScreenState extends State<FrontImageScreen>
       /*await AppPreferences.addSharedPreferences(
           imagePath, editedImageType);*/
       await getLocalSavedData(imageType,fetchedImageType,resolutionImageType);
-    } /*else if (editedImagePath == null) {
+   // }
+    /*else if (editedImagePath == null) {
       print('editedSavedImage is null');
       String? imagePath = await _saveImageToDevice(backgroundRemovedImage,
           imageUrl: serverImagePath);
@@ -960,10 +966,12 @@ class _FrontImageScreenState extends State<FrontImageScreen>
     AppPreferences.getValueShared('front_image_pixel') == ''
         ? null
         : AppPreferences.getValueShared('front_image_pixel');
-      setState(() {});
+
 
     if(imageResolution!=null)
       editedSavedImage = editedImagePath == null ? null : File(editedImagePath);
+    setState(() {});
+
   }
 }
 

@@ -90,8 +90,13 @@ class _RightImageScreenState extends State<RightImageScreen>
       if(compressedBottomImage!=null){
         compressedBottomImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBottomImage);
       }else{
+        //isImageProcessing = false;
        // ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
+        setState(() {
+          isImageProcessing = false;
+          productImage = frontImageBackup;
+        });
         return;
       }
 

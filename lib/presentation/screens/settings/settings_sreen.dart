@@ -52,7 +52,27 @@ class _SettingsScreenState extends State<SettingsScreen>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: Row(
+          children: [
+            const Text('Settings',
+              style: TextStyle(fontSize: 18),
+
+            ),
+            const Spacer(),
+            Center(
+              child: Text(companyId != ''
+                  ? '$companyName ($companyId)'
+                  : '$companyName',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),),
+            ),
+          ],
+        ),
+
+
+        /*Text('Settings'),
         actions: [
           Center(
             child: Text(companyId != ''
@@ -63,7 +83,7 @@ class _SettingsScreenState extends State<SettingsScreen>{
                 color: Colors.white,
               ),),
           )
-        ],
+        ],*/
       ),
       body: Container(
         decoration: BoxDecoration(

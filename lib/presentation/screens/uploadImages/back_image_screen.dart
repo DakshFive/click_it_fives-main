@@ -94,8 +94,13 @@ class _BackImageScreenState extends State<BackImageScreen>
       if(compressedBackImage!=null) {
         compressedBackImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBackImage);
       }else{
+
        // ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
+        setState(() {
+          isImageProcessing = false;
+          productImage = frontImageBackup;
+        });
         return;
       }
       final compressImageFile = File(compressedBackImagePath!);
