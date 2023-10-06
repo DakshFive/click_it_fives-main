@@ -206,7 +206,7 @@ class SaveDataCoach{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   const Text(
-                    "Take picture to upload.",
+                    "Save image locally.",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -216,7 +216,7 @@ class SaveDataCoach{
                   const Padding(
                     padding: EdgeInsets.only(top: 10.0),
                     child: Text(
-                      "Click on button to select image(s) from gallery or camera.",
+                      "Click here to save image(s) locally and upload later.",
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -249,7 +249,7 @@ class SaveDataCoach{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   const Text(
-                    "Take picture to upload.",
+                    "Sync images to server.",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -259,7 +259,7 @@ class SaveDataCoach{
                   const Padding(
                     padding: EdgeInsets.only(top: 10.0),
                     child: Text(
-                      "Click on button to select image(s) from gallery or camera.",
+                      "Click here to upload images(s) directly to server.",
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

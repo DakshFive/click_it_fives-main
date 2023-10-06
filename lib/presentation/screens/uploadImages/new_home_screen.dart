@@ -86,7 +86,7 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if(AppPreferences.getValueShared("homeScreenCoach")==null||!AppPreferences.getValueShared("homeScreenCoach")){
         createTutorial();
-        Future.delayed(Duration(seconds: 1), showTutorial);
+        Future.delayed(Duration(milliseconds: 500), showTutorial);
         AppPreferences.addSharedPreferences(true,"homeScreenCoach");
       }
 

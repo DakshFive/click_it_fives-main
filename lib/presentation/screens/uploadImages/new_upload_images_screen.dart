@@ -64,7 +64,7 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if(AppPreferences.getValueShared("uploadScreenCoach")==null||!AppPreferences.getValueShared("uploadScreenCoach")){
         UploadCoach.createTutorial();
-        Future.delayed(Duration(seconds: 1), (){UploadCoach.showTutorial(context);});
+        Future.delayed(Duration(milliseconds: 500), (){UploadCoach.showTutorial(context);});
         AppPreferences.addSharedPreferences(true,"uploadScreenCoach");
       }
     });
