@@ -95,7 +95,8 @@ class _LeftImageScreenState extends State<LeftImageScreen>
       }else{
         //isImageProcessing = false;
        // ProgressLoader.hide();
-        EasyLoading.showError('Please upload again..');
+        ClickItConstants.frontImageProcessing = false;
+        EasyLoading.showError('Low resolution.Please upload again.');
         setState(() {
           isImageProcessing = false;
           productImage = frontImageBackup;

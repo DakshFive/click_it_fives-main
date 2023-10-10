@@ -713,29 +713,47 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
     var bottom_image = null;
     var nutritional_image = null;
     var ingredient_image = null;
+    var front_image_edited = null;
+    var back_image_edited = null;
+    var left_image_edited = null;
+    var right_image_edited = null;
+    var top_image_edited = null;
+    var bottom_image_edited = null;
 
     if(AppPreferences.getValueShared(ClickItConstants.frontImageUploadedKey)) {
       front_image =
-      await AppPreferences.getValueShared('front_edited_image');
+      await AppPreferences.getValueShared('front_image');
+      front_image_edited =
+          await AppPreferences.getValueShared('front_edited_image');
     }
     if(AppPreferences.getValueShared(ClickItConstants.backImageUploadedKey)) {
       back_image =
+      await AppPreferences.getValueShared('back_image');
+      back_image_edited =
       await AppPreferences.getValueShared('back_edited_image');
     }
     if(AppPreferences.getValueShared(ClickItConstants.leftImageUploadedKey)) {
       left_image =
+      await AppPreferences.getValueShared('left_image');
+      left_image_edited =
       await AppPreferences.getValueShared('left_edited_image');
     }
     if(AppPreferences.getValueShared(ClickItConstants.rightImageUploadedKey)) {
       right_image =
+      await AppPreferences.getValueShared('right_image');
+      right_image_edited =
       await AppPreferences.getValueShared('right_edited_image');
     }
     if(AppPreferences.getValueShared(ClickItConstants.topImageUploadedKey)) {
       top_image =
+      await AppPreferences.getValueShared('top_image');
+      top_image_edited =
       await AppPreferences.getValueShared('top_edited_image');
     }
     if(AppPreferences.getValueShared(ClickItConstants.bottomImageUploadedKey)) {
       bottom_image =
+      await AppPreferences.getValueShared('bottom_image');
+      bottom_image_edited =
       await AppPreferences.getValueShared('bottom_edited_image');
     }
     if(AppPreferences.getValueShared(ClickItConstants.nutrientsUploadedImageKey)) {
@@ -820,6 +838,18 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
             ?
         nutritional_image
             : '',
+        NewDatabaseHelper.EDITEDFRONTIMAGE: front_image_edited!=null?
+            front_image_edited:'',
+        NewDatabaseHelper.EDITEDBACKIMAGE: back_image_edited!=null?
+        back_image_edited:'',
+        NewDatabaseHelper.EDITEDLEFTIMAGE: left_image_edited!=null?
+        left_image_edited:'',
+        NewDatabaseHelper.EDITEDRIGHTIMAGE: right_image_edited!=null?
+        right_image_edited:'',
+        NewDatabaseHelper.EDITEDTOPIMAGE: top_image_edited!=null?
+        top_image_edited:'',
+        NewDatabaseHelper.EDITEDBOTTOMIMAGE: bottom_image_edited!=null?
+        bottom_image_edited:'',
 
       };
 

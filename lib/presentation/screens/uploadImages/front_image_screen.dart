@@ -98,7 +98,8 @@ class _FrontImageScreenState extends State<FrontImageScreen>
       }else{
         //isImageProcessing = false;
         //ProgressLoader.hide();
-        EasyLoading.showError('Please upload again..');
+        ClickItConstants.frontImageProcessing = false;
+        EasyLoading.showError('Low resolution.Please upload again.');
         setState(() {
           isImageProcessing = false;
           productImage = frontImageBackup;
@@ -1033,9 +1034,12 @@ Future<Uint8List?> getCompressedImage(File? productImage) async {
 
     if (response.statusCode == 200) {
       return await response.stream.toBytes();
-    } else {
+    } else if(response.statusCode == 400){
       print(response.reasonPhrase);
-      EasyLoading.showError(response.reasonPhrase.toString());
+      EasyLoading.showError("Low resolution image");
+      return null;
+    }else{
+      //EasyLoading.showError("Low resolution image");
       return null;
     }
   } on Exception catch (e) {

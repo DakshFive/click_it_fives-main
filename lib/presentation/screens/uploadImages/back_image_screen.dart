@@ -96,7 +96,8 @@ class _BackImageScreenState extends State<BackImageScreen>
       }else{
 
        // ProgressLoader.hide();
-        EasyLoading.showError('Please upload again..');
+        ClickItConstants.frontImageProcessing = false;
+        EasyLoading.showError('Low resolution.Please upload again.');
         setState(() {
           isImageProcessing = false;
           productImage = frontImageBackup;

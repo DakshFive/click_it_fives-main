@@ -216,7 +216,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
 
                                                   if (index == 0) {
                                                     if(allRowsList[mainIndex]
-                                                    ['frontImage'] !=
+                                                    ['editedfrontImage'] !=
                                                     ''){
                                                       return Column(
                                                           mainAxisAlignment: MainAxisAlignment.start,
@@ -231,10 +231,10 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                               child: ClipRRect(
                                                                 borderRadius: BorderRadius.circular(4),
                                                                 child: allRowsList[mainIndex]
-                                                                ['frontImage'] !=
+                                                                ['editedfrontImage'] !=
                                                                     ''
                                                                     ? Image.file(
-                                                                  File(allRowsList[mainIndex]['frontImage'],
+                                                                  File(allRowsList[mainIndex]['editedfrontImage'],
                                                                   ),
                                                                   fit: BoxFit.scaleDown,
                                                                 )
@@ -263,7 +263,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
 
                                                   } else if (index == 1) {
                                                     if(allRowsList[mainIndex]
-                                                    ['backImage'] !=
+                                                    ['editedbackImage'] !=
                                                         '') {
                                                       return Column(
                                                         mainAxisAlignment: MainAxisAlignment.start,
@@ -280,12 +280,12 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                               borderRadius: BorderRadius
                                                                   .circular(4),
                                                               child: allRowsList[mainIndex]
-                                                              ['backImage'] !=
+                                                              ['editedbackImage'] !=
                                                                   ''
                                                                   ? Image.file(
                                                                   File(
                                                                       allRowsList[mainIndex]
-                                                                      ['backImage']),
+                                                                      ['editedbackImage']),
                                                                 fit: BoxFit.scaleDown,
                                                               )
 
@@ -310,7 +310,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                     }
                                                   } else if (index == 2) {
                                                     if(allRowsList[mainIndex]
-                                                    ['leftImage'] !=
+                                                    ['editedleftImage'] !=
                                                         ''){
                                                       return Column(
                                                           mainAxisAlignment: MainAxisAlignment.start,
@@ -325,10 +325,10 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                               child: ClipRRect(
                                                                 borderRadius: BorderRadius.circular(4),
                                                                 child: allRowsList[mainIndex]
-                                                                ['leftImage'] !=
+                                                                ['editedleftImage'] !=
                                                                     ''
                                                                     ? Image.file(File(allRowsList[mainIndex]
-                                                                ['leftImage']),
+                                                                ['editedleftImage']),
                                                                   fit: BoxFit.scaleDown,
                                                                 )
 
@@ -354,7 +354,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
 
                                                   } else if (index == 3) {
                                                     if(allRowsList[mainIndex]
-                                                    ['rightImage'] !=
+                                                    ['editedrightImage'] !=
                                                         ''){
                                                       return Column(
                                                           mainAxisAlignment: MainAxisAlignment.start,
@@ -369,10 +369,10 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                               child: ClipRRect(
                                                                 borderRadius: BorderRadius.circular(4),
                                                                 child: allRowsList[mainIndex]
-                                                                ['rightImage'] !=
+                                                                ['editedrightImage'] !=
                                                                     ''
                                                                     ? Image.file(File(allRowsList[mainIndex]
-                                                                ['rightImage']),
+                                                                ['editedrightImage']),
                                                                   fit: BoxFit.scaleDown,
                                                                 )
 
@@ -398,7 +398,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
 
                                                   } else if (index == 4) {
                                                     if(allRowsList[mainIndex]
-                                                    ['topImage'] !=
+                                                    ['editedtopImage'] !=
                                                         ''){
                                                       return Column(
                                                           mainAxisAlignment: MainAxisAlignment.start,
@@ -413,10 +413,10 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                               child: ClipRRect(
                                                                 borderRadius: BorderRadius.circular(4),
                                                                 child: allRowsList[mainIndex]
-                                                                ['topImage'] !=
+                                                                ['editedtopImage'] !=
                                                                     ''
                                                                     ? Image.file(File(allRowsList[mainIndex]
-                                                                ['topImage']),
+                                                                ['editedtopImage']),
                                                                   fit: BoxFit.scaleDown,
                                                                 )
 
@@ -442,7 +442,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
 
                                                   } else if (index == 5) {
                                                     if(allRowsList[mainIndex]
-                                                    ['bottomImage'] !=
+                                                    ['editedbottomImage'] !=
                                                         ''){
                                                       return Column(
                                                           mainAxisAlignment: MainAxisAlignment.start,
@@ -457,10 +457,10 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
                                                               child: ClipRRect(
                                                                 borderRadius: BorderRadius.circular(4),
                                                                 child: allRowsList[mainIndex]
-                                                                ['bottomImage'] !=
+                                                                ['editedbottomImage'] !=
                                                                     ''
                                                                     ? Image.file(File(allRowsList[mainIndex]
-                                                                ['bottomImage']),
+                                                                ['editedbottomImage']),
                                                                   fit: BoxFit.scaleDown,
                                                                 )
 

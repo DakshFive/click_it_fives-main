@@ -92,7 +92,8 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
       }else{
         //isImageProcessing = false;
        // ProgressLoader.hide();
-        EasyLoading.showError('Please upload again..');
+        ClickItConstants.frontImageProcessing = false;
+        EasyLoading.showError('Low resolution.Please upload again.');
         setState(() {
           isImageProcessing = false;
           productImage = frontImageBackup;

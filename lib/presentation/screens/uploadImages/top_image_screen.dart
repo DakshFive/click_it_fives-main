@@ -81,12 +81,12 @@ class _TopImageScreenState extends State<TopImageScreen>
       isImageProcessing = true;
       ClickItConstants.topImageProcessing = true;
 
-      /*if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
+      if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
         if(!ClickItConstants.showDialogProceed) {
           ClickItConstants.showProceedDialog(context);
           ClickItConstants.showDialogProceed = true;
         }
-      }*/
+      }
 
       compressedBottomImage = await ClickItApis.getCompressedImage(productImage!.path);
       if(compressedBottomImage!=null){
@@ -94,7 +94,8 @@ class _TopImageScreenState extends State<TopImageScreen>
       }else{
        // isImageProcessing = false;
       //  ProgressLoader.hide();
-        EasyLoading.showError('Please upload again..');
+        ClickItConstants.frontImageProcessing = false;
+        EasyLoading.showError('Low resolution.Please upload again.');
         setState(() {
           isImageProcessing = false;
           productImage = frontImageBackup;
