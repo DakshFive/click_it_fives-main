@@ -40,6 +40,8 @@ class ClickItConstants{
 
   static bool isDoneNewHomeCoach = false;
 
+  static bool isShowRatingOnce = false;
+
   static reloadSharedPreference() async{
     bool isShowProceedDialog = false;
 

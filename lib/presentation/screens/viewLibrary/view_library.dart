@@ -30,8 +30,8 @@ class _ViewLibraryScreenState extends State<ViewLibraryScreen>{
   @override
   void initState() {
     //_isLoadMoreRunning = true;
-    dynamic uid = AppPreferences.getValueShared('uid');
-    dynamic roleid = AppPreferences.getValueShared('role_id');
+    dynamic uid = AppPreferences.getValueShared('uid')??"0";
+    dynamic roleid = AppPreferences.getValueShared('role_id')??0;
     dynamic companyId =  AppPreferences.getValueShared('company_id');
 
     ClickItApis.getViewLibraryData(page,uid,companyId,roleid).then(

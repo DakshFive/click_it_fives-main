@@ -43,7 +43,7 @@ class ClickItApis{
       request.files
           .add(await http.MultipartFile.fromPath('image', path));
 
-      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 15));
+      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 25));
 
       if (response.statusCode == 200) {
         return await response.stream.toBytes();

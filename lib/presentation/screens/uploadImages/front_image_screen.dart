@@ -286,6 +286,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
   @override
   void dispose() {
     EasyLoading.dismiss();
+    VisibleProgressLoader.hide();
     //ProgressLoader.hide();
     super.dispose();
   }
@@ -978,7 +979,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
 Future<Uint8List?> removeImagebackground(File? productImage) async {
   try {
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://20.204.169.52:8090/backgroundRemoval'));
+        'POST', Uri.parse('http://4.240.61.161:8900/backgroundRemoval'));
     request.files
         .add(await http.MultipartFile.fromPath('image', productImage!.path));
 
@@ -1000,7 +1001,7 @@ Future<Uint8List?> removeImagebackground(File? productImage) async {
 Future<String?> getImageResolution(File? productImage) async {
   try {
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://20.204.169.52:8090/backgroundRemovalScore'));
+        'POST', Uri.parse('http://4.240.61.161:8900/backgroundRemovalScore'));
     request.files
         .add(await http.MultipartFile.fromPath('score', productImage!.path));
 
@@ -1041,4 +1042,6 @@ Future<Uint8List?> getCompressedImage(File? productImage) async {
     EasyLoading.showError(e.toString());
     return null;
   }
+
+
 }

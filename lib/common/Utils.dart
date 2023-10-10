@@ -116,6 +116,11 @@ class Utils {
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      if(Platform.isAndroid){
+        await Geolocator.openLocationSettings();
+      }else{
+        await Geolocator.openAppSettings();
+      }
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
@@ -203,6 +208,7 @@ class Utils {
 
   static askLocationPermission() async{
     LocationPermission permission;
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -214,6 +220,20 @@ class Utils {
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
         return Future.error('Location permissions are denied');
+      }
+      if(permission == LocationPermission.whileInUse||permission == LocationPermission.always){
+        if (!serviceEnabled) {
+          if(Platform.isAndroid){
+            await Geolocator.openLocationSettings();
+          }else{
+            await Geolocator.openAppSettings();
+          }
+
+          // Location services are not enabled don't continue
+          // accessing the position and request users of the
+          // App to enable the location services.
+          return Future.error('Location services are disabled.');
+        }
       }
     }
   }

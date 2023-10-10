@@ -514,7 +514,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
 Future<String?> getImageResolution(File? productImage) async {
   try {
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://20.204.169.52:8090/backgroundRemovalScore'));
+        'POST', Uri.parse('http://4.240.61.161:8900/backgroundRemovalScore'));
     request.files
         .add(await http.MultipartFile.fromPath('score', productImage!.path));
 

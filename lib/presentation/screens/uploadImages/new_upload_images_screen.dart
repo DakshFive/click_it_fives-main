@@ -679,6 +679,8 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
       }
     });
 
+    ClickItConstants.isShowRatingOnce = isShowRating;
+
     Navigator.pushAndRemoveUntil(
     context,
     MaterialPageRoute(
@@ -839,7 +841,7 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
             textColor: Colors.white,
             fontSize: 16.0,
           );
-
+              ClickItConstants.isShowRatingOnce = isShowRating;
           //send the user to home screen
           Navigator.pushAndRemoveUntil(
               context,

@@ -1054,6 +1054,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
     EasyLoading.dismiss();
     ClickItConstants.isShowSavedSyncEasyLoading = false;
     var isShowRating = await AppPreferences.getValueShared('isShowRating');
+    ClickItConstants.isShowRatingOnce = isShowRating;
     Navigator.pushAndRemoveUntil(
       context,
       PageTransition(
@@ -1134,6 +1135,7 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
             //EasyLoading.showSuccess('Image Uploaded Successfully');
             deleteLocalFiles();
             var isShowRating = AppPreferences.getValueShared('isShowRating');
+            ClickItConstants.isShowRatingOnce = isShowRating;
             Navigator.pushAndRemoveUntil(
               context,
               PageTransition(

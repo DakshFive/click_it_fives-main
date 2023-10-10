@@ -58,16 +58,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
     getCompanyDetails();
 
-    if(widget.isShowRatingDialog){
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        showDialog(
-          useSafeArea: true,
-          context: context,
-          barrierDismissible: true, // set to false if you want to force a rating
-          builder: (context) => RatingScreenCustom(),
-        );
-      });
+    bool isShowRating =
+         AppPreferences.getValueShared('isShowRating') == null
+        ? true : AppPreferences.getValueShared('isShowRating');
+
+    if(ClickItConstants.isShowRatingOnce){
+      if(isShowRating){
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          showDialog(
+            useSafeArea: true,
+            context: context,
+            barrierDismissible: true, // set to false if you want to force a rating
+            builder: (context) => RatingScreenCustom(),
+          );
+        });
+        ClickItConstants.isShowRatingOnce = false;
+      }
+
     }
+
 
     AppPreferences.addSharedPreferences(false, ClickItConstants.frontImageUploadedKey);
     AppPreferences.addSharedPreferences(false, ClickItConstants.backImageUploadedKey);
@@ -284,6 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               } else {
                                 //in manufacturer the barcodes are not validated
                                 //D-Here add new change
+                                VisibleProgressLoader.hide();
                                 Fluttertoast.showToast(
                                     msg: 'This is not your GTN. Please scan your GTN');
                               }
@@ -298,6 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             }
                           } else {
+                            VisibleProgressLoader.hide();
                             Fluttertoast.showToast(
                                 msg: 'Scanned Barcode is invalid');
                           }
@@ -873,13 +884,17 @@ Future decodeQrCode(String value) async {
   request.headers.addAll({"Content-Type": "application/json"});
   http.StreamedResponse response = await request.send();
 
-  if (response.statusCode == 200) {
-    final glnData = await response.stream.bytesToString();
-
-    var glnValue = jsonDecode(glnData)['01']['value'];
+  try{
+    if (response.statusCode == 200) {
+      final glnData = await response.stream.bytesToString();
+      var glnValue = jsonDecode(glnData)['01']['value'];
+      VisibleProgressLoader.hide();
+      return glnValue;
+    }
+  }catch(e){
     VisibleProgressLoader.hide();
-    return glnValue;
   }
+
   VisibleProgressLoader.hide();
   return "";
 }
@@ -1012,6 +1027,13 @@ class _AppDrawerState extends State<AppDrawer> {
     );
 
 
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    VisibleProgressLoader.hide();
+    super.dispose();
   }
 
 

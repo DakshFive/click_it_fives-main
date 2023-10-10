@@ -52,15 +52,6 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
   ];
 
   void _onItemTapped(int index) {
-    /*if(index!=1) {
-      if (ClickItConstants.isShowSavedSyncEasyLoading) {
-        EasyLoading.dismiss();
-      }
-    }else{
-      if (ClickItConstants.isShowSavedSyncEasyLoading) {
-        EasyLoading.show(status: "Uploading...");
-      }
-    }*/
     if(index==1){
       color = Colors.deepOrange;
     }else{
