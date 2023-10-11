@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:click_it_app/presentation/screens/sidepanel/contact_screen.dart';
 import 'package:click_it_app/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -196,10 +198,18 @@ class _SettingsScreenState extends State<SettingsScreen>{
                   ),
                    ListTile(
                     title: Center(
-                      child:  Text('Version ${ClickItConstants.appVersion}',
+                      child:
+                          Platform.isAndroid?
+                      Text('Version ${ClickItConstants.appVersion}',
                         style: TextStyle(color: Colors.black
                             ,fontWeight: FontWeight.bold,
-                            backgroundColor: Colors.deepOrange.withAlpha(70)),),
+                            backgroundColor: Colors.deepOrange.withAlpha(70)),)
+                      :Text('Version ${ClickItConstants.appVersionIOS}',
+                            style: TextStyle(color: Colors.black
+                                ,fontWeight: FontWeight.bold,
+                                backgroundColor: Colors.deepOrange.withAlpha(70)),
+                          )
+                      ,
                     ),
                   ),
                 ],

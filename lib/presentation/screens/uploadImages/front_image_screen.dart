@@ -1023,7 +1023,7 @@ Future<String?> getImageResolution(File? productImage) async {
   }
 }
 
-Future<Uint8List?> getCompressedImage(File? productImage) async {
+/*Future<Uint8List?> getCompressedImage(File? productImage) async {
   try {
     var request = http.MultipartRequest(
         'POST', Uri.parse('http://4.240.61.161:4002/compress'));
@@ -1048,4 +1048,4 @@ Future<Uint8List?> getCompressedImage(File? productImage) async {
   }
 
 
-}
+}*/
