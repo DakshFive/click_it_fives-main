@@ -2,7 +2,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-
+import 'package:http/http.dart' as http;
 import 'package:click_it_app/preferences/app_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:image_size_getter/file_input.dart';
@@ -103,7 +103,7 @@ class ClickItConstants{
   }
 
   static Future<String?> saveCompressedImageToDevice(Uint8List? compressedImage) async{
-    if (compressedImage != null) {
+   /* if (compressedImage != null) {
       Random random = Random();
       int randomNumber = random.nextInt(10000);
       final directory = await getTemporaryDirectory();
@@ -113,6 +113,75 @@ class ClickItConstants{
       final File imageFile = File(imagePath);
       // Save the provided Uint8List image to the device
       await imageFile.writeAsBytes(compressedImage);
+
+      return imageFile.path;
+    }
+    return null;*/
+    if (compressedImage != null) {
+      Random random = Random();
+      int randomNumber = random.nextInt(10000);
+
+      var tempDir = await getTemporaryDirectory();
+      final myAppPath = '${tempDir.path}/clickit';
+
+      final res = await Directory(myAppPath).create(recursive: true);
+
+      final imagePath = '${res.path}/${randomNumber}.png';
+
+      final File imageFile = File(imagePath);
+      // Save the provided Uint8List image to the device
+      await imageFile.writeAsBytes(compressedImage);
+
+      return imageFile.path;
+    }
+    return null;
+  }
+
+
+  /*static Future<String?> saveCompressedImageToDeviceTwo(Uint8List? compressedImage) async{
+    if (compressedImage != null) {
+      Random random = Random();
+      int randomNumber = random.nextInt(10000);
+
+
+      var tempDir = await getTemporaryDirectory();
+      var tempDirPath = tempDir.path;
+      final myAppPath = '$tempDirPath/clickit';
+      final res = await Directory(myAppPath).create(recursive: true);
+
+      final imagePath = '${res.path}/${randomNumber}.png';
+
+      final File imageFile = File(imagePath);
+      // Save the provided Uint8List image to the device
+      await imageFile.writeAsBytes(compressedImage);
+
+      return imageFile.path;
+    }
+    return null;
+  }*/
+
+
+  static Future<String?> saveImageToDevice(Uint8List? backgroundRemovedImage,
+      {String? imageUrl}) async {
+    if (backgroundRemovedImage != null || imageUrl != null) {
+      Random random = Random();
+      int randomNumber = random.nextInt(10000);
+      final directory = await getTemporaryDirectory();
+      final myAppPath = '${directory.path}/clickit';
+      final res = await Directory(myAppPath).create(recursive: true);
+
+      final imagePath = '${res.path}/${randomNumber}.png';
+
+      final File imageFile = File(imagePath);
+
+      if (backgroundRemovedImage != null) {
+        // Save the provided Uint8List image to the device
+        await imageFile.writeAsBytes(backgroundRemovedImage);
+      } else if (imageUrl != null) {
+        // Download the image from the provided URL and save it to the device
+        final http.Response response = await http.get(Uri.parse(imageUrl));
+        await imageFile.writeAsBytes(response.bodyBytes);
+      }
 
       return imageFile.path;
     }

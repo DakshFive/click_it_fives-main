@@ -195,7 +195,7 @@ class _RightImageScreenState extends State<RightImageScreen>
         }
 
         bckgroundRemovedImagePath =
-            await _saveImageToDevice(backgroundRemovedImage);
+            await ClickItConstants.saveImageToDevice(backgroundRemovedImage);
 
         //save the data in shared preferences
         AppPreferences.addSharedPreferences(true, ClickItConstants.rightImageUploadedKey);

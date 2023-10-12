@@ -94,7 +94,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
       //ProgressLoader.show(context);
       compressedFrontImage = await ClickItApis.getCompressedImage(productImage!.path);
       if(compressedFrontImage!=null){
-        compressedFrontImagePath = await _saveCompressedImageToDevice(compressedFrontImage);
+        compressedFrontImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedFrontImage);
       }else{
         //isImageProcessing = false;
         //ProgressLoader.hide();
@@ -201,7 +201,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
         }
 
         bckgroundRemovedImagePath =
-            await _saveImageToDevice(backgroundRemovedImage);
+            await ClickItConstants.saveImageToDevice(backgroundRemovedImage);
 
         //save the data in shared preferences
         AppPreferences.addSharedPreferences(true, ClickItConstants.frontImageUploadedKey);
@@ -292,7 +292,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
     super.dispose();
   }
 
-  Future<String?> _saveImageToDevice(Uint8List? backgroundRemovedImage,
+  /*Future<String?> _saveImageToDevice(Uint8List? backgroundRemovedImage,
       {String? imageUrl}) async {
     if (backgroundRemovedImage != null || imageUrl != null) {
       Random random = Random();
@@ -315,9 +315,9 @@ class _FrontImageScreenState extends State<FrontImageScreen>
       return imageFile.path;
     }
     return null;
-  }
+  }*/
 
-  Future<String?> _saveCompressedImageToDevice(Uint8List? compressedImage) async{
+  /*Future<String?> _saveCompressedImageToDevice(Uint8List? compressedImage) async{
     if (compressedImage != null) {
       Random random = Random();
       int randomNumber = random.nextInt(10000);
@@ -332,7 +332,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
       return imageFile.path;
     }
     return null;
-  }
+  }*/
 
   Future<dynamic> bottomsheetUploads(BuildContext context,)
   {
@@ -845,7 +845,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
 
     //if (productImage == null) {
       print('product image is null');
-      String? imagePath = await _saveImageToDevice(backgroundRemovedImage,
+      String? imagePath = await ClickItConstants.saveImageToDevice(backgroundRemovedImage,
           imageUrl: serverImagePath);
 
       await AppPreferences.addSharedPreferences(imagePath,imageType);
@@ -895,7 +895,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
 
     if (productImagePath == null) {
       print('product image is null');
-      String? imagePath = await _saveImageToDevice(backgroundRemovedImage,
+      String? imagePath = await ClickItConstants.saveImageToDevice(backgroundRemovedImage,
           imageUrl: serverImagePath);
 
       await AppPreferences.addSharedPreferences(imagePath,imageType);

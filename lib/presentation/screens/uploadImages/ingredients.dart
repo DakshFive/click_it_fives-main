@@ -414,7 +414,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
-  void getSavedData() async {
+  /*void getSavedData() async {
     await AppPreferences.init();
 
     print('getting the saved data');
@@ -471,7 +471,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
     }
 
     setState(() {});
-  }
+  }*/
 
   Future<String?> _saveImageToDevice(String? imageUrl) async {
     Random random = Random();

@@ -230,12 +230,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 GestureDetector(
                   // ignore: avoid_print
-                  onTap: () => _scanBarcode().then(
-                    (value) async{
-                      if (value != null) {
-                        var glnValue = value;
-                        if(value.contains('http')) {
-                          Utils.isConnected().then((isConnected) async{
+                  onTap: () {
+                    /*Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.leftToRight,
+                        child: NewUploadImagesScreen(gtin: "8906000995594"),
+                      ),
+                    );*/
+                    _scanBarcode().then(
+                          (value) async{
+                        if (value != null) {
+                          var glnValue = value;
+                          if(value.contains('http')) {
+                            Utils.isConnected().then((isConnected) async{
                               if(isConnected){
                                 VisibleProgressLoader.show(context);
                                 glnValue = await decodeQrCode(value);
@@ -243,23 +251,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Fluttertoast.showToast(
                                     msg: 'Please check your internet');
                               }
-                          });
+                            });
 
-                        }
+                          }
 
-                        if(glnValue!=AppPreferences.getValueShared('currentGtn')) {
+                          if(glnValue!=AppPreferences.getValueShared('currentGtn')) {
 
-                          await ClickItConstants.reloadSharedPreference();
+                            await ClickItConstants.reloadSharedPreference();
 
-                          AppPreferences.addSharedPreferences(false, ClickItConstants.frontImageUploadedKey);
-                          AppPreferences.addSharedPreferences(false, ClickItConstants.backImageUploadedKey);
-                          AppPreferences.addSharedPreferences(false, ClickItConstants.leftImageUploadedKey);
-                          AppPreferences.addSharedPreferences(false, ClickItConstants.rightImageUploadedKey);
-                          AppPreferences.addSharedPreferences(false, ClickItConstants.topImageUploadedKey);
-                          AppPreferences.addSharedPreferences(false, ClickItConstants.bottomImageUploadedKey);
-                          AppPreferences.addSharedPreferences(false, ClickItConstants.nutrientsUploadedImageKey);
-                          AppPreferences.addSharedPreferences(false, ClickItConstants.ingredientImageUploadedKey);
-                         }
+                            AppPreferences.addSharedPreferences(false, ClickItConstants.frontImageUploadedKey);
+                            AppPreferences.addSharedPreferences(false, ClickItConstants.backImageUploadedKey);
+                            AppPreferences.addSharedPreferences(false, ClickItConstants.leftImageUploadedKey);
+                            AppPreferences.addSharedPreferences(false, ClickItConstants.rightImageUploadedKey);
+                            AppPreferences.addSharedPreferences(false, ClickItConstants.topImageUploadedKey);
+                            AppPreferences.addSharedPreferences(false, ClickItConstants.bottomImageUploadedKey);
+                            AppPreferences.addSharedPreferences(false, ClickItConstants.nutrientsUploadedImageKey);
+                            AppPreferences.addSharedPreferences(false, ClickItConstants.ingredientImageUploadedKey);
+                          }
 
 
                           if ((glnValue.length == 13 || glnValue.length==14) && isNumeric(glnValue)) {
@@ -313,25 +321,30 @@ class _HomeScreenState extends State<HomeScreen> {
                                 msg: 'Scanned Barcode is invalid');
                           }
 
-                      }
+                        }else{
+                          Fluttertoast.showToast(msg: 'Please scan again');
 
-                      // value == -1
-                      //     ? Navigator.pop(context)
-                      //     : Navigator.push(
-                      //         context,
-                      //         PageTransition(
-                      //           type: PageTransitionType.rightToLeft,
-                      //           child: UploadImagesScreen(
-                      //             scanResult: value,
-                      //           ),
-                      //         ));
-                    },
-                  ),
+                        }
+
+                        // value == -1
+                        //     ? Navigator.pop(context)
+                        //     : Navigator.push(
+                        //         context,
+                        //         PageTransition(
+                        //           type: PageTransitionType.rightToLeft,
+                        //           child: UploadImagesScreen(
+                        //             scanResult: value,
+                        //           ),
+                        //         ));
+                      },
+                    );
+                  },
+
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     margin: const EdgeInsets.only(left: 10, right: 10),
                     child: Row(
-                      key:HomeCoach.getKey(),
+                      key:HomeCoach.scanBarcodeKey,
                       children: const [
                         Icon(
                           Icons.camera_alt_outlined,

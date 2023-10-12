@@ -1407,9 +1407,21 @@ class _SyncServerScreenNewState extends State<SyncServerScreenNew> {
 }
 
  Future<void> deleteLocalFiles() async {
-   final directory = await getTemporaryDirectory();
+   try{
+     final directory = await getTemporaryDirectory();
+     print(directory.toString());
+     Directory myDir = Directory(directory.path + "/clickit");
+     print(myDir.toString());
+     myDir.deleteSync(recursive: true);
 
-   directory.deleteSync(recursive: true);
+     if(Platform.isAndroid){
+       directory.deleteSync(recursive: true);
+       directory.create();
+     }
+     //directory.deleteSync(recursive: true);
+     //directory.create();
 
-   directory.create();
+   }catch(e){
+
+   }
  }

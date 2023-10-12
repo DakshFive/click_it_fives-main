@@ -889,12 +889,28 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
 
   Future<void> deleteAllLocallySavedFiles() async{
 
-    final directory = await getTemporaryDirectory();
+    try{
+          final directory = await getTemporaryDirectory();
+          print(directory.toString());
+          Directory myDir = Directory(directory.path + "/clickit");
+          print(myDir.toString());
+          myDir.deleteSync(recursive: true);
 
-    directory.deleteSync(recursive: true);
-    
-    directory.create();
+          if(Platform.isAndroid){
+            directory.deleteSync(recursive: true);
+            directory.create();
+          }
+          //directory.deleteSync(recursive: true);
+          //directory.create();
+
+    }catch(e){
+
+    }
+
+
 
   }
+
+
 
 }

@@ -196,7 +196,7 @@ class _TopImageScreenState extends State<TopImageScreen>
 
 
         bckgroundRemovedImagePath =
-            await _saveImageToDevice(backgroundRemovedImage);
+            await ClickItConstants.saveImageToDevice(backgroundRemovedImage);
 
         //save the data in shared preferences
         AppPreferences.addSharedPreferences(true, ClickItConstants.topImageUploadedKey);
