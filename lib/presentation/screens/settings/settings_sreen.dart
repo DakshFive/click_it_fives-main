@@ -164,10 +164,21 @@ class _SettingsScreenState extends State<SettingsScreen>{
                   ),
                   Card(
                     child: ListTile(
-                      onTap: () => Share.share(
-                        'check out my website https://www.gs1india.org/datakart',
-                        subject: 'Please download ClickIt app',
-                      ),
+                      onTap: () {
+                        if(Platform.isAndroid){
+                          Share.share(
+                            'https://play.google.com/store/apps/details?id=com.gs1india.clickIt',
+                            subject: 'Please download ClickIt app',
+                          );
+                        }else{
+                          Share.share(
+                            'https://apps.apple.com/in/app/clickit-app/id1621992445',
+                            subject: 'Please download ClickIt app',
+                          );
+                        }
+
+                      }
+                        ,
                       title: Row(
                           children: [
                             Icon(Icons.share,color: Colors.black,),

@@ -61,10 +61,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextFormField(
                         controller: userNameController,
                         keyboardType: TextInputType.emailAddress,
-                        inputFormatters: <TextInputFormatter>[
+                        /*inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.allow(
-                              RegExp(r"^[a-zA-Z0-9_]*$")),
-                        ],
+                              RegExp(r"^[a-zA-Z0-9_@]*$")),
+                        ],*/
                         decoration: const InputDecoration(
                           labelText: 'Username',
                         ),
@@ -83,8 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           labelText: 'Password',
                         ),
                         validator: (String? value) {
-                          return (value != null && value.contains('@'))
-                              ? 'Do not use the @ char.'
+                          return (value != null)
+                              ? 'Please enter password'
                               : null;
                         },
                       ),
@@ -202,11 +202,11 @@ class _LoginScreenState extends State<LoginScreen> {
         print(data['source']);
         print(data['role_id']);
         print(data['uid']);
-        data['source'] == 'retailer'
+        data['source'] == 'member'
             ? await AppPreferences.addSharedPreferences(
-                data['company_id'], 'company_id')
+            data['company_id'][0], 'company_id')
             : await AppPreferences.addSharedPreferences(
-                data['company_id'][0], 'company_id');
+            data['company_id'], 'company_id');
         await AppPreferences.addSharedPreferences(data['source'], 'source');
         await AppPreferences.addSharedPreferences(data['role_id'], 'role_id');
         await AppPreferences.addSharedPreferences(data['uid'], 'uid');

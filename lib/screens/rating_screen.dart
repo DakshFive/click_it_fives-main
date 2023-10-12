@@ -168,7 +168,7 @@ class _RatingScreenCustomState extends State<RatingScreenCustom>{
       print('open actual store listing');
       // TODO: use your own store ids
       _inAppReview.openStoreListing(
-          appStoreId: '<your app store id>',
+          appStoreId: '1621992445',
         );
     }
   }
