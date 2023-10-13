@@ -1,3 +1,4 @@
+import 'package:click_it_app/common/Utils.dart';
 import 'package:click_it_app/presentation/screens/viewLibrary/item_view_library.dart';
 import 'package:click_it_app/presentation/screens/viewLibrary/view_library_response.dart';
 import 'package:click_it_app/utils/apis.dart';
@@ -25,26 +26,41 @@ class _ViewLibraryScreenState extends State<ViewLibraryScreen>{
   bool _isLoadMoreRunning = true;
 
   bool showProgressBar = true;
-
+  bool isConnected = true;
 
   @override
   void initState() {
     //_isLoadMoreRunning = true;
+
     dynamic uid = AppPreferences.getValueShared('uid')??"0";
     dynamic roleid = AppPreferences.getValueShared('role_id')??0;
     dynamic companyId =  AppPreferences.getValueShared('company_id');
 
-    ClickItApis.getViewLibraryData(page,uid,companyId,roleid).then(
-            (value) {
+    Utils.isConnected().then((value){
+      if(value) {
+        ClickItApis.getViewLibraryData(page,uid,companyId,roleid).then(
+                (value) {
               viewLibraryData = value!;
               if (mounted) {
                 setState(() {
+                  isConnected = true;
                   showProgressBar = false;
                   _isLoadMoreRunning = false;
                 });
               }
             }
-    );
+        );
+      }else{
+        if(mounted) {
+          setState(() {
+            isConnected = false;
+          });
+        }
+      }
+
+
+
+    });
 
     _scController.addListener(() {
       if (_scController.position.pixels ==
@@ -82,6 +98,7 @@ class _ViewLibraryScreenState extends State<ViewLibraryScreen>{
         ],
       )),
       body:
+          isConnected?
           showProgressBar?
           Center(
             child: CircularProgressIndicator(),
@@ -113,7 +130,9 @@ class _ViewLibraryScreenState extends State<ViewLibraryScreen>{
               ),
           ]
         ),
-      ),
+      )
+              : Center(
+            child: Text('Please connect to internet to load data'),),
     );
   }
 

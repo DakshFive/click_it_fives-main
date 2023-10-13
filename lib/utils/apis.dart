@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -18,22 +19,28 @@ class ClickItApis{
     }.map((key, value) => MapEntry(key, value.toString()));
 
     var uri = Uri.https('gs1datakart.org', '/api/v501/recent_uploaded_images', queryParams);
-    final response = await http.post(
-      uri,
-      headers: {"content-type": "application/json"},
-    );
 
-    if (response.statusCode == 200) {
-      print(utf8.decoder.convert(response.bodyBytes));
-      //print(json.decode(response.body));
-      try{
-        return ViewLibraryResponse.fromJson(json.decode(utf8.decoder.convert(response.bodyBytes))).data;
-      } catch(e){
+    try{
+      final response = await http.post(
+        uri,
+        headers: {"content-type": "application/json"},
+      ).timeout(Duration(seconds: 25));
+
+      if (response.statusCode == 200) {
+        print(utf8.decoder.convert(response.bodyBytes));
+        //print(json.decode(response.body));
+        try{
+          return ViewLibraryResponse.fromJson(json.decode(utf8.decoder.convert(response.bodyBytes))).data;
+        } catch(e){
+          return [];
+        }
+      } else {
         return [];
       }
-    } else {
-      return [];
+    }on TimeoutException catch(e){
+      return[];
     }
+
   }
 
   static Future<Uint8List?> getCompressedImage(String path) async {
