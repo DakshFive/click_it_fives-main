@@ -1,40 +1,35 @@
 import 'dart:convert';
-import 'dart:ui';
-
+import 'dart:io';
 import 'package:click_it_app/app_tutorial_coach/tutorial_home_coach.dart';
 import 'package:click_it_app/common/Utils.dart';
 import 'package:click_it_app/preferences/app_preferences.dart';
-import 'package:click_it_app/presentation/screens/home/new_uploadscreen.dart';
-import 'package:click_it_app/presentation/screens/home/sync_server_screen.dart';
-import 'package:click_it_app/presentation/screens/home/upload_images_screen.dart';
-
 import 'package:click_it_app/presentation/screens/login/login_screen.dart';
 import 'package:click_it_app/presentation/screens/notification/notification_screen.dart';
 import 'package:click_it_app/presentation/screens/sidepanel/about_us_screen.dart';
 import 'package:click_it_app/presentation/screens/sidepanel/contact_screen.dart';
 import 'package:click_it_app/presentation/screens/sidepanel/disclaimer_screen.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/new_upload_images_screen.dart';
-import 'package:click_it_app/presentation/screens/uploadImages/sync_server_screen_new.dart';
-import 'package:click_it_app/presentation/widgets/bottom_logo_widget.dart';
 import 'package:click_it_app/presentation/widgets/logo_widget.dart';
 import 'package:click_it_app/screens/rating_screen.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:logger/logger.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../../../common/loader/visible_progress_loaded.dart';
 import '../../../utils/app_images.dart';
 import '../../../utils/constants.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key, required this.isShowRatingDialog}) : super(key: key);
+  const HomeScreen({Key? key, required this.isShowRatingDialog})
+      : super(key: key);
   final isShowRatingDialog;
 
   @override
@@ -44,57 +39,51 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  //late TutorialCoachMark tutorialCoachMark;
-
-  //GlobalKey scanBarcodeKey = GlobalKey();
-
   String? companyName, companyId;
-
+  final Logger _logger = Logger(
+    printer: PrettyPrinter(),
+  );
   @override
   void initState() {
-    // TODO: implement initState
-    /*createTutorial();
-      Future.delayed(Duration.zero, showTutorial);*/
-
     getCompanyDetails();
 
-    bool isShowRating =
-         AppPreferences.getValueShared('isShowRating') == null
-        ? true : AppPreferences.getValueShared('isShowRating');
+    bool isShowRating = AppPreferences.getValueShared('isShowRating') == null
+        ? true
+        : AppPreferences.getValueShared('isShowRating');
 
-    if(ClickItConstants.isShowRatingOnce){
-      if(isShowRating){
+    if (ClickItConstants.isShowRatingOnce) {
+      if (isShowRating) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           showDialog(
             useSafeArea: true,
             context: context,
-            barrierDismissible: true, // set to false if you want to force a rating
+            barrierDismissible:
+                true, // set to false if you want to force a rating
             builder: (context) => RatingScreenCustom(),
           );
         });
         ClickItConstants.isShowRatingOnce = false;
       }
-
     }
 
+    AppPreferences.addSharedPreferences(
+        false, ClickItConstants.frontImageUploadedKey);
+    AppPreferences.addSharedPreferences(
+        false, ClickItConstants.backImageUploadedKey);
+    AppPreferences.addSharedPreferences(
+        false, ClickItConstants.leftImageUploadedKey);
+    AppPreferences.addSharedPreferences(
+        false, ClickItConstants.rightImageUploadedKey);
+    AppPreferences.addSharedPreferences(
+        false, ClickItConstants.topImageUploadedKey);
+    AppPreferences.addSharedPreferences(
+        false, ClickItConstants.bottomImageUploadedKey);
+    AppPreferences.addSharedPreferences(
+        false, ClickItConstants.nutrientsUploadedImageKey);
+    AppPreferences.addSharedPreferences(
+        false, ClickItConstants.ingredientImageUploadedKey);
 
-    AppPreferences.addSharedPreferences(false, ClickItConstants.frontImageUploadedKey);
-    AppPreferences.addSharedPreferences(false, ClickItConstants.backImageUploadedKey);
-    AppPreferences.addSharedPreferences(false, ClickItConstants.leftImageUploadedKey);
-    AppPreferences.addSharedPreferences(false, ClickItConstants.rightImageUploadedKey);
-    AppPreferences.addSharedPreferences(false, ClickItConstants.topImageUploadedKey);
-    AppPreferences.addSharedPreferences(false, ClickItConstants.bottomImageUploadedKey);
-    AppPreferences.addSharedPreferences(false, ClickItConstants.nutrientsUploadedImageKey);
-    AppPreferences.addSharedPreferences(false, ClickItConstants.ingredientImageUploadedKey);
-
-    /*AppPreferences.addSharedPreferences(false,ClickItConstants.frontImageProcessing);
-        AppPreferences.addSharedPreferences(false,ClickItConstants.backImageProcessing);
-        AppPreferences.addSharedPreferences(false,ClickItConstants.topImageProcessing);
-        AppPreferences.addSharedPreferences(false,ClickItConstants.bottomImageProcessing);
-        AppPreferences.addSharedPreferences(false,ClickItConstants.rightImageProcessing);
-        AppPreferences.addSharedPreferences(false,ClickItConstants.leftImageProcessing);
-        AppPreferences.addSharedPreferences(false,ClickItConstants.nutrientsImageProcessing);
-        AppPreferences.addSharedPreferences(false,ClickItConstants.ingredientImageProcessing);*/
+    _initLogger();
     super.initState();
   }
 
@@ -103,11 +92,22 @@ class _HomeScreenState extends State<HomeScreen> {
     return numericValue != null;
   }
 
+  Future<void> _initLogger() async {
+    final directory = await getExternalStorageDirectory();
+    final documentsPath = '${directory!.path}/ClickITApp';
+    final folderPath = '$documentsPath/ErrorReports/scan_errors';
+    final folder = Directory(folderPath);
+    if (!folder.existsSync()) {
+      folder.createSync(recursive: true);
+    }
 
+    final fileName = '${DateTime.now().millisecond}scan_error_logs.txt';
+    final file = File('$folderPath/$fileName');
+    _logger.log(Level.debug, 'logger initialized');
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Scaffold(
           key: _scaffoldKey,
@@ -115,14 +115,15 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             title: Row(
               children: [
-                 Text(companyId != ''
-            ? '$companyName ($companyId)'
-                : '$companyName',
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
+                Text(
+                  companyId != ''
+                      ? '$companyName ($companyId)'
+                      : '$companyName',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
                 const Spacer(),
                 IconButton(
                   icon: Badge(
@@ -130,11 +131,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         Icons.notifications,
                         color: Colors.white,
                       ),
-                      label: Text('4',style: TextStyle(color: Colors.deepOrange),),
+                      label: Text(
+                        '4',
+                        style: TextStyle(color: Colors.deepOrange),
+                      ),
                       alignment: Alignment.topRight,
                       backgroundColor: Colors.white,
-                      offset: Offset.fromDirection(6,8)
-                  ),
+                      offset: Offset.fromDirection(6, 8)),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -147,80 +150,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               ],
             ),
-
-            /*Text(
-              companyId != ''
-                  ? '$companyName ($companyId)'
-                  : '$companyName',
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-            actions: <Widget>[
-              IconButton(
-                icon: Badge(
-                  child: Icon(
-                    Icons.notifications,
-                    color: Colors.white,
-                  ),
-                  label: Text('4',style: TextStyle(color: Colors.deepOrange),),
-                  alignment: Alignment.topRight,
-                  backgroundColor: Colors.white,
-                  offset: Offset.fromDirection(6,8)
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.leftToRight,
-                      child: NotificationScreen(),
-                    ),
-                  );
-                },
-              )
-            ],*/
-
           ),
           body: Container(
             decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(AppImages.backgroundImage),
-                  fit: BoxFit.cover,
-                )
+              image: DecorationImage(
+                image: AssetImage(AppImages.backgroundImage),
+                fit: BoxFit.cover,
+              ),
             ),
-            child:  Column(
+            child: Column(
               children: [
                 const SizedBox(
                   height: 10,
                 ),
-                /*Container(
-                  margin: const EdgeInsets.only(
-                    right: 10,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        companyId != ''
-                            ? '$companyName ($companyId)'
-                            : '$companyName',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.deepOrange,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => _scaffoldKey.currentState?.openEndDrawer(),
-                        child: const Icon(
-                          Icons.keyboard_arrow_left_sharp,
-                          size: 35,
-                          color: Colors.black54,
-                        ),
-                      )
-                    ],
-                  ),
-                ),*/
                 SizedBox(
                   height: 20.h,
                 ),
@@ -231,54 +173,53 @@ class _HomeScreenState extends State<HomeScreen> {
                 GestureDetector(
                   // ignore: avoid_print
                   onTap: () {
-                    /*Navigator.push(
-                      context,
-                      PageTransition(
-                        type: PageTransitionType.leftToRight,
-                        child: NewUploadImagesScreen(gtin: "8906000995594"),
-                      ),
-                    );*/
                     _scanBarcode().then(
-                          (value) async{
+                      (value) async {
                         if (value != null) {
                           var glnValue = value;
-                          if(value.contains('http')) {
-                            Utils.isConnected().then((isConnected) async{
-                              if(isConnected){
+                          if (value.contains('http')) {
+                            Utils.isConnected().then((isConnected) async {
+                              if (isConnected) {
                                 VisibleProgressLoader.show(context);
                                 glnValue = await decodeQrCode(value);
-                              }else{
+                              } else {
                                 Fluttertoast.showToast(
                                     msg: 'Please check your internet');
                               }
                             });
-
                           }
-
-                          if(glnValue!=AppPreferences.getValueShared('currentGtn')) {
-
+                          if (glnValue !=
+                              AppPreferences.getValueShared('currentGtn')) {
                             await ClickItConstants.reloadSharedPreference();
 
-                            AppPreferences.addSharedPreferences(false, ClickItConstants.frontImageUploadedKey);
-                            AppPreferences.addSharedPreferences(false, ClickItConstants.backImageUploadedKey);
-                            AppPreferences.addSharedPreferences(false, ClickItConstants.leftImageUploadedKey);
-                            AppPreferences.addSharedPreferences(false, ClickItConstants.rightImageUploadedKey);
-                            AppPreferences.addSharedPreferences(false, ClickItConstants.topImageUploadedKey);
-                            AppPreferences.addSharedPreferences(false, ClickItConstants.bottomImageUploadedKey);
-                            AppPreferences.addSharedPreferences(false, ClickItConstants.nutrientsUploadedImageKey);
-                            AppPreferences.addSharedPreferences(false, ClickItConstants.ingredientImageUploadedKey);
+                            AppPreferences.addSharedPreferences(
+                                false, ClickItConstants.frontImageUploadedKey);
+                            AppPreferences.addSharedPreferences(
+                                false, ClickItConstants.backImageUploadedKey);
+                            AppPreferences.addSharedPreferences(
+                                false, ClickItConstants.leftImageUploadedKey);
+                            AppPreferences.addSharedPreferences(
+                                false, ClickItConstants.rightImageUploadedKey);
+                            AppPreferences.addSharedPreferences(
+                                false, ClickItConstants.topImageUploadedKey);
+                            AppPreferences.addSharedPreferences(
+                                false, ClickItConstants.bottomImageUploadedKey);
+                            AppPreferences.addSharedPreferences(false,
+                                ClickItConstants.nutrientsUploadedImageKey);
+                            AppPreferences.addSharedPreferences(false,
+                                ClickItConstants.ingredientImageUploadedKey);
                           }
 
-
-                          if ((glnValue.length == 13 || glnValue.length==14) && isNumeric(glnValue)) {
-                            AppPreferences.addSharedPreferences(value, 'currentGtn');
+                          if ((glnValue.length == 13 ||
+                                  glnValue.length == 14) &&
+                              isNumeric(glnValue)) {
+                            AppPreferences.addSharedPreferences(
+                                value, 'currentGtn');
                             print(value);
                             if (AppPreferences.getValueShared('source') ==
                                 'member') {
                               // user is manufacturer
                               // validate barcodes for manufacturer
-
-                              print('user is manufacturer');
 
                               print(value.toString().substring(
                                   0,
@@ -286,16 +227,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                       .length));
 
                               if (glnValue.toString().substring(
-                                  0,
-                                  AppPreferences.getValueShared('company_id')
-                                      .length) ==
+                                      0,
+                                      AppPreferences.getValueShared(
+                                              'company_id')
+                                          .length) ==
                                   AppPreferences.getValueShared('company_id')) {
                                 print('success');
                                 Navigator.push(
                                   context,
                                   PageTransition(
                                     type: PageTransitionType.leftToRight,
-                                    child: NewUploadImagesScreen(gtin: glnValue),
+                                    child:
+                                        NewUploadImagesScreen(gtin: glnValue),
                                   ),
                                 );
                               } else {
@@ -303,7 +246,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 //D-Here add new change
                                 VisibleProgressLoader.hide();
                                 Fluttertoast.showToast(
-                                    msg: 'This is not your GTN. Please scan your GTN');
+                                    msg:
+                                        'This is not your GTN. Please scan your GTN');
                               }
                             } else {
                               //user is retailer all the barcodes will be scanned
@@ -320,31 +264,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             Fluttertoast.showToast(
                                 msg: 'Scanned Barcode is invalid');
                           }
-
-                        }else{
+                        } else {
                           Fluttertoast.showToast(msg: 'Please scan again');
-
                         }
-
-                        // value == -1
-                        //     ? Navigator.pop(context)
-                        //     : Navigator.push(
-                        //         context,
-                        //         PageTransition(
-                        //           type: PageTransitionType.rightToLeft,
-                        //           child: UploadImagesScreen(
-                        //             scanResult: value,
-                        //           ),
-                        //         ));
                       },
-                    );
+                    ).onError((error, stackTrace) {
+                      Utils.saveErrorToFile(stackTrace.toString());
+                      return null;
+                    });
                   },
 
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     margin: const EdgeInsets.only(left: 10, right: 10),
                     child: Row(
-                      key:HomeCoach.scanBarcodeKey,
+                      key: HomeCoach.scanBarcodeKey,
                       children: const [
                         Icon(
                           Icons.camera_alt_outlined,
@@ -369,51 +303,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                /*const SizedBox(
-                  height: 10,
-                ),
-                const Text(
-                  'or',
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),*/
-                /*GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.rightToLeft,
-                      child: SyncServerScreenNew(),
-                    ),
-                  ),
-
-                  // onTap: () {
-
-                  //   // Utils.showDialog(context, SimpleFontelicoProgressDialogType.normal, 'Normal');
-                  //   _dialog.show(type: SimpleFontelicoProgressDialogType.spinner, message: '');
-                  // },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.all(13),
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.only(left: 10, right: 10),
-                    child: const Text(
-                      'Sync with Server',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                    decoration: const BoxDecoration(
-                      color: Colors.deepOrange,
-                    ),
-                  ),
-                ),
-                Spacer(),
-                BottomLogoWidget(),*/
               ],
             ),
           )),
@@ -429,10 +318,15 @@ class _HomeScreenState extends State<HomeScreen> {
         ScanMode.BARCODE,
       );
 
+      _logger.log(Level.debug, 'the value of bracode is $barcodeScanRes');
+      _logger.log(Level.error, 'scanning successful');
+      Utils.saveErrorToFile('scanning successful');
       print('the value of bracode is $barcodeScanRes');
       return barcodeScanRes == '-1' ? null : barcodeScanRes;
     } on Exception catch (e) {
       print(e);
+      _logger.log(Level.error, e.toString());
+      Utils.saveErrorToFile(e.toString());
     }
   }
 
@@ -448,463 +342,23 @@ class _HomeScreenState extends State<HomeScreen> {
       print(companyName);
     });
   }
-
-  /*void showTutorial() {
-    tutorialCoachMark.show(context: context);
-  }
-
-  void createTutorial() {
-    tutorialCoachMark = TutorialCoachMark(
-      targets: _createTargets(),
-      colorShadow: Colors.deepOrange,
-      textSkip: "SKIP",
-      paddingFocus: 10,
-      opacityShadow: 0.5,
-      imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-      onFinish: () {
-        print("finish");
-      },
-      onClickTarget: (target) {
-        print('onClickTarget: $target');
-      },
-      onClickTargetWithTapPosition: (target, tapDetails) {
-        print("target: $target");
-        print(
-            "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
-      },
-      onClickOverlay: (target) {
-        print('onClickOverlay: $target');
-      },
-      onSkip: () {
-        print("skip");
-      },
-    );
-  }
-
-  List<TargetFocus> _createTargets() {
-    List<TargetFocus> targets = [];
-    *//*targets.add(
-      TargetFocus(
-        identify: "homeNavigation",
-        keyTarget: homeKey,
-        alignSkip: Alignment.topRight,
-        enableOverlayTab: true,
-        contents: [
-          TargetContent(
-            align: ContentAlign.top,
-            builder: (context, controller) {
-              return const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Here you can simply scan barcode of product",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );
-
-    targets.add(
-      TargetFocus(
-        identify: "saveImageNavigation",
-        keyTarget: localImageKey,
-        alignSkip: Alignment.topRight,
-        contents: [
-          TargetContent(
-            align: ContentAlign.top,
-            builder: (context, controller) {
-              return const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Here you can see saved clicked images",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );
-
-    targets.add(
-      TargetFocus(
-        identify: "viewLibraryNavigation",
-        keyTarget: viewLibraryKey,
-        alignSkip: Alignment.topRight,
-        contents: [
-          TargetContent(
-            align: ContentAlign.top,
-            builder: (context, controller) {
-              return const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Here you can see all the uploaded images",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );
-    targets.add(
-      TargetFocus(
-        identify: "settingsNavigation",
-        keyTarget: settingsKey,
-        alignSkip: Alignment.topRight,
-        contents: [
-          TargetContent(
-            align: ContentAlign.top,
-            builder: (context, controller) {
-              return const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Here you can see information",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );*//*
-
-    *//*targets.add(
-      TargetFocus(
-        identify: "scanBarcodeKey",
-        keyTarget: scanBarcodeKey,
-        contents: [
-          TargetContent(
-            align: ContentAlign.bottom,
-            builder: (context, controller) {
-              return const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Scan your product barcode",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 20.0),
-                  ),
-                 *//**//* Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),*//**//*
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );*//*
-    targets.add(
-      TargetFocus(
-        identify: "scanBarcodeKey",
-        keyTarget: scanBarcodeKey,
-        color: Colors.deepOrange,
-        contents: [
-          TargetContent(
-            align: ContentAlign.bottom,
-            builder: (context, controller) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text(
-                    "Scan your product barcode",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                  *//*const Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),*//*
-                  *//*ElevatedButton(
-                    onPressed: () {
-                      controller.previous();
-                    },
-                    child: const Icon(Icons.chevron_left),
-                  ),*//*
-                ],
-              );
-            },
-          )
-        ],
-        shape: ShapeLightFocus.RRect,
-        radius: 5,
-      ),
-    );
-    *//*targets.add(
-      TargetFocus(
-        identify: "Target 1",
-        keyTarget: keyButton,
-        color: Colors.purple,
-        contents: [
-          TargetContent(
-            align: ContentAlign.bottom,
-            builder: (context, controller) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text(
-                    "Titulo lorem ipsum",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      controller.previous();
-                    },
-                    child: const Icon(Icons.chevron_left),
-                  ),
-                ],
-              );
-            },
-          )
-        ],
-        shape: ShapeLightFocus.RRect,
-        radius: 5,
-      ),
-    );
-    targets.add(
-      TargetFocus(
-        identify: "Target 2",
-        keyTarget: keyButton4,
-        contents: [
-          TargetContent(
-            align: ContentAlign.left,
-            child: const Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "Multiples content",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20.0),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                )
-              ],
-            ),
-          ),
-          TargetContent(
-              align: ContentAlign.top,
-              child: const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Multiples content",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 20.0),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )
-                ],
-              ))
-        ],
-        shape: ShapeLightFocus.RRect,
-      ),
-    );
-    targets.add(TargetFocus(
-      identify: "Target 3",
-      keyTarget: keyButton5,
-      contents: [
-        TargetContent(
-            align: ContentAlign.right,
-            child: const Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "Title lorem ipsum",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20.0),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                )
-              ],
-            ))
-      ],
-      shape: ShapeLightFocus.RRect,
-    ));
-    targets.add(TargetFocus(
-      identify: "Target 4",
-      keyTarget: keyButton3,
-      contents: [
-        TargetContent(
-          align: ContentAlign.top,
-          child: Column(
-            children: <Widget>[
-              InkWell(
-                onTap: () {
-                  tutorialCoachMark.previous();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.network(
-                    "https://juststickers.in/wp-content/uploads/2019/01/flutter.png",
-                    height: 200,
-                  ),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 20.0),
-                child: Text(
-                  "Image Load network",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0),
-                ),
-              ),
-              const Text(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
-        ),
-      ],
-      shape: ShapeLightFocus.Circle,
-    ));
-    targets.add(
-      TargetFocus(
-        identify: "Target 5",
-        keyTarget: keyButton2,
-        shape: ShapeLightFocus.Circle,
-        contents: [
-          TargetContent(
-            align: ContentAlign.top,
-            child: const Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(bottom: 20.0),
-                  child: Text(
-                    "Multiples contents",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0),
-                  ),
-                ),
-                Text(
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-          TargetContent(
-              align: ContentAlign.bottom,
-              child: const Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 20.0),
-                    child: Text(
-                      "Multiples contents",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0),
-                    ),
-                  ),
-                  Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ))
-        ],
-      ),
-    );*//*
-
-    return targets;
-  }*/
 }
+
 Future decodeQrCode(String value) async {
-  var request = await http.Request('POST',
-      Uri.parse(
-          'http://4.240.61.161:8081/decodeUrl'));
+  var request = await http.Request(
+      'POST', Uri.parse('http://4.240.61.161:8081/decodeUrl'));
   request.body = json.encode({"elementStringInput": value});
   request.headers.addAll({"Content-Type": "application/json"});
   http.StreamedResponse response = await request.send();
 
-  try{
+  try {
     if (response.statusCode == 200) {
       final glnData = await response.stream.bytesToString();
       var glnValue = jsonDecode(glnData)['01']['value'];
       VisibleProgressLoader.hide();
       return glnValue;
     }
-  }catch(e){
+  } catch (e) {
     VisibleProgressLoader.hide();
   }
 
@@ -924,9 +378,6 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        // margin: const EdgeInsets.only(
-        //   right: 10,
-        // ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -1031,15 +482,8 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
           ],
         ),
-        // decoration: BoxDecoration(
-        //   image: DecorationImage(
-        //     image: AssetImage('assets/images/logo_datakart.png'),
-        //   ),
-        // ),
       ),
     );
-
-
   }
 
   @override
@@ -1048,8 +492,4 @@ class _AppDrawerState extends State<AppDrawer> {
     VisibleProgressLoader.hide();
     super.dispose();
   }
-
-
 }
-
-

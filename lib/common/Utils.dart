@@ -8,13 +8,16 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:logger/web.dart';
 
 import 'dart:async';
-import 'dart:io' show File, InternetAddress, Platform, SocketException;
+import 'dart:io'
+    show Directory, File, InternetAddress, Platform, SocketException;
 
+import 'package:path_provider/path_provider.dart';
 
 class Utils {
-
+  static DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
   static Map<String, dynamic> readAndroidBuildData(AndroidDeviceInfo build) {
     return <String, dynamic>{
@@ -48,6 +51,30 @@ class Utils {
     };
   }
 
+  //save the errors in local files
+  static Future<void> saveErrorToFile(String error) async {
+    try {
+      final directory = await getExternalStorageDirectory();
+      final documentsPath = '${directory!.path}/ClickITApp';
+      final folderPath = '$documentsPath/ErrorReports/scan_errors';
+      final folder = Directory(folderPath);
+      if (!folder.existsSync()) {
+        folder.createSync(recursive: true);
+      }
+
+      final fileName = '${DateTime.now().millisecond}scan_error_logs.txt';
+      final file = File('$folderPath/$fileName');
+      final crashLog = error;
+
+      await file.writeAsString(
+          '$crashLog\n ${readAndroidBuildData(await deviceInfoPlugin.androidInfo)}');
+
+      print('Crash report saved at: ${file.path}');
+    } catch (e) {
+      print('Failed to save crash log: $e');
+    }
+  }
+
   static Map<String, dynamic> readIosDeviceInfo(IosDeviceInfo data) {
     return <String, dynamic>{
       'name': data.name,
@@ -65,46 +92,6 @@ class Utils {
     };
   }
 
-  // static Future<LatLng> getUserLocation(BuildContext context) async {
-  //   try {
-  //     if (Platform.isIOS) {
-  //       var position = await GeolocatorPlatform.instance
-  //           .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-  //       LatLng currentPosition = LatLng(position.latitude, position.longitude);
-  //       return currentPosition;
-  //     }
-
-  //     if (Platform.isAndroid) {
-  //       if (await Permission.locationWhenInUse.serviceStatus.isEnabled) {
-  //         var position = await GeolocatorPlatform.instance
-  //             .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-  //         LatLng currentPostion = LatLng(position.latitude, position.longitude);
-  //         return currentPostion;
-  //       } else {
-  //         // Fluttertoast.showToast(msg: "Please Give location permission to lodge complaint");
-  //       }
-  //     }
-  //   } catch (e) {
-  //     showDialog(
-  //         context: context,
-  //         builder: (BuildContext context) => CupertinoAlertDialog(
-  //               title: Text('Grant Location Permission'),
-  //               content: Text(
-  //                   'This app needs location permission to register complaints'),
-  //               actions: <Widget>[
-  //                 CupertinoDialogAction(
-  //                   child: Text('Deny'),
-  //                   onPressed: () => Navigator.of(context).pop(),
-  //                 ),
-  //                 // CupertinoDialogAction(
-  //                 //   child: Text('Settings'),
-  //                 //   onPressed: () => openAppSettings(),
-  //                 // ),
-  //               ],
-  //             ));
-  //   }
-  // }
-
   /// Determine the current position of the device.
   ///
   /// When the location services are not enabled or permissions
@@ -116,9 +103,9 @@ class Utils {
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      if(Platform.isAndroid){
+      if (Platform.isAndroid) {
         await Geolocator.openLocationSettings();
-      }else{
+      } else {
         await Geolocator.openAppSettings();
       }
       // Location services are not enabled don't continue
@@ -162,33 +149,32 @@ class Utils {
     return Image.memory(base64Decode(base64String));
   }
 
-  static Future<bool> isConnected() async{
+  static Future<bool> isConnected() async {
     bool isonline = false;
     ConnectivityResult result = await Connectivity().checkConnectivity();
     // whenevery connection status is changed.
-      if(result == ConnectivityResult.none){
-        //there is no any connection
-          isonline = false;
-      }else if(result == ConnectivityResult.mobile){
-        //connection is mobile data network
+    if (result == ConnectivityResult.none) {
+      //there is no any connection
+      isonline = false;
+    } else if (result == ConnectivityResult.mobile) {
+      //connection is mobile data network
 
-        isonline = true;
-      }else if(result == ConnectivityResult.wifi){
-        //connection is from wifi
+      isonline = true;
+    } else if (result == ConnectivityResult.wifi) {
+      //connection is from wifi
 
-        isonline = true;
-      }else if(result == ConnectivityResult.ethernet){
-        //connection is from wired connection
+      isonline = true;
+    } else if (result == ConnectivityResult.ethernet) {
+      //connection is from wired connection
 
-        isonline = true;
-      }else if(result == ConnectivityResult.bluetooth){
-        //connection is from bluetooth threatening
+      isonline = true;
+    } else if (result == ConnectivityResult.bluetooth) {
+      //connection is from bluetooth threatening
 
-        isonline = false;
+      isonline = false;
+    }
 
-      }
-
-    if(isonline){
+    if (isonline) {
       try {
         final result = await InternetAddress.lookup('google.com');
         if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -202,11 +188,9 @@ class Utils {
     }
 
     return isonline;
-
-
   }
 
-  static askLocationPermission() async{
+  static askLocationPermission() async {
     LocationPermission permission;
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
@@ -221,11 +205,12 @@ class Utils {
         // your App should show an explanatory UI now.
         return Future.error('Location permissions are denied');
       }
-      if(permission == LocationPermission.whileInUse||permission == LocationPermission.always){
+      if (permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always) {
         if (!serviceEnabled) {
-          if(Platform.isAndroid){
+          if (Platform.isAndroid) {
             await Geolocator.openLocationSettings();
-          }else{
+          } else {
             await Geolocator.openAppSettings();
           }
 
@@ -237,6 +222,4 @@ class Utils {
       }
     }
   }
-
-
 }

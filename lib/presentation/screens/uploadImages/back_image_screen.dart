@@ -70,32 +70,37 @@ class _BackImageScreenState extends State<BackImageScreen>
       productImage = await _cropImage(imageTemporary);
       setState(() {});
 
-
-
-      if(productImage==null){
+      if (productImage == null) {
         //ProgressLoader.hide();
         EasyLoading.showError('Please upload again..');
         return;
       }
 
-    //  ProgressLoader.show(context);
+      //  ProgressLoader.show(context);
 
       isImageProcessing = true;
       ClickItConstants.backImageProcessing = true;
-      if(AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)==null ? true : !AppPreferences.getValueShared(ClickItConstants.isShowProceedDialogKey)){
-        if(!ClickItConstants.showDialogProceed) {
+      if (AppPreferences.getValueShared(
+                  ClickItConstants.isShowProceedDialogKey) ==
+              null
+          ? true
+          : !AppPreferences.getValueShared(
+              ClickItConstants.isShowProceedDialogKey)) {
+        if (!ClickItConstants.showDialogProceed) {
           ClickItConstants.showProceedDialog(context);
           ClickItConstants.showDialogProceed = true;
         }
       }
 
-      compressedBackImage = await ClickItApis.getCompressedImage(productImage!.path);
+      compressedBackImage =
+          await ClickItApis.getCompressedImage(productImage!.path);
 
-      if(compressedBackImage!=null) {
-        compressedBackImagePath = await ClickItConstants.saveCompressedImageToDevice(compressedBackImage);
-      }else{
-
-       // ProgressLoader.hide();
+      if (compressedBackImage != null) {
+        compressedBackImagePath =
+            await ClickItConstants.saveCompressedImageToDevice(
+                compressedBackImage);
+      } else {
+        // ProgressLoader.hide();
         ClickItConstants.frontImageProcessing = false;
         EasyLoading.showError('Low resolution.Please upload again.');
         setState(() {
@@ -188,7 +193,7 @@ class _BackImageScreenState extends State<BackImageScreen>
           ClickItConstants.backImageProcessing = false;
           EasyLoading.showError('Please upload again...');
           EasyLoading.dismiss();
-         // ProgressLoader.hide();
+          // ProgressLoader.hide();
           backgroundRemovedImage = null;
           imageResolution = null;
           resolutionText = null;
@@ -201,7 +206,8 @@ class _BackImageScreenState extends State<BackImageScreen>
             await ClickItConstants.saveImageToDevice(backgroundRemovedImage);
 
         //save the data in shared preferences
-        AppPreferences.addSharedPreferences(true, ClickItConstants.backImageUploadedKey);
+        AppPreferences.addSharedPreferences(
+            true, ClickItConstants.backImageUploadedKey);
         AppPreferences.addSharedPreferences(true, 'isImageUploaded');
         AppPreferences.addSharedPreferences(widget.gtin!, 'gtin');
         AppPreferences.addSharedPreferences(productImage!.path, 'back_image');
@@ -212,7 +218,7 @@ class _BackImageScreenState extends State<BackImageScreen>
         AppPreferences.addSharedPreferences(resolutionText, 'back_image_pixel');
 
         EasyLoading.dismiss();
-       // ProgressLoader.hide();
+        // ProgressLoader.hide();
         isImageProcessing = false;
         ClickItConstants.backImageProcessing = false;
         setState(() {});
@@ -490,16 +496,16 @@ class _BackImageScreenState extends State<BackImageScreen>
                                         image: editedSavedImage,
                                       )),
                             )
-                          : backgroundRemovedImage!=null
-                          ? Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ViewProductImage(
-                            image: backgroundRemovedImage,
-                          ),
-                        ),
-                      )
-                          :(){};
+                          : backgroundRemovedImage != null
+                              ? Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ViewProductImage(
+                                      image: backgroundRemovedImage,
+                                    ),
+                                  ),
+                                )
+                              : () {};
                     },
                     child: editedSavedImage != null
                         ? Stack(
@@ -549,10 +555,10 @@ class _BackImageScreenState extends State<BackImageScreen>
                                     child: Container(
                                       height: 250,
                                       width: double.infinity,
-                                      child:
-                                          Image.memory(backgroundRemovedImage!,
-                                          fit: BoxFit.scaleDown,
-                                          ),
+                                      child: Image.memory(
+                                        backgroundRemovedImage!,
+                                        fit: BoxFit.scaleDown,
+                                      ),
                                     ),
                                   ),
                                   Positioned(
@@ -618,8 +624,10 @@ class _BackImageScreenState extends State<BackImageScreen>
                                     '', 'back_edited_image');
                                 AppPreferences.addSharedPreferences(
                                     '', 'back_image_resolution');
-                                AppPreferences.addSharedPreferences('', 'back_image_pixel');
-                                AppPreferences.addSharedPreferences(false, ClickItConstants.backImageUploadedKey);
+                                AppPreferences.addSharedPreferences(
+                                    '', 'back_image_pixel');
+                                AppPreferences.addSharedPreferences(false,
+                                    ClickItConstants.backImageUploadedKey);
                                 print(AppPreferences.getValueShared(
                                     'back_image'));
                                 print(AppPreferences.getValueShared(
@@ -698,7 +706,7 @@ class _BackImageScreenState extends State<BackImageScreen>
                 ? null
                 : AppPreferences.getValueShared('back_edited_image');
 
-       /* editedSavedImage =
+        /* editedSavedImage =
             editedImagePath == null ? null : File(editedImagePath);*/
         print('productImage  $productImage');
 
@@ -713,18 +721,7 @@ class _BackImageScreenState extends State<BackImageScreen>
           await AppPreferences.addSharedPreferences(
               imagePath, 'back_edited_image');
           await getLocalSavedData();
-        } /*else if (editedSavedImage == null) {
-          print('editedSavedImage is null');
-          String? imagePath = await _saveImageToDevice(backgroundRemovedImage,
-              imageUrl: backImage);
-
-          await AppPreferences.addSharedPreferences(imagePath, 'back_image');
-          await AppPreferences.addSharedPreferences(
-              imagePath, 'fetched_back_image');
-          await AppPreferences.addSharedPreferences(
-              imagePath, 'back_edited_image');
-          await getLocalSavedData();
-        }*/
+        }
       }
     } else {
       print(response.reasonPhrase);
@@ -747,7 +744,6 @@ class _BackImageScreenState extends State<BackImageScreen>
             ? null
             : AppPreferences.getValueShared('back_edited_image');
 
-
     print('editedSavedImage  is $editedSavedImage');
     imageResolution =
         AppPreferences.getValueShared('back_image_resolution') == ''
@@ -758,8 +754,8 @@ class _BackImageScreenState extends State<BackImageScreen>
         ? null
         : AppPreferences.getValueShared('back_image_pixel');
 
-    if(imageResolution!=null)
-    editedSavedImage = editedImagePath == null ? null : File(editedImagePath);
+    if (imageResolution != null)
+      editedSavedImage = editedImagePath == null ? null : File(editedImagePath);
     setState(() {});
   }
 }

@@ -1,21 +1,14 @@
 import 'dart:io';
-
 import 'package:click_it_app/controllers/upload_images_provider.dart';
 import 'package:click_it_app/presentation/screens/Splash/splash_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'presentation/screens/uploadImages/new_upload_images_screen.dart';
-
-// void main() => runApp(
-//   DevicePreview(
-//     enabled: !kReleaseMode,
-//     builder: (context) => MyApp(), // Wrap your app
-//   ),
-// );
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +17,10 @@ void main() {
   };
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((value) => runApp(MyApp()));
-  //runApp(MyApp());
+
+  if (kDebugMode) {
+    Logger.level = Level.debug;
+  }
 }
 
 Future<void> saveErrorToFile(FlutterErrorDetails errorDetails) async {
@@ -53,27 +49,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => UploadImagesProvider()),
-        ],
-        child: ScreenUtilInit(
-          designSize: Size(360, 690),
-          minTextAdapt: true,
-          splitScreenMode: true,
-          builder: (context, child) => MaterialApp(
-            title: 'ClickIt App',
-            theme: ThemeData(primarySwatch: Colors.deepOrange),
-            debugShowCheckedModeBanner: false,
-            // home: UploadImagesScreen(gtin: "8904368501807"),
-            //    home: NewUploadImagesScreen(gtin: "8906000995808"),
-            home: const SplashScreen(),
-            builder: EasyLoading.init(),
-          ),
-        ),
-      );
-      /*MultiProvider(
+    return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UploadImagesProvider()),
       ],
@@ -91,6 +67,6 @@ class MyApp extends StatelessWidget {
           builder: EasyLoading.init(),
         ),
       ),
-    );*/
+    );
   }
 }

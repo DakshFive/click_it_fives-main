@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'dart:typed_data';
 import 'package:click_it_app/common/Utils.dart';
 import 'package:click_it_app/common/utility.dart';
 import 'package:click_it_app/data/core/apiClient.dart';
