@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:click_it_app/common/loader/progressLoader.dart';
 import 'package:click_it_app/controllers/upload_images_provider.dart';
 import 'package:click_it_app/preferences/app_preferences.dart';
@@ -438,7 +439,7 @@ class _RightImageScreenState extends State<RightImageScreen>
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 15)),
                             style: TextButton.styleFrom(
-                              foregroundColor: Colors.white,
+                                   
                               backgroundColor: Colors.black,
                             ),
                           ),
@@ -457,11 +458,11 @@ class _RightImageScreenState extends State<RightImageScreen>
                                       );
                                     },
                                     child: Text("Retake",
-                                        style: TextStyle(
+                                        style: TextStyle(color: Colors.white,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 15)),
                                     style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white,
+                                           
                                       backgroundColor: Colors.deepOrange,
                                     ),
                                   ),
@@ -526,7 +527,7 @@ class _RightImageScreenState extends State<RightImageScreen>
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15)),
                                   style: TextButton.styleFrom(
-                                    foregroundColor: Colors.white,
+                                         
                                     backgroundColor: Colors.black,
                                   ),
                                 ),
@@ -562,7 +563,7 @@ class _RightImageScreenState extends State<RightImageScreen>
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15)),
                                       style: TextButton.styleFrom(
-                                        foregroundColor: Colors.white,
+                                             
                                         backgroundColor: Colors.black,
                                       ),
                                     ),

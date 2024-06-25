@@ -44,9 +44,9 @@ class UploadCoach{
       onClickOverlay: (target) {
         print('onClickOverlay: $target');
       },
-      onSkip: () {
-        print("skip");
-      },
+      // onSkip: () {
+      //   print("skip");
+      // },
     );
   }
 
@@ -62,7 +62,7 @@ class UploadCoach{
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return const Column(
+              return         Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -89,7 +89,7 @@ class UploadCoach{
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return const Column(
+              return         Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -116,7 +116,7 @@ class UploadCoach{
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return const Column(
+              return         Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -142,7 +142,7 @@ class UploadCoach{
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return const Column(
+              return         Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -168,7 +168,7 @@ class UploadCoach{
           TargetContent(
             align: ContentAlign.bottom,
             builder: (context, controller) {
-              return const Column(
+              return         Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -206,7 +206,7 @@ class UploadCoach{
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text(
+                          Text(
                     "Take picture to upload.",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -214,7 +214,7 @@ class UploadCoach{
                       fontSize: 20.0,
                     ),
                   ),
-                  const Padding(
+                          Padding(
                     padding: EdgeInsets.only(top: 10.0),
                     child: Text(
                       "Click on button to select image(s) from gallery or camera.",
@@ -225,7 +225,7 @@ class UploadCoach{
                     onPressed: () {
                       controller.previous();
                     },
-                    child: const Icon(Icons.chevron_left),
+                    child:         Icon(Icons.chevron_left),
                   ),*/
                 ],
               );
@@ -246,7 +246,7 @@ class UploadCoach{
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return const Column(
+              return         Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -284,7 +284,7 @@ class UploadCoach{
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text(
+                          Text(
                     "Titulo lorem ipsum",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -292,7 +292,7 @@ class UploadCoach{
                       fontSize: 20.0,
                     ),
                   ),
-                  const Padding(
+                          Padding(
                     padding: EdgeInsets.only(top: 10.0),
                     child: Text(
                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
@@ -303,7 +303,7 @@ class UploadCoach{
                     onPressed: () {
                       controller.previous();
                     },
-                    child: const Icon(Icons.chevron_left),
+                    child:         Icon(Icons.chevron_left),
                   ),
                 ],
               );
@@ -321,7 +321,7 @@ class UploadCoach{
         contents: [
           TargetContent(
             align: ContentAlign.left,
-            child: const Column(
+            child:         Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -344,7 +344,7 @@ class UploadCoach{
           ),
           TargetContent(
               align: ContentAlign.top,
-              child: const Column(
+              child:         Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -374,7 +374,7 @@ class UploadCoach{
       contents: [
         TargetContent(
             align: ContentAlign.right,
-            child: const Column(
+            child:         Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -410,14 +410,14 @@ class UploadCoach{
                   tutorialCoachMark.previous();
                 },
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding:         EdgeInsets.all(10.0),
                   child: Image.network(
                     "https://juststickers.in/wp-content/uploads/2019/01/flutter.png",
                     height: 200,
                   ),
                 ),
               ),
-              const Padding(
+                      Padding(
                 padding: EdgeInsets.only(bottom: 20.0),
                 child: Text(
                   "Image Load network",
@@ -427,7 +427,7 @@ class UploadCoach{
                       fontSize: 20.0),
                 ),
               ),
-              const Text(
+                      Text(
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
                 style: TextStyle(color: Colors.white),
               ),
@@ -445,7 +445,7 @@ class UploadCoach{
         contents: [
           TargetContent(
             align: ContentAlign.top,
-            child: const Column(
+            child:         Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Padding(
@@ -467,7 +467,7 @@ class UploadCoach{
           ),
           TargetContent(
               align: ContentAlign.bottom,
-              child: const Column(
+              child:         Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Padding(

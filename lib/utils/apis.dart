@@ -24,7 +24,7 @@ class ClickItApis{
       final response = await http.post(
         uri,
         headers: {"content-type": "application/json"},
-      ).timeout(Duration(seconds: 25));
+      ).timeout(Duration(seconds: 60));
 
       if (response.statusCode == 200) {
         print(utf8.decoder.convert(response.bodyBytes));
@@ -44,13 +44,14 @@ class ClickItApis{
   }
 
   static Future<Uint8List?> getCompressedImage(String path) async {
+
     try {
       var request = http.MultipartRequest(
           'POST', Uri.parse('http://4.240.61.161:4002/compress'));
       request.files
           .add(await http.MultipartFile.fromPath('image', path));
-
-      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 25));
+          
+      http.StreamedResponse response = await request.send().timeout(Duration(seconds: 60));
 
       if (response.statusCode == 200) {
         return await response.stream.toBytes();

@@ -1,13 +1,8 @@
-
-
 import 'dart:io';
-
 import 'package:click_it_app/app_tutorial_coach/tutorial_save_data_coach.dart';
-import 'package:click_it_app/common/loader/progressLoader.dart';
 import 'package:click_it_app/common/loader/visible_progress_loaded.dart';
 import 'package:click_it_app/controllers/upload_images_provider.dart';
 import 'package:click_it_app/preferences/app_preferences.dart';
-import 'package:click_it_app/presentation/screens/home/home_screen.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/back_image_screen.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/front_image_screen.dart';
 import 'package:click_it_app/presentation/screens/uploadImages/ingredients.dart';
@@ -24,20 +19,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 import '../../../app_tutorial_coach/tutorial_upload_coach.dart';
 import '../../../common/Utils.dart';
-import '../../../common/utility.dart';
 import '../../../data/core/api_constants.dart';
 import '../../../data/data_sources/Local Datasource/new_database.dart';
-import '../../../data/data_sources/remote_data_source.dart';
-import '../../../data/models/get_images_model.dart';
-import 'package:http_parser/http_parser.dart';
 
 class NewUploadImagesScreen extends StatefulWidget {
   final String gtin;
@@ -534,8 +523,6 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
       return;
     }*/
 
-
-
    // VisibleProgressLoader.show(context);
 
     print('+++!${AppPreferences.getValueShared('login_data')}');
@@ -641,8 +628,14 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
             bottom_image   ??
                 ''));
       }
+
       EasyLoading.show(status: 'uploading...');
-    request.headers.addAll(headers);
+      request.headers.addAll(headers);
+
+    // Print request fields
+    print("Request Fields: ${request.fields}");
+    // Print request files (paths)
+    print("Request Files: ${request.files.map((file) => file.filename).toList()}");
 
     http.StreamedResponse response = await request.send();
 
@@ -689,7 +682,7 @@ class _NewUploadImagesScreenState extends State<NewUploadImagesScreen>
 
     //send the user to home screen
     } else {
-    print(response.reasonPhrase);
+    print('Error in uploading image ${response.reasonPhrase}');
   //  VisibleProgressLoader.hide();
     EasyLoading.dismiss();
     Fluttertoast.showToast(

@@ -39,9 +39,9 @@ class HomeCoach{
       onClickOverlay: (target) {
         print('onClickOverlay: $target');
       },
-      onSkip: () {
-        print("skip");
-      },
+      // onSkip: () {
+         
+      // },
     );
   }
 

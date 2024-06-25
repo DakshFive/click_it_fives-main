@@ -22,7 +22,7 @@ class VisibleProgressLoader {
           ),
         ),
       );
-      Overlay.of(context).insert(currentLoader!);
+      Overlay.of(context)?.insert(currentLoader!);
       isShowing = true;
     }
   }

@@ -126,18 +126,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: Badge(
-                      child: Icon(
+                  icon: Icon(
                         Icons.notifications,
                         color: Colors.white,
                       ),
-                      label: Text(
-                        '4',
-                        style: TextStyle(color: Colors.deepOrange),
-                      ),
-                      alignment: Alignment.topRight,
-                      backgroundColor: Colors.white,
-                      offset: Offset.fromDirection(6, 8)),
+                  // icon: Badge(
+                  //     child: Icon(
+                  //       Icons.notifications,
+                  //       color: Colors.white,
+                  //     ),
+                  //     label: Text(
+                  //       '4',
+                  //       style: TextStyle(color: Colors.deepOrange),
+                  //     ),
+                  //     alignment: Alignment.topRight,
+                  //     backgroundColor: Colors.white,
+                  //     offset: Offset.fromDirection(6, 8)),
                   onPressed: () {
                     Navigator.push(
                       context,

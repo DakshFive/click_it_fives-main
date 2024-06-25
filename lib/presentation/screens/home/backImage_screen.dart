@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:click_it_app/common/Utils.dart';
 import 'package:click_it_app/common/utility.dart';
@@ -20,7 +21,6 @@ import 'package:click_it_app/presentation/screens/home/nutritionVal_screen.dart'
 import 'package:click_it_app/presentation/screens/home/rightImage_screen.dart';
 import 'package:click_it_app/presentation/screens/home/show_image.dart';
 import 'package:click_it_app/presentation/screens/home/upload_images_screen.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';

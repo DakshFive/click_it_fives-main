@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:click_it_app/common/Utils.dart';
 import 'package:click_it_app/common/loader/progressLoader.dart';
 import 'package:click_it_app/controllers/upload_images_provider.dart';
@@ -178,8 +179,6 @@ class _FrontImageScreenState extends State<FrontImageScreen>
           setState(() {});
           return;
         }
-
-
 
       setState(() {});
 
@@ -472,7 +471,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 15)),
                             style: TextButton.styleFrom(
-                              foregroundColor: Colors.white,
+                                
                               backgroundColor: Colors.black,
                             ),
                           ),
@@ -493,10 +492,9 @@ class _FrontImageScreenState extends State<FrontImageScreen>
                                     },
                                     child: Text("Retake",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold,
+                                            fontWeight: FontWeight.bold,color: Colors.white,
                                             fontSize: 15)),
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white,
+                                    style: TextButton.styleFrom(   
                                       backgroundColor: Colors.deepOrange,
                                     ),
                                   ),
@@ -561,7 +559,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15)),
                                   style: TextButton.styleFrom(
-                                    foregroundColor: Colors.white,
+                                      
                                     backgroundColor: Colors.black,
                                   ),
                                 ),
@@ -598,7 +596,7 @@ class _FrontImageScreenState extends State<FrontImageScreen>
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15)),
                                       style: TextButton.styleFrom(
-                                        foregroundColor: Colors.white,
+                                          
                                         backgroundColor: Colors.black,
                                       ),
                                     ),
@@ -696,6 +694,9 @@ class _FrontImageScreenState extends State<FrontImageScreen>
 
     // get the saved front image from the api
 
+
+  
+
     var headers = {
       'Content-Type': 'application/json',
       'Cookie':
@@ -706,6 +707,8 @@ class _FrontImageScreenState extends State<FrontImageScreen>
         Uri.parse(
             'https://gs1datakart.org/api/v501/product_images?apiId=df4a3e288e73d4e3d6e4a975a0c3212d&apiKey=440f00981a1cc3b1ce6a4c784a4b84ea'));
     request.body = json.encode({"gtin": widget.gtin,"role_id":AppPreferences.getValueShared("role_id"),"upload_id":AppPreferences.getValueShared("uid")});
+
+      print('gtin : ${request.body}');
     request.headers.addAll(headers);
     try {
       final response = await request.send();

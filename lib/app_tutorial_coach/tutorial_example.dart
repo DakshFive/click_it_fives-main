@@ -5,10 +5,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(       MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+         MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -18,13 +18,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
+      home:        MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+         MyHomePage({Key? key}) : super(key: key);
 
   @override
   MyHomePageState createState() => MyHomePageState();
@@ -58,20 +58,20 @@ class MyHomePageState extends State<MyHomePage> {
         actions: <Widget>[
           IconButton(
             // key: keyButton1,
-            icon: const Icon(Icons.add),
+            icon:        Icon(Icons.add),
             onPressed: () {},
           ),
           PopupMenuButton(
             key: keyButton1,
-            icon: const Icon(Icons.view_list, color: Colors.white),
+            icon:        Icon(Icons.view_list, color: Colors.white),
             itemBuilder: (context) => [
-              const PopupMenuItem(
+                     PopupMenuItem(
                 child: Text("Is this"),
               ),
-              const PopupMenuItem(
+                     PopupMenuItem(
                 child: Text("What"),
               ),
-              const PopupMenuItem(
+                     PopupMenuItem(
                 child: Text("You Want?"),
               ),
             ],
@@ -83,7 +83,7 @@ class MyHomePageState extends State<MyHomePage> {
         child: Stack(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(top: 100.0),
+              padding:        EdgeInsets.only(top: 100.0),
               child: Align(
                 alignment: Alignment.topCenter,
                 child: Container(
@@ -94,7 +94,7 @@ class MyHomePageState extends State<MyHomePage> {
                   child: Align(
                     alignment: Alignment.center,
                     child: ElevatedButton(
-                      child: const Icon(Icons.remove_red_eye),
+                      child:        Icon(Icons.remove_red_eye),
                       onPressed: () {
                         showTutorial();
                       },
@@ -118,7 +118,7 @@ class MyHomePageState extends State<MyHomePage> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.all(50.0),
+                padding:        EdgeInsets.all(50.0),
                 child: SizedBox(
                   width: 50,
                   height: 50,
@@ -133,7 +133,7 @@ class MyHomePageState extends State<MyHomePage> {
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
-                padding: const EdgeInsets.all(50.0),
+                padding:        EdgeInsets.all(50.0),
                 child: SizedBox(
                   width: 50,
                   height: 50,
@@ -148,7 +148,7 @@ class MyHomePageState extends State<MyHomePage> {
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: const EdgeInsets.all(50.0),
+                padding:        EdgeInsets.all(50.0),
                 child: SizedBox(
                   width: 50,
                   height: 50,
@@ -198,7 +198,7 @@ class MyHomePageState extends State<MyHomePage> {
             ),
           ),
           BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
+            items:        <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
                 label: 'Home',
@@ -247,9 +247,9 @@ class MyHomePageState extends State<MyHomePage> {
       onClickOverlay: (target) {
         print('onClickOverlay: $target');
       },
-      onSkip: () {
-        print("skip");
-      },
+      // onSkip: () {
+      //   print("skip");
+      // },
     );
   }
 
@@ -265,7 +265,7 @@ class MyHomePageState extends State<MyHomePage> {
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return const Column(
+              return        Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -292,7 +292,7 @@ class MyHomePageState extends State<MyHomePage> {
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return const Column(
+              return        Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -319,7 +319,7 @@ class MyHomePageState extends State<MyHomePage> {
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return const Column(
+              return        Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -344,7 +344,7 @@ class MyHomePageState extends State<MyHomePage> {
           TargetContent(
             align: ContentAlign.bottom,
             builder: (context, controller) {
-              return const Column(
+              return        Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -382,7 +382,7 @@ class MyHomePageState extends State<MyHomePage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text(
+                         Text(
                     "Titulo lorem ipsum",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -390,7 +390,7 @@ class MyHomePageState extends State<MyHomePage> {
                       fontSize: 20.0,
                     ),
                   ),
-                  const Padding(
+                         Padding(
                     padding: EdgeInsets.only(top: 10.0),
                     child: Text(
                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
@@ -401,7 +401,7 @@ class MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       controller.previous();
                     },
-                    child: const Icon(Icons.chevron_left),
+                    child:        Icon(Icons.chevron_left),
                   ),
                 ],
               );
@@ -419,7 +419,7 @@ class MyHomePageState extends State<MyHomePage> {
         contents: [
           TargetContent(
             align: ContentAlign.left,
-            child: const Column(
+            child:        Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -442,7 +442,7 @@ class MyHomePageState extends State<MyHomePage> {
           ),
           TargetContent(
               align: ContentAlign.top,
-              child: const Column(
+              child:        Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -472,7 +472,7 @@ class MyHomePageState extends State<MyHomePage> {
       contents: [
         TargetContent(
             align: ContentAlign.right,
-            child: const Column(
+            child:        Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -508,14 +508,14 @@ class MyHomePageState extends State<MyHomePage> {
                   tutorialCoachMark.previous();
                 },
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding:        EdgeInsets.all(10.0),
                   child: Image.network(
                     "https://juststickers.in/wp-content/uploads/2019/01/flutter.png",
                     height: 200,
                   ),
                 ),
               ),
-              const Padding(
+                     Padding(
                 padding: EdgeInsets.only(bottom: 20.0),
                 child: Text(
                   "Image Load network",
@@ -525,7 +525,7 @@ class MyHomePageState extends State<MyHomePage> {
                       fontSize: 20.0),
                 ),
               ),
-              const Text(
+                     Text(
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pulvinar tortor eget maximus iaculis.",
                 style: TextStyle(color: Colors.white),
               ),
@@ -543,7 +543,7 @@ class MyHomePageState extends State<MyHomePage> {
         contents: [
           TargetContent(
             align: ContentAlign.top,
-            child: const Column(
+            child:        Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Padding(
@@ -565,7 +565,7 @@ class MyHomePageState extends State<MyHomePage> {
           ),
           TargetContent(
               align: ContentAlign.bottom,
-              child: const Column(
+              child:        Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Padding(

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:click_it_app/common/loader/progressLoader.dart';
 import 'package:click_it_app/preferences/app_preferences.dart';
@@ -305,7 +306,7 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 15)),
                             style: TextButton.styleFrom(
-                              foregroundColor: Colors.white,
+                                
                               backgroundColor: Colors.black,
                             ),
                           ),
@@ -324,11 +325,11 @@ class _IngredientsValueScreenState extends State<IngredientsValueScreen>
                                       );
                                     },
                                     child: Text("Retake",
-                                        style: TextStyle(
+                                        style: TextStyle(color: Colors.white,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 15)),
                                     style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white,
+                                        
                                       backgroundColor: Colors.deepOrange,
                                     ),
                                   ),

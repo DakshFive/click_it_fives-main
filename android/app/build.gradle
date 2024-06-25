@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 33
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -46,15 +46,13 @@ android {
         jvmTarget = '1.8'
     }
 
-
-
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.gs1india.clickIt"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 3
-        versionName "1.0.2"
+        versionCode 5
+        versionName "1.0.6"
         multiDexEnabled true
     }
 
@@ -62,9 +60,8 @@ android {
        release {
            keyAlias keystoreProperties['keyAlias']
            keyPassword keystoreProperties['keyPassword']
-           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+           storeFile file('/Users/fivesmac/Desktop/GS1Projects/click_it_fives-main/android/app/clickitflutterkey')
            storePassword keystoreProperties['storePassword']
-
        }
    }
 

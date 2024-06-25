@@ -112,7 +112,7 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                   'assets/images/saved_images.svg',
-                  colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                  // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
                   key: localImageKey
               ),
               label: 'Saved Images',
@@ -165,11 +165,12 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
       onClickOverlay: (target) {
         print('onClickOverlay: $target');
       },
-      onSkip: () {
-        HomeCoach.createTutorial();
-        Future.delayed(Duration.zero, (){HomeCoach.showTutorial(context);});
-        print("skip");
-      },
+      // onSkip: () {
+      //   HomeCoach.createTutorial();
+      //   Future.delayed(Duration.zero, (){HomeCoach.showTutorial(context);});
+      //   print("skip");
+      // },
+      
     );
   }
 
@@ -185,7 +186,7 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return const Column(
+              return   Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -212,7 +213,7 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return const Column(
+              return   Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -239,7 +240,7 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return const Column(
+              return   Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -265,7 +266,7 @@ class _NewHomeScreenState extends State<NewHomeScreen>{
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return const Column(
+              return   Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[

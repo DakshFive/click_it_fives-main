@@ -43,9 +43,9 @@ class SaveDataCoach{
       onClickOverlay: (target) {
         print('onClickOverlay: $target');
       },
-      onSkip: () {
-        print("skip");
-      },
+      // onSkip: () {
+      //   print("skip");
+      // },
     );
   }
 
