@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -50,7 +50,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.gs1india.clickIt"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 5
         versionName "1.0.6"
         multiDexEnabled true
@@ -84,6 +84,23 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
+
+    //    flavorDimensions "security"
+    // Define product flavors for secure and insecure builds
+//    productFlavors {
+//        secure {
+//            dimension "security"
+//            // Enable root detection and SSL pinning
+//            buildConfigField "boolean", "ENABLE_ROOT_DETECTION", "true"
+//            buildConfigField "boolean", "ENABLE_SSL_PINNING", "true"
+//        }
+//        insecure {
+//            dimension "security"
+//            // Disable root detection and SSL pinning
+//            buildConfigField "boolean", "ENABLE_ROOT_DETECTION", "false"
+//            buildConfigField "boolean", "ENABLE_SSL_PINNING", "false"
+//        }
+//    }
 
 }
 
