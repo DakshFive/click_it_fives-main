@@ -65,7 +65,7 @@ dependencies:
   # introduction_screen
   introduction_screen: ^2.1.0
   rating_dialog: ^2.0.4
-  in_app_review: 2.0.3
+  in_app_review: ^2.0.9
   store_redirect: ^2.0.1
   flutter_rating_bar: ^4.0.1
   image_size_getter: ^2.1.2
@@ -74,6 +74,7 @@ dependencies:
   flutter_cache_manager: ^3.3.1
   logger: ^2.1.0
   badges: ^3.1.1
+  root_check: ^0.0.1
 
 
 dev_dependencies:
@@ -111,6 +112,7 @@ flutter:
   assets:
     - assets/images/
     - assets/tutorial/
+    - assets/certificates/my_cert.pem
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
